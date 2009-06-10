@@ -30,7 +30,7 @@ Example:
 
     @route('/')
     def index(environ, data):
-        return(Response('Hello world!', [('Content-Type', 'text/html')], '200 OK'))
+        return Response('Hello world!')
 
 
 Noticed the parameters to the index function? Those are mandatory. 
