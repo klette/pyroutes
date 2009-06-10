@@ -11,41 +11,82 @@ def route(path):
     """
     Decorates a function for handling page requests to
     a certain path
+    
+    >>> from pyroutes import route
+    >>> @route('/')
+    ... def foo():
+    ...     pass
+    ... 
+    >>> from pyroutes import __request__handlers__
+    >>> '/' in __request__handlers__
+    True
+    
     """
     global __request__handlers__
     
     def decorator(func):
         __request__handlers__[path] = func
     return decorator
+
+def create_request_path(environ):
+    """
+    Returns a tuple consisting of the individual request parts
     
-def application(environ, start_response):
+    >>> from pyroutes import create_request_path
+    >>> create_request_path({'PATH_INFO': '/foo/bar'})
+    ['foo', 'bar']
+    >>> create_request_path({'PATH_INFO': '/'})
+    ['/']
     """
-    Searches for a handler for a certain request and
-    dispatches it if found. Returns 404 if not found.
-    """
-    _environ = environ.copy()
     handlers = __request__handlers__.keys()
-    path = shift_path_info(_environ)
+    path = shift_path_info(environ)
     request = [] 
     if not path:
         request = ['/']
     else:
         while path:
             request.append(path)
-            path = shift_path_info(_environ)
-
-    handler = None
-    complete_path = '/%s' % '/'.join(request)
-    current_path = complete_path
+            path = shift_path_info(environ)
+    return request
     
+def find_request_handler(current_path):
+    """
+    Locates the handler for the specified path. Return None if not found.
+    
+    >>> from pyroutes import route, find_request_handler
+    >>> @route('/')
+    ... def foo():
+    ...     pass
+    ...
+    >>> find_request_handler('/') != None
+    True
+    >>> find_request_handler('/foo') == None
+    True
+    """
+    handler = None
     while handler is None:
-        if current_path in handlers:
+        if current_path in __request__handlers__:
             handler = __request__handlers__[current_path]
             break
         current_path = current_path[:current_path.rfind("/")]
         if not current_path:
-            start_response('404 Not Found', [('Content-type', 'text/plain')])
-            return ["No handler found for path %s" % complete_path]
+            return None
+    return handler
+
+def application(environ, start_response):
+    """
+    Searches for a handler for a certain request and
+    dispatches it if found. Returns 404 if not found.
+    """
+    request = create_request_path(environ.copy())
+    
+    complete_path = '/%s' % '/'.join(request)
+    current_path = complete_path
+    handler = find_request_handler(complete_path)
+    if not handler:
+        start_response('404 Not Found', [('Content-type', 'text/plain')])
+        return ["No handler found for path %s" % complete_path]
+
     try:
         _data = cgi.FieldStorage(
             fp=environ['wsgi.input'],
@@ -62,4 +103,6 @@ def application(environ, start_response):
         start_response('500 Error', [('Content-type', 'text/plain')])
         return ["An error occurred\n%s" % str(exception)]
 
-    
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
