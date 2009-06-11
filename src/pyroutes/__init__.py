@@ -73,29 +73,33 @@ def find_request_handler(current_path):
             return None
     return handler
 
+def create_data_dict(environ):
+    """
+    """
+    _data = cgi.FieldStorage(
+        fp=environ['wsgi.input'],
+        environ=environ,
+        keep_blank_values=False
+    )
+    data = {}
+    for key in _data.keys():
+        data[key] = _data.getvalue(key)
+    return data
+
 def application(environ, start_response):
     """
     Searches for a handler for a certain request and
     dispatches it if found. Returns 404 if not found.
     """
     request = create_request_path(environ.copy())
-    
     complete_path = '/%s' % '/'.join(request)
-    current_path = complete_path
     handler = find_request_handler(complete_path)
     if not handler:
         start_response('404 Not Found', [('Content-type', 'text/plain')])
         return ["No handler found for path %s" % complete_path]
 
     try:
-        _data = cgi.FieldStorage(
-            fp=environ['wsgi.input'],
-            environ=environ,
-            keep_blank_values=False
-        )
-        data = {}
-        for key in _data.keys():
-            data[key] = _data.getvalue(key)
+        data = create_data_dict(environ)
         response = handler(environ, data)
         start_response(response.status_code, response.headers)
         return[response.content]
