@@ -25,8 +25,26 @@ def route(path):
     global __request__handlers__
     
     def decorator(func):
+        if path in __request__handlers__:
+            print "Warning: Redefining handler for %s with %s" % (path, func)
         __request__handlers__[path] = func
     return decorator
+
+class Request():
+    """
+    A basic request class wrapping WSGI-environment
+    in a more friendly matter
+    """
+    
+    def __init__(self, environ):
+        self.environ = environ
+        self.request_path = "/" + "/".join(create_request_path(environ))
+        self.GET = {}
+        self.POST = {}
+        if environ.get('REQUEST_METHOD', None) == 'POST':
+            pass
+        else:
+            pass
 
 def create_request_path(environ):
     """
