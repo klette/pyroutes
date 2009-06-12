@@ -1,0 +1,5 @@
+<t:dummy xmlns:t="http://template.sesse.net/">
+    <p t:id="view_contents">This will be replaced with the node contents.</p>
+    <a href="" t:id="edit_link">Edit</a>
+</t:dummy>
+
