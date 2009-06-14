@@ -37,4 +37,13 @@ Noticed the parameters to the index function? Those are mandatory.
 The `environ`-parameter is the unmodified environment from WSGI and
 `data` is a dictionary with the GET and POST parameters.
 
+Templating
+----------
+
+pyroutes includes a small xml-based templating system called xml-template.
+For more information about xml-template, check out its bzr-repo from 
+http://bzr.sesse.net/xml-template
+XML-Template is released under the GPLv2 license.
+
+
 For more information about usage, see the wiki example.
