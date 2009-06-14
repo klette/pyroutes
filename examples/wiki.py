@@ -8,12 +8,10 @@ Small wiki example using pyroutes
 from __future__ import with_statement
 
 from wsgiref.simple_server import make_server
-import hashlib
 import memcache
 
 from pyroutes import route, application
 from pyroutes.http import Response, Redirect
-import pyroutes.template
 from pyroutes.template import TemplateRenderer
 
 cache = memcache.Client(['localhost:11211'])
@@ -32,7 +30,8 @@ def edit(environ, data):
         return Redirect('/show/%s' % node)
     
     template_data = {
-        '#edit_contents': cache.get(node) or '' # XML-Template will remove the textarea node if None
+        # XML-Template will remove the textarea node if None
+        '#edit_contents': cache.get(node) or '',
         '#edit_form/action': '/edit/%s' % node,
     }
     return Response(renderer.render("templates/edit.xml", template_data), status_code="404 Not Found")
