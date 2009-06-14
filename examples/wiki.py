@@ -5,9 +5,8 @@
 Small wiki example using pyroutes
 """
 
-from __future__ import with_statement
-
 from wsgiref.simple_server import make_server
+
 import memcache
 
 from pyroutes import route, application
