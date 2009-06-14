@@ -109,6 +109,7 @@ def application(environ, start_response):
     Searches for a handler for a certain request and
     dispatches it if found. Returns 404 if not found.
     """
+
     request = create_request_path(environ.copy())
     complete_path = '/%s' % '/'.join(request)
     handler = find_request_handler(complete_path)

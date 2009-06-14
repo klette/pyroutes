@@ -9,45 +9,18 @@ from __future__ import with_statement
 
 from wsgiref.simple_server import make_server
 import hashlib
+import memcache
 
 from pyroutes import route, application
 from pyroutes.http import Response, Redirect
 import pyroutes.template
 from pyroutes.template import TemplateRenderer
 
-DATA_DIR = '/tmp/'
-
+cache = memcache.Client(['localhost:11211'])
 renderer = TemplateRenderer("templates/base.xml")
-
-def read_node(node_name):
-    """
-    Calculates the sha1-sum of a node name, and
-    reads the data from disk. If the file does not
-    exists, it returns None
-    """
-    node_hash = hashlib.sha1(node_name).hexdigest()
-    try:
-        with open(DATA_DIR  + node_hash, 'r') as f:
-            node_data = f.read()
-    except IOError:
-        node_data = ""
-    return node_data
-
-def write_node(node_name, contents):
-    """
-    Calculates the sha1-sum of the node name and
-    write the given contents to that file
-    """
-    node_hash = hashlib.sha1(node_name).hexdigest()
-    with open(DATA_DIR + node_hash, 'wb') as f:
-        f.write(contents)
 
 @route('/')
 def main(environ, data):
-    return Response("redirect", [('Location', '/show/index')], "302 See Other")
-
-@route('/')
-def main2(environ, data):
     return Response("redirect", [('Location', '/show/index')], "302 See Other")
 
 @route('/edit')
@@ -55,11 +28,11 @@ def edit(environ, data):
     node = environ['PATH_INFO'][6:]
     
     if 'new_node_data' in data:
-        write_node(node, data['new_node_data'])
+        cache.set(node, data['new_node_data'])
         return Redirect('/show/%s' % node)
     
     template_data = {
-        '#edit_contents': read_node(node),
+        '#edit_contents': cache.get(node) or '' # XML-Template will remove the textarea node if None
         '#edit_form/action': '/edit/%s' % node,
     }
     return Response(renderer.render("templates/edit.xml", template_data), status_code="404 Not Found")
@@ -67,7 +40,7 @@ def edit(environ, data):
 @route('/show')
 def show(environ, data):
     node = environ['PATH_INFO'][6:]
-    node_contents = read_node(node)
+    node_contents = cache.get(node)
     
     if not node_contents:
         return Redirect("/edit/%s" % node)
