@@ -21,7 +21,7 @@ renderer = TemplateRenderer("templates/base.xml")
 
 @route('/')
 def main(environ, data):
-    return Response("redirect", [('Location', '/show/index')], "302 See Other")
+    return Redirect('/show/index')
 
 @route('/edit')
 def edit(environ, data):
