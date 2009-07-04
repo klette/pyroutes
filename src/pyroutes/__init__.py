@@ -30,7 +30,7 @@ def route(path):
         __request__handlers__[path] = func
     return decorator
 
-class Request():
+class Request:
     """
     A basic request class wrapping WSGI-environment
     in a more friendly matter

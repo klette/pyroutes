@@ -6,7 +6,7 @@ http.py
 A collection of Response classes for pyroutes
 """
 
-class Response():
+class Response:
     """
     A wrapper class for a response to a route. Takes
     a content, headers and status_code parameter.
