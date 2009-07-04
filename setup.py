@@ -6,7 +6,7 @@ import os
 
 setup(
     name = "pyroutes",
-    version = "0.1.4",
+    version = "0.1.5.1",
     url = 'http://github.com/klette/pyroutes',
     license = 'GPLv2',
     description = "A small WSGI wrapper for creating small python web apps",
@@ -16,6 +16,7 @@ setup(
     packages = find_packages('src'),
     package_dir = {'': 'src'},
     install_requires = ['setuptools'],
+    requires = ['wsgiref'],
 
     classifiers = [
         'Development Status :: 3 - Alpha',
