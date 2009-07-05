@@ -8,7 +8,7 @@ def process_file(filename, obj, clean = True):
 	return doc
 
 def process(node, obj, clean = True):
-	if isinstance(obj, str):			# overwrite
+	if isinstance(obj, basestring):			# overwrite
 		while not node.firstChild is None:
 			node.removeChild(node.firstChild)
 		doc = _get_document_element(node)
