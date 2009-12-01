@@ -64,15 +64,19 @@ class TestRoute(unittest.TestCase):
         cgi.FieldStorage = minimock.Mock('cgi.FieldStorage', returns=datamock, tracker=None)
         self.assertEquals(pyroutes.create_data_dict({'wsgi.input': None}), {'foo': 'bar'})
 
-    def testApplication(self):
+    def testApplication404(self):
         environ = {'PATH_INFO': '/'}
         tracker = minimock.TraceTracker()
         start_response = minimock.Mock('start_response', tracker=tracker)
 
         self.assertEquals(["No handler found for path //"], pyroutes.application(environ, start_response))
         self.assertTrue(tracker.check("Called start_response('404 Not Found', [('Content-type', 'text/plain')])"))
-        tracker.clear()
-        
+
+    def testApplication200(self):
+        environ = {'PATH_INFO': '/'}
+        tracker = minimock.TraceTracker()
+        start_response = minimock.Mock('start_response', tracker=tracker)
+
         pyroutes.create_data_dict = minimock.Mock('create_data_dict', returns={}, tracker=None)
         res = minimock.Mock('handler', tracker=None)
         res.content = "foobar"
@@ -87,9 +91,16 @@ class TestRoute(unittest.TestCase):
         self.assertEquals(["foobar"], pyroutes.application(environ, start_response))
         self.assertTrue(tracker.check("Called start_response('200 OK', [('Content-type', 'text/plain')])"))
 
+    def testApplication500(self):
+        environ = {'PATH_INFO': '/'}
+        tracker = minimock.TraceTracker()
+        start_response = minimock.Mock('start_response', tracker=tracker)
+        
+        pyroutes.create_data_dict = minimock.Mock('create_data_dict', returns={}, tracker=None)
+        handler = minimock.Mock('handler', tracker=None)
         handler.mock_raises = ValueError("foo")
+        pyroutes.__request__handlers__['/'] = handler
         tracker.clear()
         self.assertEquals(["An error occurred\nfoo"], pyroutes.application(environ, start_response))
         self.assertTrue(tracker.check("Called start_response('500 Error', [('Content-type', 'text/plain')])"))
         tracker.clear()
-
