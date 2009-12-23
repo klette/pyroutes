@@ -12,7 +12,7 @@ class Response:
     a content, headers and status_code parameter.
     headers should be passed in as a tuple.
     """
-    def __init__(self, content=None, headers=[('Content-Type', 'text/html')], status_code='200 OK'):
+    def __init__(self, content=None, headers=[('Content-Type', 'text/html; charset=utf8')], status_code='200 OK'):
         self.content = content
         self.headers = headers
         self.status_code  = status_code
