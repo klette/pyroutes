@@ -90,6 +90,8 @@ class TestRoute(unittest.TestCase):
         tracker.clear()
         self.assertEquals(["foobar"], pyroutes.application(environ, start_response))
         self.assertTrue(tracker.check("Called start_response('200 OK', [('Content-type', 'text/plain')])"))
+        res.content = (1,2,3)
+        self.assertEquals((1,2,3), pyroutes.application(environ, start_response))
 
     def testApplication500(self):
         environ = {'PATH_INFO': '/'}

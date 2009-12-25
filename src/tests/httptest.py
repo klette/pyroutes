@@ -5,8 +5,8 @@ import pyroutes.http as http
 class TestResponse(unittest.TestCase):
     def test_empty_init(self):
         response = http.Response()
-        self.assertEqual(response.content, None)
-        self.assertEqual(response.headers, [('Content-Type', 'text/html')])
+        self.assertEqual(response.content, [])
+        self.assertEqual(response.headers, [('Content-Type', 'text/html; charset=utf8')])
         self.assertEqual(response.status_code, '200 OK')
 
     def test_init(self):
