@@ -80,7 +80,10 @@ def application(environ, start_response):
         data = create_data_dict(environ)
         response = handler(environ, data)
         start_response(response.status_code, response.headers)
-        return [response.content]
+        if isinstance(response.content, basestring):
+            return [response.content]
+        else:
+            return response.content
     except Exception, exception:
         start_response('500 Error', [('Content-type', 'text/plain')])
         return ["An error occurred\n%s" % str(exception)]
