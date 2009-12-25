@@ -14,7 +14,10 @@ class Response:
     """
     def __init__(self, content=None, headers=None, status_code='200 OK'):
         self.content = content
-        self.headers = headers or [('Content-Type', 'text/html; charset=utf8')]
+        if headers is None:
+            self.headers = [('Content-Type', 'text/html; charset=utf8')]
+        else:
+            self.headers = headers
         self.status_code = status_code
 
 
