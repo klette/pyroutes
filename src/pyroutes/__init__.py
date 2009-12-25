@@ -79,8 +79,6 @@ def application(environ, start_response):
     try:
         data = create_data_dict(environ)
         response = handler(environ, data)
-        if 'Content-Length' not in [a[0] for a in response.headers]:
-            response.headers.append(('Content-Length', str(sys.getsizeof(response.content))))
         start_response(response.status_code, response.headers)
         return [response.content]
     except Exception, exception:
