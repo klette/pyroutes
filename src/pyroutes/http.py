@@ -13,7 +13,10 @@ class Response:
     headers should be passed in as a tuple.
     """
     def __init__(self, content=None, headers=None, status_code='200 OK'):
-        self.content = content
+        if content is None:
+            self.content = []
+        else:
+            self.content = content
         if headers is None:
             self.headers = [('Content-Type', 'text/html; charset=utf8')]
         else:
