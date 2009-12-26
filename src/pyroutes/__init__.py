@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 #encoding: utf-8
 
+from pyroutes.http import HttpException, Http500
+from pyroutes import settings
+
 from wsgiref.util import shift_path_info
 import cgi
+import os
 import sys
-    
+
 global __request__handlers__
 __request__handlers__ = {}
 
@@ -14,7 +18,7 @@ def route(path):
     a certain path
     """
     global __request__handlers__
-    
+
     def decorator(func):
         if path in __request__handlers__:
             raise ValueError("Tried to redefine handler for %s with %s" % (path, func))
@@ -78,13 +82,22 @@ def application(environ, start_response):
 
     try:
         data = create_data_dict(environ)
-        response = handler(environ, data)
+        try:
+            response = handler(environ, data)
+        except HttpException, e:
+            response = e.get_response(environ['PATH_INFO'])
         start_response(response.status_code, response.headers)
         if isinstance(response.content, basestring):
             return [response.content]
         else:
             return response.content
     except Exception, exception:
-        start_response('500 Error', [('Content-type', 'text/plain')])
-        return ["An error occurred\n%s" % str(exception)]
-
+        error = Http500()
+        if settings.DEBUG:
+            response = error.get_response(
+                    environ['PATH_INFO'],
+                    description="%s: %s" % (exception.__class__, exception))
+        else:
+            response = error.get_response(environ['PATH_INFO'])
+        start_response(response.status_code, response.headers)
+        return [response.content]

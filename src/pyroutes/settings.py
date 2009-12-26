@@ -9,6 +9,9 @@ BUILTIN_TEMPLATES_DIR = os.path.join(
 )
 BUILTIN_BASE_TEMPLATE = os.path.join(BUILTIN_TEMPLATES_DIR, 'base.xml')
 
+# This should have an override for development servers
+DEBUG = False
+
 # Attempt to get custom settings. Not obligatory.
 try:
     from pyroutes_settings import *

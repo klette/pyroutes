@@ -1,4 +1,7 @@
-# Path to media files
+# DEBUG shows more debug info for HTTP 500
+DEBUG = True
+
+# Path to media files. Used by development media server in contrib.
 #DEV_MEDIA_BASE = '.'
 
 # Used for custom HttpException.
