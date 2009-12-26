@@ -1,0 +1,8 @@
+<t:dummy xmlns:t="http://template.sesse.net/">
+  <ul>
+    <li><a href='..'>[UP]</a></li>
+    <t:file_list>
+    <li><a /></li>
+    </t:file_list>
+  </ul>
+</t:dummy>
