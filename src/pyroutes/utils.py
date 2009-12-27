@@ -3,17 +3,45 @@ import mimetypes
 import os
 import time
 
-import pyroutes
+from pyroutes import settings
 from pyroutes.template import TemplateRenderer
 from pyroutes.http import Response, Redirect, Http403, Http404
+from pyroutes.contrib import autoreload
+
+from wsgiref.simple_server import make_server
 from wsgiref.util import FileWrapper
+
+def devserver(application, port=8001, address='0.0.0.0', auto_reload=True):
+    """
+    Simple development server for rapid development. Use to create a simple web
+    server. For testing purposes only. Has no builting handling of file
+    serving, use fileserver in this class. Typical usage:
+
+    from pyroutes import route, application, utils
+    <define routes>
+    if __name__ == '__main__':
+        utils.devserver(application)
+
+    This starts a server listening on all interfaces, port 8001. It
+    automatically reloads modified files.
+    """
+
+    def server_thread():
+        httpd = make_server(address, port, application)
+        print "Starting server on %s port %d..." % (address, port)
+        httpd.serve_forever()
+    if auto_reload:
+        autoreload.main(server_thread)
+    else:
+        server_thread()
 
 def fileserver(environ, data):
     """
     Simple file server for development servers. Not for use in production
-    environments. Usage:
+    environments. Typical usage:
 
-    media_server = route('/media')(pyroutes.contrib.util.fileserver)
+    from pyroutes import route, utils
+    media_server = route('/media')(utils.fileserver)
 
     That will add the fileserver to the route /media. If DEV_MEDIA_BASE is
     defined in settings, host files from this folder. Otherwise, use current
@@ -26,8 +54,8 @@ def fileserver(environ, data):
 
     request = environ['PATH_INFO']
     request_list = request.lstrip('/').split('/')
-    if hasattr(pyroutes.settings, 'DEV_MEDIA_BASE'):
-        path = os.path.join(pyroutes.settings.DEV_MEDIA_BASE, *request_list)
+    if hasattr(settings, 'DEV_MEDIA_BASE'):
+        path = os.path.join(settings.DEV_MEDIA_BASE, *request_list)
     else:
         path = os.path.join('.', *request_list)
 
@@ -74,15 +102,16 @@ def fileserver(environ, data):
         }
 
         templaterenderer = TemplateRenderer(
-            pyroutes.settings.BUILTIN_BASE_TEMPLATE
+            settings.BUILTIN_BASE_TEMPLATE
         )
         return Response(
             templaterenderer.render(
-                os.path.join(pyroutes.settings.BUILTIN_TEMPLATES_DIR,
+                os.path.join(settings.BUILTIN_TEMPLATES_DIR,
                     'fileserver', 'directory_listing.xml'
                 ),
                 template_data
-            )
+            ),
+            headers
         )
 
     contenttype = mimetypes.guess_type(path)[0] or "application/octet-stream"
@@ -93,4 +122,3 @@ def fileserver(environ, data):
     headers.append(('Content-Length', str(size)))
 
     return Response(file, headers=headers)
-
