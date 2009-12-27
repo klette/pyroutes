@@ -21,11 +21,11 @@ def main(environ, data):
 @route('/edit')
 def edit(environ, data):
     node = environ['PATH_INFO'][6:]
-    
+
     if 'new_node_data' in data:
         cache.set(node, data['new_node_data'])
         return Redirect('/show/%s' % node)
-    
+
     template_data = {
         # XML-Template will remove the textarea node if None
         '#edit_contents': cache.get(node) or '',
@@ -37,16 +37,15 @@ def edit(environ, data):
 def show(environ, data):
     node = environ['PATH_INFO'][6:]
     node_contents = cache.get(node)
-    
+
     if not node_contents:
         return Redirect("/edit/%s" % node)
-    
+
     template_data = {
-    	'#view_contents': node_contents,
-    	'#edit_link/href': '/edit/%s' % node
+        '#view_contents': node_contents,
+        '#edit_link/href': '/edit/%s' % node
     }
     return Response(renderer.render("templates/show.xml", template_data))
-    
 
 if __name__ == '__main__':
     utils.devserver(application)
