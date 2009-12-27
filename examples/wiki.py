@@ -5,11 +5,9 @@
 Small wiki example using pyroutes
 """
 
-from wsgiref.simple_server import make_server
-
 import memcache
 
-from pyroutes import route, application
+from pyroutes import route, application, utils
 from pyroutes.http import Response, Redirect
 from pyroutes.template import TemplateRenderer
 
@@ -51,8 +49,4 @@ def show(environ, data):
     
 
 if __name__ == '__main__':
-    httpd = make_server('', 8000, application)
-    print "Serving on port 8000..."
-    httpd.serve_forever()
-
-
+    utils.devserver(application)
