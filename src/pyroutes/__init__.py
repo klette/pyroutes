@@ -8,6 +8,7 @@ from wsgiref.util import shift_path_info
 import cgi
 import os
 import sys
+import traceback
 
 global __request__handlers__
 __request__handlers__ = {}
@@ -94,9 +95,13 @@ def application(environ, start_response):
     except Exception, exception:
         error = Http500()
         if settings.DEBUG:
+            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+            tb = "".join(traceback.format_exception(exceptionType, exceptionValue,
+                                                      exceptionTraceback))
             response = error.get_response(
                     environ['PATH_INFO'],
-                    description="%s: %s" % (exception.__class__, exception))
+                    description="%s: %s" % (exception.__class__, exception),
+                    traceback=tb)
         else:
             response = error.get_response(environ['PATH_INFO'])
         start_response(response.status_code, response.headers)
