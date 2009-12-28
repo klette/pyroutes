@@ -51,7 +51,7 @@ class HttpException(Exception):
             raise Exception('You tried to create an HttpException instance. ' \
                     + 'Please, only create instances of Http{403,404,500}.')
 
-        self.template_variable = '%d_TEMPLATE' % self.code
+        self.template_variable = 'TEMPLATE_%d' % self.code
         self.template_filename = '%d.xml' % self.code
         self.status_code = {
             403: '403 Forbidden',
