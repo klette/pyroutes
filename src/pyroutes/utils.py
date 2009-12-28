@@ -41,7 +41,7 @@ def fileserver(environ, data):
     environments. Typical usage:
 
     from pyroutes import route, utils
-    media_server = route('/media')(utils.fileserver)
+    route('/media')(utils.fileserver)
 
     That will add the fileserver to the route /media. If DEV_MEDIA_BASE is
     defined in settings, host files from this folder. Otherwise, use current
