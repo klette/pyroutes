@@ -47,4 +47,5 @@ def show(environ, data):
     return Response(renderer.render("templates/show.xml", template_data))
 
 if __name__ == '__main__':
+    route('/media')(utils.fileserver)
     utils.devserver(application)
