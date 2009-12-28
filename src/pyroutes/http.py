@@ -48,7 +48,7 @@ class Redirect(Response):
 class HttpException(Exception):
     def __init__(self):
         if not hasattr(self, 'code'):
-            raise Exception('You tried to create an HttpException instance. ' \
+            raise TypeError('You tried to instanciate HttpException. ' \
                     + 'Please, only create instances of Http{403,404,500}.')
 
         self.template_variable = 'TEMPLATE_%d' % self.code
