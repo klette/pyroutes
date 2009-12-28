@@ -32,7 +32,6 @@ class Response:
             self.headers.append(('Content-Type', settings.DEFAULT_CONTENT_TYPE))
         if not headers is None:
             self.headers += headers
-        print self.headers
         self.status_code = status_code
 
 
