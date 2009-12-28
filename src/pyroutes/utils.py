@@ -54,6 +54,11 @@ def fileserver(environ, data):
 
     request = environ['PATH_INFO']
     request_list = request.lstrip('/').split('/')
+
+    # Do not expose entire file system
+    if '..' in request_list:
+        raise Http404
+
     if hasattr(settings, 'DEV_MEDIA_BASE'):
         path = os.path.join(settings.DEV_MEDIA_BASE, *request_list)
     else:
