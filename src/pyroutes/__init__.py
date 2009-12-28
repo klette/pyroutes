@@ -66,7 +66,11 @@ def create_data_dict(environ):
     )
     data = {}
     for key in _data.keys():
-        data[key] = _data.getvalue(key)
+        try:
+            data[key] = unicode(_data.getvalue(key), 'utf-8')
+        except UnicodeDecodeError:
+            # If we can't understand the data as utf, try latin1
+            data[key] = unicode(_data.getvalue(key), 'iso-8859-1')
     return data
 
 def application(environ, start_response):
