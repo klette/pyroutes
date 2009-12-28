@@ -60,7 +60,7 @@ class HttpException(Exception):
         }[self.code]
 
         if hasattr(settings, self.template_variable):
-            if hasattr(settings, CUSTOM_BASE_TEMPLATE):
+            if hasattr(settings, 'CUSTOM_BASE_TEMPLATE'):
                 self.templaterenderer = TemplateRenderer(
                     settings.CUSTOM_BASE_TEMPLATE
                 )
