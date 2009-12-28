@@ -45,6 +45,7 @@ Deployment
 
    deployment/apache
 
+
 Contributing
 ============
 
@@ -52,6 +53,13 @@ The source code is version controlled using git and resides on http://github.com
 and fix stuff :-) Just remember to check if the test-suite still passes. I will not pull in features if they don't include
 documentation, unittest or simply breaks the existing tests. Bugfixes to the tests are always welcome too though.
 
+For the tests to run, you will need some extra packages. Names are by
+debian/ubuntu package name.
+
+ * python-minimock, http://blog.ianbicking.org/minimock.html
+ * python-coverage, http://nedbatchelder.com/code/coverage/
+ * python-coverage-test-runner, http://liw.fi/coverage-test-runner/
+ * python-unit, http://docs.python.org/library/unittest.html
 
 Module documentation
 ====================
