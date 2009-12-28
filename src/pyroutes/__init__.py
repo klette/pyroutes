@@ -22,7 +22,8 @@ def route(path):
 
     def decorator(func):
         if path in __request__handlers__:
-            raise ValueError("Tried to redefine handler for %s with %s" % (path, func))
+            raise ValueError("Tried to redefine handler for %s with %s" % \
+                    (path, func))
         __request__handlers__[path] = func
     return decorator
 
@@ -96,11 +97,13 @@ def application(environ, start_response):
         error = Http500()
         if settings.DEBUG:
             exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-            tb = "".join(traceback.format_exception(exceptionType, exceptionValue,
-                                                      exceptionTraceback))
+            tb = "".join(traceback.format_exception(exceptionType,
+                                                    exceptionValue,
+                                                    exceptionTraceback))
             response = error.get_response(
                     environ['PATH_INFO'],
-                    description="%s: %s" % (exception.__class__, exception),
+                    description="%s: %s" % (exception.__class__.__name__,
+                                            exception),
                     traceback=tb)
         else:
             response = error.get_response(environ['PATH_INFO'])
