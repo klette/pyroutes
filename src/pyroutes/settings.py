@@ -13,7 +13,7 @@ BUILTIN_BASE_TEMPLATE = os.path.join(BUILTIN_TEMPLATES_DIR, 'base.xml')
 DEBUG = False
 
 # For setting the default content type
-DEFAULT_CONTENT_TYPE = 'text/html; charset=utf8'
+DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 
 # Attempt to get custom settings. Not obligatory.
 try:
