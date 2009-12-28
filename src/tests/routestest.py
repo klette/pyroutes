@@ -97,12 +97,13 @@ class TestRoute(unittest.TestCase):
         environ = {'PATH_INFO': '/'}
         tracker = minimock.TraceTracker()
         start_response = minimock.Mock('start_response', tracker=tracker)
-        
+
         pyroutes.create_data_dict = minimock.Mock('create_data_dict', returns={}, tracker=None)
         handler = minimock.Mock('handler', tracker=None)
         handler.mock_raises = ValueError("foo")
         pyroutes.__request__handlers__['/'] = handler
         tracker.clear()
-        self.assertEquals(["An error occurred\nfoo"], pyroutes.application(environ, start_response))
-        self.assertTrue(tracker.check("Called start_response('500 Error', [('Content-type', 'text/plain')])"))
+        response = pyroutes.application(environ, start_response)
+        self.assertNotEqual(response[0].find('Server error at /.'), -1)
+        self.assertTrue(tracker.check("Called start_response('500 Server Error', [('Content-Type', 'text/html; charset=utf-8')])"))
         tracker.clear()
