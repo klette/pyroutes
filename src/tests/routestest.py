@@ -53,24 +53,25 @@ class TestRoute(unittest.TestCase):
     def testCreateDataDict_no_data(self):
         cgi.FieldStorage = minimock.Mock('cgi.FieldStorage', returns={}, tracker=None)
         self.assertTrue(pyroutes.create_data_dict({'wsgi.input': None}) == {})
-    
+
     #TODO: Add environ-fixture and test for real! :-)
     def testCreateDataDict_with_data(self):
-        
+
         datamock = minimock.Mock('datamock', tracker=None, returns={'foo': None})
         datamock.keys = minimock.Mock('datamock.keys', tracker=None, returns=['foo'])
         datamock.getvalue = minimock.Mock('datamock.getvalue', tracker=None, returns='bar')
-        
+
         cgi.FieldStorage = minimock.Mock('cgi.FieldStorage', returns=datamock, tracker=None)
         self.assertEquals(pyroutes.create_data_dict({'wsgi.input': None}), {'foo': 'bar'})
 
     def testApplication404(self):
-        environ = {'PATH_INFO': '/'}
+        environ = {'PATH_INFO': '/foo'}
         tracker = minimock.TraceTracker()
         start_response = minimock.Mock('start_response', tracker=tracker)
 
-        self.assertEquals(["No handler found for path //"], pyroutes.application(environ, start_response))
-        self.assertTrue(tracker.check("Called start_response('404 Not Found', [('Content-type', 'text/plain')])"))
+        response = pyroutes.application(environ, start_response)
+        self.assertNotEqual(response[0].find('/foo was not found.'), -1)
+        self.assertTrue(tracker.check("Called start_response('404 Not Found', [('Content-Type', 'text/html; charset=utf-8')])"))
 
     def testApplication200(self):
         environ = {'PATH_INFO': '/'}
