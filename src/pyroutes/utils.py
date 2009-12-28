@@ -60,7 +60,7 @@ def fileserver(environ, data):
         path = os.path.join('.', *request_list)
 
     if not os.path.exists(path):
-        raise Http405
+        raise Http404
 
     if not os.access(path, os.R_OK):
         raise Http403
