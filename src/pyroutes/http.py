@@ -7,24 +7,32 @@ A collection of Response classes for pyroutes
 """
 
 from pyroutes.template import TemplateRenderer
-import pyroutes
+from pyroutes import settings
 import os
 
 class Response:
     """
     A wrapper class for a response to a route. Takes
     a content, headers and status_code parameter.
-    headers should be passed in as a tuple.
+    headers should be passed in as a list of tuples.
+    If default_content_header is set and no Content-Type header is set,
+    settings.DEFAULT_CONTENT_TYPE is added as Content-Type.
     """
-    def __init__(self, content=None, headers=None, status_code='200 OK'):
+    def __init__(self, content=None, headers=None, status_code='200 OK',
+            default_content_header=True):
         if content is None:
             self.content = []
         else:
             self.content = content
-        if headers is None:
-            self.headers = [('Content-Type', 'text/html; charset=utf8')]
-        else:
-            self.headers = headers
+
+        self.headers = []
+        if default_content_header:
+            # We can do this regardless of if the header is set in headers.
+            # That's because the last header definition takes precedense.
+            self.headers.append(('Content-Type', settings.DEFAULT_CONTENT_TYPE))
+        if not headers is None:
+            self.headers += headers
+        print self.headers
         self.status_code = status_code
 
 
@@ -52,20 +60,20 @@ class HttpException(Exception):
             500: '500 Server Error'
         }[self.code]
 
-        if hasattr(pyroutes.settings, self.template_variable):
-            if hasattr(pyroutes.settings, CUSTOM_BASE_TEMPLATE):
+        if hasattr(settings, self.template_variable):
+            if hasattr(settings, CUSTOM_BASE_TEMPLATE):
                 self.templaterenderer = TemplateRenderer(
-                    pyroutes.settings.CUSTOM_BASE_TEMPLATE
+                    settings.CUSTOM_BASE_TEMPLATE
                 )
             else:
                 self.templaterenderer = TemplateRenderer()
-            self.template = getattr(pyroutes.settings, self.template_variable)
+            self.template = getattr(settings, self.template_variable)
         else:
             self.templaterenderer = TemplateRenderer(
-                pyroutes.settings.BUILTIN_BASE_TEMPLATE
+                settings.BUILTIN_BASE_TEMPLATE
             )
             self.template = os.path.join(
-                pyroutes.settings.BUILTIN_TEMPLATES_DIR,
+                settings.BUILTIN_TEMPLATES_DIR,
                 self.template_filename
             )
 

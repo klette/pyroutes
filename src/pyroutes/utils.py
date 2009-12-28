@@ -75,7 +75,8 @@ def fileserver(environ, data):
             )[0:6]
         )
         if last_time == modified:
-            return Response(status_code='304 Not Modified')
+            return Response(status_code='304 Not Modified',
+                    default_content_header=False)
     modified = datetime.datetime.strftime(modified, "%a, %d %b %Y %H:%M:%S")
 
     headers = [
