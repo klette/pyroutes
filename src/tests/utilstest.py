@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import unittest
 
@@ -6,19 +7,27 @@ import pyroutes.settings as settings
 import pyroutes.utils as utils
 
 class TestDevServer(unittest.TestCase):
-    def presence(self):
-        # How the hell do we test this thing?
-        self.assertTrue(hasattr(utils, 'devserver'))
+
+    def test_presence(self):
+        utils.devserver
 
 class TestFileServer(unittest.TestCase):
 
     def test_with_custom_settings(self):
-        # FIXME Teste with DEV_MEDIA_BASE set
-        pass
+        settings.DEV_MEDIA_BASE = '..'
+        response = utils.fileserver({'PATH_INFO': '/src/'}, {})
+        self.assertNotEqual(response.content.find('<a href="pyroutes/">pyroutes/</a>'), -1)
 
     def test_if_modified_since(self):
-        # FIXME Test for 304 Not Modified
-        pass
+        modified = datetime.fromtimestamp(os.path.getmtime('pyroutes'))
+        modified = datetime.strftime(modified, "%a, %d %b %Y %H:%M:%S")
+        response = utils.fileserver({'PATH_INFO': '/pyroutes/'}, {})
+        self.assertTrue(('Last-Modified', modified) in response.headers)
+        response = utils.fileserver({'PATH_INFO': '/pyroutes/', 'HTTP_IF_MODIFIED_SINCE': modified}, {})
+        self.assertEqual(response.status_code, '304 Not Modified')
+
+    def test_no_upperlevel(self):
+        self.assertRaises(http.Http404, utils.fileserver, {'PATH_INFO': '/pyroutes/../../'}, {})
 
     def test_redirects(self):
         response = utils.fileserver({'PATH_INFO': '/pyroutes'}, {})
@@ -26,14 +35,14 @@ class TestFileServer(unittest.TestCase):
 
     def test_listing(self):
         response = utils.fileserver({'PATH_INFO': '/pyroutes/'}, {})
-        self.assertEquals(response.status_code, '200 OK')
+        self.assertEqual(response.status_code, '200 OK')
         for header in ['Content-Type', 'Last-Modified']:
             self.assertTrue(header in [a[0] for a in response.headers])
         self.assertNotEqual(response.content.find('<a href="__init__.py">__init__.py</a>'), -1)
 
     def test_host_file(self):
         response = utils.fileserver({'PATH_INFO': '/tests/utilstest.py'}, {})
-        self.assertEquals(response.status_code, '200 OK')
+        self.assertEqual(response.status_code, '200 OK')
         for header in ['Last-Modified', 'Content-Length']:
             self.assertTrue(header in [a[0] for a in response.headers])
         self.assertTrue(('Content-Type', 'text/x-python') in response.headers)
