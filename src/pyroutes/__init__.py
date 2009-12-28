@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #encoding: utf-8
 
-from pyroutes.http import HttpException, Http500
+from pyroutes.http import HttpException, Http404, Http500
 from pyroutes import settings
 
 from wsgiref.util import shift_path_info
@@ -83,8 +83,14 @@ def application(environ, start_response):
     complete_path = '/%s' % '/'.join(request)
     handler = find_request_handler(complete_path)
     if not handler:
-        start_response('404 Not Found', [('Content-type', 'text/plain')])
-        return ["No handler found for path %s" % complete_path]
+        error = Http404()
+        if settings.DEBUG:
+            response = error.get_response(environ['PATH_INFO'],
+                    details="Debug: No handler for path %s" % complete_path)
+        else:
+            response = error.get_response(environ['PATH_INFO'])
+        start_response(response.status_code, response.headers)
+        return [response.content]
 
     try:
         data = create_data_dict(environ)
