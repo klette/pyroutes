@@ -31,7 +31,6 @@ def create_request_path(environ):
     """
     Returns a tuple consisting of the individual request parts
     """
-    handlers = __request__handlers__.keys()
     path = shift_path_info(environ)
     request = []
     if not path:
