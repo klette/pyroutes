@@ -1,4 +1,9 @@
+import sys
+from os import path
+
 from CoverageTestRunner import CoverageTestRunner
+
+sys.path.insert(0, path.join(path.dirname(__file__), '..'))
 
 r = CoverageTestRunner()
 
