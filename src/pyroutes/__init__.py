@@ -77,9 +77,9 @@ def application(environ, start_response):
         return [response.content]
 
     try:
-        data = create_data_dict(environ)
+        req = Request(environ)
         try:
-            response = handler(environ, data)
+            response = handler(req)
         except HttpException, e:
             response = e.get_response(environ['PATH_INFO'])
         start_response(response.status_code, response.headers)
