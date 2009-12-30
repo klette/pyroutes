@@ -49,21 +49,6 @@ class TestRoute(unittest.TestCase):
         self.assertTrue(pyroutes.find_request_handler('/bar') != None)
         self.assertTrue(pyroutes.find_request_handler('/baz') == None)
 
-    #TODO: Add environ-fixture and test for real! :-)
-    def testCreateDataDict_no_data(self):
-        cgi.FieldStorage = minimock.Mock('cgi.FieldStorage', returns={}, tracker=None)
-        self.assertTrue(pyroutes.create_data_dict({'wsgi.input': None}) == {})
-
-    #TODO: Add environ-fixture and test for real! :-)
-    def testCreateDataDict_with_data(self):
-
-        datamock = minimock.Mock('datamock', tracker=None, returns={'foo': None})
-        datamock.keys = minimock.Mock('datamock.keys', tracker=None, returns=['foo'])
-        datamock.getvalue = minimock.Mock('datamock.getvalue', tracker=None, returns='bar')
-
-        cgi.FieldStorage = minimock.Mock('cgi.FieldStorage', returns=datamock, tracker=None)
-        self.assertEquals(pyroutes.create_data_dict({'wsgi.input': None}), {'foo': 'bar'})
-
     def testApplication404(self):
         environ = {'PATH_INFO': '/foo'}
         tracker = minimock.TraceTracker()
