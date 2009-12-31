@@ -2,6 +2,7 @@
 #encoding: utf-8
 
 from pyroutes.http import HttpException, Http404, Http500
+from pyroutes.util.request import Request
 from pyroutes import settings
 
 from wsgiref.util import shift_path_info
@@ -55,23 +56,6 @@ def find_request_handler(current_path):
             return None
     return handler
 
-def create_data_dict(environ):
-    """
-    """
-    _data = cgi.FieldStorage(
-        fp=environ['wsgi.input'],
-        environ=environ,
-        keep_blank_values=False
-    )
-    data = {}
-    for key in _data.keys():
-        try:
-            data[key] = unicode(_data.getvalue(key), 'utf-8')
-        except UnicodeDecodeError:
-            # If we can't understand the data as utf, try latin1
-            data[key] = unicode(_data.getvalue(key), 'iso-8859-1')
-    return data
-
 def application(environ, start_response):
     """
     Searches for a handler for a certain request and
@@ -92,9 +76,9 @@ def application(environ, start_response):
         return [response.content]
 
     try:
-        data = create_data_dict(environ)
+        req = Request(environ)
         try:
-            response = handler(environ, data)
+            response = handler(req)
         except HttpException, e:
             response = e.get_response(environ['PATH_INFO'])
         start_response(response.status_code, response.headers)
