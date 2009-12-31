@@ -2,3 +2,4 @@
 .coverage
 */.coverage
 /doc/_build
+/examples/pyroutes
