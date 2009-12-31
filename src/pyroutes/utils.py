@@ -35,7 +35,7 @@ def devserver(application, port=8001, address='0.0.0.0', auto_reload=True):
     else:
         server_thread()
 
-def fileserver(environ, data):
+def fileserver(request):
     """
     Simple file server for development servers. Not for use in production
     environments. Typical usage:
@@ -52,17 +52,17 @@ def fileserver(environ, data):
     files will be looked for in '/srv/media/files'
     """
 
-    request = environ['PATH_INFO']
-    request_list = request.lstrip('/').split('/')
+    path = request.ENV['PATH_INFO']
+    path_list = path.lstrip('/').split('/')
 
     # Do not expose entire file system
-    if '..' in request_list:
+    if '..' in path_list:
         raise Http404
 
     if hasattr(settings, 'DEV_MEDIA_BASE'):
-        path = os.path.join(settings.DEV_MEDIA_BASE, *request_list)
+        path = os.path.join(settings.DEV_MEDIA_BASE, *path_list)
     else:
-        path = os.path.join('.', *request_list)
+        path = os.path.join('.', *path_list)
 
     if not os.path.exists(path):
         raise Http404
@@ -71,11 +71,11 @@ def fileserver(environ, data):
         raise Http403
 
     modified = datetime.datetime.fromtimestamp(os.path.getmtime(path))
-    if 'HTTP_IF_MODIFIED_SINCE' in environ:
+    if 'HTTP_IF_MODIFIED_SINCE' in request.ENV:
         # This is a hack for python2.4 compat
         last_time = datetime.datetime(
             *time.strptime(
-                environ.get('HTTP_IF_MODIFIED_SINCE'),
+                request.ENV['HTTP_IF_MODIFIED_SINCE'],
                 "%a, %d %b %Y %H:%M:%S"
             )[0:6]
         )
@@ -89,8 +89,8 @@ def fileserver(environ, data):
     ]
 
     if os.path.isdir(path):
-        if not request.endswith('/'):
-            return Redirect(request + '/')
+        if not path.endswith('/'):
+            return Redirect(path + '/')
 
         listing = []
         files = []
@@ -104,7 +104,7 @@ def fileserver(environ, data):
 
         template_data = {
             'file_list': listing,
-            'title': 'Listing of %s' % request
+            'title': 'Listing of %s' % path
         }
 
         templaterenderer = TemplateRenderer(
