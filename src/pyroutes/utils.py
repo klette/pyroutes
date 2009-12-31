@@ -5,7 +5,7 @@ import time
 
 from pyroutes import settings
 from pyroutes.template import TemplateRenderer
-from pyroutes.http import Response, Redirect, Http403, Http404
+from pyroutes.http.response import Response, Redirect, Http403, Http404
 from pyroutes.contrib import autoreload
 
 from wsgiref.simple_server import make_server

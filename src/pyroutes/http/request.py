@@ -1,6 +1,10 @@
 # encoding: utf-8
 
 import cgi
+import hmac
+import hashlib
+import base64
+from pyroutes import settings
 
 try:
     import cStringIO as StringIO
@@ -20,8 +24,10 @@ class Request(object):
         self.FILES = {}
         self.get_POST_data(environment)
 
+        self.COOKIES = self.get_cookies(environment)
+
     def __repr__(self):
-        return "GET: %s\nPOST: %s\nFILES: %s" % (self.GET, self.POST, self.FILES.keys())
+        return "GET: %s\nPOST: %s\nCOOKIES: %s\nFILES: %s" % (self.GET, self.POST,self.COOKIES, self.FILES.keys())
 
     def get_POST_data(self, environment):
         data = {}
@@ -102,3 +108,33 @@ class Request(object):
                 except UnicodeDecodeError:
                     # If we can't understand the data as utf, try latin1
                     return unicode(data.getvalue(key), 'iso-8859-1')
+
+    def get_cookies(self, environment):
+        cookies = {}
+        hashes = {}
+        if 'HTTP_COOKIE' in environment:
+            for (key, value) in [(c[:c.find('=')], c[c.find('=')+1:]) for c in environment.get('HTTP_COOKIE', '').split(';')]:
+                if key.endswith('_hash'):
+                    hashes[key[:-5].strip()] = value
+                else:
+                    cookies[key] = value
+        # Validate all hashes
+        for key, val in cookies.items():
+            if key in hashes:
+                hash = hmac.HMAC(settings.SECRET_KEY, key + val, hashlib.sha256).hexdigest()
+                if hash != hashes[key]:
+                    raise ValueError('Intrusion attempt. Cookie %s is modified without permission' % key)
+            else:
+                raise ValueError('Intrusion attempt. Cookie hash is missing')
+
+        decoded_cookies = {}
+        # Decode the base64
+        for key, value in cookies.items():
+            d_key = base64.b64decode(key)
+            d_value = base64.b64decode(value)
+            decoded_cookies[d_key] = d_value
+
+        del cookies
+        del hashes
+
+        return decoded_cookies 

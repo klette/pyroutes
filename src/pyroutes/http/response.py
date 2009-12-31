@@ -9,6 +9,9 @@ A collection of Response classes for pyroutes
 from pyroutes.template import TemplateRenderer
 from pyroutes import settings
 import os
+import hashlib
+import hmac
+import base64
 
 class Response(object):
     """
@@ -33,6 +36,18 @@ class Response(object):
         if not headers is None:
             self.headers += headers
         self.status_code = status_code
+
+    def add_cookie(self, key, value):
+        key = base64.b64encode(key)
+        value = base64.b64encode(value)
+        hash = hmac.HMAC(settings.SECRET_KEY, key + value, hashlib.sha256).hexdigest()
+        self.headers.append(('Set-Cookie', '%s=%s' % (key, value)))
+        self.headers.append(('Set-Cookie', '%s_hash=%s' % (key, hash)))
+
+    def del_cookie(self, key):
+        key = base64.b64encode(key)
+        self.headers.append(('Set-Cookie', "%s=null; expires=Thu, 01-Jan-1970 00:00:01 GMT" % key))
+        self.headers.append(('Set-Cookie', "%s_hash=null; expires=Thu, 01-Jan-1970 00:00:01 GMT" % key))
 
 
 class Redirect(Response):

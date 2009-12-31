@@ -6,7 +6,7 @@ Small wiki example using pyroutes.
 """
 
 from pyroutes import route, application, utils
-from pyroutes.http import Response, Redirect
+from pyroutes.http.response import Response, Redirect
 from pyroutes.template import TemplateRenderer
 
 

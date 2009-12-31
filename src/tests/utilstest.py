@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 import unittest
 
-import pyroutes.http as http
+from pyroutes.http.response import *
 import pyroutes.settings as settings
 import pyroutes.utils as utils
 
@@ -27,7 +27,7 @@ class TestFileServer(unittest.TestCase):
         self.assertEqual(response.status_code, '304 Not Modified')
 
     def test_no_upperlevel(self):
-        self.assertRaises(http.Http404, utils.fileserver, {'PATH_INFO': '/pyroutes/../../'}, {})
+        self.assertRaises(Http404, utils.fileserver, {'PATH_INFO': '/pyroutes/../../'}, {})
 
     def test_redirects(self):
         response = utils.fileserver({'PATH_INFO': '/pyroutes'}, {})
@@ -49,11 +49,11 @@ class TestFileServer(unittest.TestCase):
         self.assertTrue(hasattr(response.content, 'filelike'))
 
     def test_nonexistant(self):
-        test_file = os.path.join('.', 'tests', 'httptest.py')
+        test_file = os.path.join('.', 'tests', 'responsetest.py')
         mode = os.stat(test_file).st_mode
         os.chmod(test_file, 0)
-        self.assertRaises(http.Http403, utils.fileserver, {'PATH_INFO': '/tests/httptest.py'}, {})
+        self.assertRaises(Http403, utils.fileserver, {'PATH_INFO': '/tests/httptest.py'}, {})
         os.chmod(test_file, mode)
 
     def test_noaccess(self):
-        self.assertRaises(http.Http404, utils.fileserver, {'PATH_INFO': '/404path'}, {})
+        self.assertRaises(Http404, utils.fileserver, {'PATH_INFO': '/404path'}, {})
