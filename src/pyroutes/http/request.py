@@ -26,6 +26,8 @@ class Request(object):
 
         self.COOKIES = self.get_cookies(environment)
 
+        self.ERRORS = []
+
     def __repr__(self):
         return "GET: %s\nPOST: %s\nCOOKIES: %s\nFILES: %s" % (self.GET, self.POST,self.COOKIES, self.FILES.keys())
 
@@ -123,9 +125,12 @@ class Request(object):
             if key in hashes:
                 hash = hmac.HMAC(settings.SECRET_KEY, key + val, hashlib.sha256).hexdigest()
                 if hash != hashes[key]:
-                    raise ValueError('Intrusion attempt. Cookie %s is modified without permission' % key)
+                    del cookies[key]
+                    self.ERRORS.append(CookieHashInvalid(key, 'Cookie modified'))
+
             else:
-                raise ValueError('Intrusion attempt. Cookie hash is missing')
+                del cookies[key]
+                self.ERRORS.append(CookieHashMissing(key, 'Cookie hash missing'))
 
         decoded_cookies = {}
         # Decode the base64
@@ -137,4 +142,10 @@ class Request(object):
         del cookies
         del hashes
 
-        return decoded_cookies 
+        return decoded_cookies
+
+class CookieHashMissing(LookupError):
+    pass
+
+class CookieHashInvalid(ValueError):
+    pass
