@@ -7,7 +7,7 @@ try:
 except ImportError:
     import StringIO
 
-class Request():
+class Request(object):
 
     def __init__(self, environment):
         self.ENV = environment
@@ -19,8 +19,6 @@ class Request():
         self.POST = {}
         self.FILES = {}
         self.get_POST_data(environment)
-
-
 
     def __repr__(self):
         return "GET: %s\nPOST: %s\nFILES: %s" % (self.GET, self.POST, self.FILES.keys())

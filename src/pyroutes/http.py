@@ -10,7 +10,7 @@ from pyroutes.template import TemplateRenderer
 from pyroutes import settings
 import os
 
-class Response:
+class Response(object):
     """
     A wrapper class for a response to a route. Takes
     a content, headers and status_code parameter.

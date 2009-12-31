@@ -5,7 +5,7 @@
 
 import xmltemplate
 
-class TemplateRenderer:
+class TemplateRenderer(object):
     """
     A small wrapper for doing basic template includes with xml-template
 
