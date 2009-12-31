@@ -2,9 +2,13 @@
 
 import cgi
 import hmac
-import hashlib
 import base64
 from pyroutes import settings
+
+try:
+    from hashlib import sha1
+except ImportError:
+    import sha as sha1
 
 try:
     import cStringIO as StringIO
@@ -123,7 +127,7 @@ class Request(object):
         # Validate all hashes
         for key, val in cookies.items():
             if key in hashes:
-                hash = hmac.HMAC(settings.SECRET_KEY, key + val, hashlib.sha256).hexdigest()
+                hash = hmac.HMAC(settings.SECRET_KEY, key + val, sha1).hexdigest()
                 if hash != hashes[key]:
                     del cookies[key]
                     self.ERRORS.append(CookieHashInvalid(key, 'Cookie modified'))
