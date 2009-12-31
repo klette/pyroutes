@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #encoding: utf-8
 
-from pyroutes.http import HttpException, Http404, Http500
-from pyroutes.util.request import Request
+from pyroutes.http.response import HttpException, Http404, Http500
+from pyroutes.http.request import Request
 from pyroutes import settings
 
 from wsgiref.util import shift_path_info
