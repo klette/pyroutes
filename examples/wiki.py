@@ -14,15 +14,15 @@ renderer = TemplateRenderer("templates/base.xml")
 nodes = {}
 
 @route('/')
-def main(environ, data):
+def main(request):
     return Redirect('/show/index')
 
 @route('/edit')
-def edit(environ, data):
-    node = environ['PATH_INFO'][6:]
+def edit(request):
+    node = request.ENV['PATH_INFO'][6:]
 
-    if 'new_node_data' in data:
-        nodes[node] = data['new_node_data']
+    if 'new_node_data' in request.POST:
+        nodes[node] = request.POST['new_node_data']
         return Redirect('/show/%s' % node)
 
     template_data = {
@@ -33,8 +33,8 @@ def edit(environ, data):
     return Response(renderer.render("templates/edit.xml", template_data), status_code="404 Not Found")
 
 @route('/show')
-def show(environ, data):
-    node = environ['PATH_INFO'][6:]
+def show(request):
+    node = request.ENV['PATH_INFO'][6:]
     node_contents = nodes.get(node)
 
     if node_contents is None:
