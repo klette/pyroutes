@@ -198,7 +198,7 @@ Here is a simple example:
 	if name:
 	    return Response('Hello %s!' % name)
         else:
-	    return Response('I don't know your name yet')
+	    return Response('I don\'t know your name yet')
 
 
 That should get you started in your development of a pyroutes powered application. Good luck!
