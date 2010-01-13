@@ -45,20 +45,20 @@ class Request(object):
 
         if env.get('REQUEST_METHOD', 'GET') == 'POST':
             length = int(env.get('CONTENT_LENGTH', 0))
-            buffer = StringIO.StringIO()
+            input_buffer = StringIO.StringIO()
             read_bytes = 1024*32
             while length:
                 if read_bytes > length:
                     read_bytes = length
-                buffer.write(environment['wsgi.input'].read(read_bytes))
+                input_buffer.write(environment['wsgi.input'].read(read_bytes))
                 length = length - read_bytes
                 if length < 0:
                     length = 0
 
-            buffer.reset()
+            input_buffer.reset()
 
             _data = cgi.FieldStorage(
-                fp=buffer,
+                fp=input_buffer,
                 environ=env,
                 keep_blank_values=False
             )
@@ -67,7 +67,7 @@ class Request(object):
                 if value is not None:
                     self._assign_field_to_section(key, value)
 
-            buffer.close()
+            input_buffer.close()
         return data
 
     def get_GET_data(self, environment):
@@ -101,18 +101,20 @@ class Request(object):
                     self.POST[key] = value
 
     def _parse_field(self, field, key, data):
+        value = None
         if isinstance(field, list):
-            return [self._parse_field(f, key, data) for f in field]
+            value = [self._parse_field(f, key, data) for f in field]
         if field.filename:
             if field.file:
-                return (field.filename, field.file)
+                value = (field.filename, field.file)
             else:
-                return (field.filename, StringIO.StringIO(data.getvalue(key)))
+                value = (field.filename, StringIO.StringIO(data.getvalue(key)))
         else:
             if isinstance(data.getvalue(key), basestring):
                 try:
-                    return unicode(data.getvalue(key), 'utf-8')
+                    value = unicode(data.getvalue(key), 'utf-8')
                 except UnicodeDecodeError:
                     # If we can't understand the data as utf, try latin1
-                    return unicode(data.getvalue(key), 'iso-8859-1')
+                    value = unicode(data.getvalue(key), 'iso-8859-1')
 
+        return value
