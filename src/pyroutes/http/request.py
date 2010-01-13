@@ -20,6 +20,7 @@ except ImportError:
 class Request(object):
 
     def __init__(self, environment):
+        self.ERRORS = []
         self.ENV = environment
 
         # Initialize GET
