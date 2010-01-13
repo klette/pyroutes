@@ -37,6 +37,14 @@ Installation with easy_install::
   # easy_install pyroutes
 
 
+Developer documentation
+=======================
+
+.. toctree::
+   :maxdepth: 2
+
+   cookies
+
 Deployment
 ==========
 
