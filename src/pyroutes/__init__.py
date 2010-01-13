@@ -81,7 +81,7 @@ def application(environ, start_response):
             response = handler(req)
         except HttpException, e:
             response = e.get_response(environ['PATH_INFO'])
-        start_response(response.status_code, response.headers)
+        start_response(response.status_code, response.headers + response.cookies.cookie_headers)
         if isinstance(response.content, basestring):
             return [response.content]
         else:
