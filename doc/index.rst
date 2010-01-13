@@ -20,7 +20,6 @@ Contents:
    :maxdepth: 2
 
    tutorial/basics
-   tutorial/wiki
 
 
 Installation
