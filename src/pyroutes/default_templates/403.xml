@@ -1,0 +1,9 @@
+<t:dummy xmlns:t="http://template.sesse.net/">
+  <p>You do not have permission to access <t:request />.</p>
+  <p>
+    Please return to the
+    <a href="javascript:history.back()">previous page in your history</a>,<br />
+    or navigate to the
+    <a href="/">main page of the domain</a>.
+  </p>
+</t:dummy>

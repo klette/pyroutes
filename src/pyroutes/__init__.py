@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 #encoding: utf-8
 
+from pyroutes.http.response import HttpException, Http404, Http500
+from pyroutes.http.request import Request
+from pyroutes import settings
+
 from wsgiref.util import shift_path_info
 import cgi
-    
+import os
+import sys
+import traceback
+
 global __request__handlers__
 __request__handlers__ = {}
 
@@ -13,10 +20,11 @@ def route(path):
     a certain path
     """
     global __request__handlers__
-    
+
     def decorator(func):
         if path in __request__handlers__:
-            raise ValueError("Tried to redefine handler for %s with %s" % (path, func))
+            raise ValueError("Tried to redefine handler for %s with %s" % \
+                    (path, func))
         __request__handlers__[path] = func
     return decorator
 
@@ -24,7 +32,6 @@ def create_request_path(environ):
     """
     Returns a tuple consisting of the individual request parts
     """
-    handlers = __request__handlers__.keys()
     path = shift_path_info(environ)
     request = []
     if not path:
@@ -49,19 +56,6 @@ def find_request_handler(current_path):
             return None
     return handler
 
-def create_data_dict(environ):
-    """
-    """
-    _data = cgi.FieldStorage(
-        fp=environ['wsgi.input'],
-        environ=environ,
-        keep_blank_values=False
-    )
-    data = {}
-    for key in _data.keys():
-        data[key] = _data.getvalue(key)
-    return data
-
 def application(environ, start_response):
     """
     Searches for a handler for a certain request and
@@ -72,15 +66,39 @@ def application(environ, start_response):
     complete_path = '/%s' % '/'.join(request)
     handler = find_request_handler(complete_path)
     if not handler:
-        start_response('404 Not Found', [('Content-type', 'text/plain')])
-        return ["No handler found for path %s" % complete_path]
-
-    try:
-        data = create_data_dict(environ)
-        response = handler(environ, data)
+        error = Http404()
+        if settings.DEBUG:
+            response = error.get_response(environ['PATH_INFO'],
+                    details="Debug: No handler for path %s" % complete_path)
+        else:
+            response = error.get_response(environ['PATH_INFO'])
         start_response(response.status_code, response.headers)
         return [response.content]
-    except Exception, exception:
-        start_response('500 Error', [('Content-type', 'text/plain')])
-        return ["An error occurred\n%s" % str(exception)]
 
+    try:
+        req = Request(environ)
+        try:
+            response = handler(req)
+        except HttpException, e:
+            response = e.get_response(environ['PATH_INFO'])
+        start_response(response.status_code, response.headers)
+        if isinstance(response.content, basestring):
+            return [response.content]
+        else:
+            return response.content
+    except Exception, exception:
+        error = Http500()
+        if settings.DEBUG:
+            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
+            tb = "".join(traceback.format_exception(exceptionType,
+                                                    exceptionValue,
+                                                    exceptionTraceback))
+            response = error.get_response(
+                    environ['PATH_INFO'],
+                    description="%s: %s" % (exception.__class__.__name__,
+                                            exception),
+                    traceback=tb)
+        else:
+            response = error.get_response(environ['PATH_INFO'])
+        start_response(response.status_code, response.headers)
+        return [response.content]

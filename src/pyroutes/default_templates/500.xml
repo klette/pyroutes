@@ -1,0 +1,12 @@
+<t:dummy xmlns:t="http://template.sesse.net/">
+  <p>Server error at <t:request />.</p>
+
+  <pre>
+  <t:traceback />
+  </pre>
+  <p>
+    <t:description>
+      Please contact the server administrator if the error persists.
+    </t:description>
+  </p>
+</t:dummy>
