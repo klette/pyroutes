@@ -3,6 +3,7 @@
 import cgi
 import hmac
 import base64
+import os
 
 from pyroutes import settings
 from pyroutes.http.cookies import RequestCookieHandler
@@ -46,7 +47,10 @@ class Request(object):
 
         if env.get('REQUEST_METHOD', 'GET') == 'POST':
             length = int(env.get('CONTENT_LENGTH', 0))
-            input_buffer = StringIO.StringIO()
+            if length > 5*1024:
+                input_buffer = os.tmpfile()
+            else:
+                input_buffer = StringIO.StringIO()
             read_bytes = 1024*32
             while length:
                 if read_bytes > length:
@@ -56,7 +60,10 @@ class Request(object):
                 if length < 0:
                     length = 0
 
-            input_buffer.reset()
+            if hasattr(input_buffer, 'reset'):
+                input_buffer.reset()
+            else:
+                input_buffer.seek(0)
 
             _data = cgi.FieldStorage(
                 fp=input_buffer,
