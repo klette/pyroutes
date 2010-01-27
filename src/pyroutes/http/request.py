@@ -105,7 +105,7 @@ class Request(object):
         value = None
         if isinstance(field, list):
             value = [self._parse_field(f, key, data) for f in field]
-        if field.filename:
+        if hasattr(field, 'filename') and field.filename:
             if field.file:
                 value = (field.filename, field.file)
             else:
