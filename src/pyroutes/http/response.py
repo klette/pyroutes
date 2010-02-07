@@ -46,6 +46,7 @@ class Redirect(Response):
         self.content = "redirect"
         self.headers = [('Location', location)]
         self.status_code = "302 See Other"
+        self.cookies = ResponseCookieHandler(self.headers)
 
 class HttpException(Exception):
     def __init__(self):
