@@ -6,10 +6,12 @@ http.py
 A collection of Response classes for pyroutes
 """
 
+import os
+from httplib import responses
+
 from pyroutes.template import TemplateRenderer
 from pyroutes.http.cookies import ResponseCookieHandler
 from pyroutes import settings
-import os
 
 class Response(object):
     """
@@ -33,7 +35,11 @@ class Response(object):
             self.headers.append(('Content-Type', settings.DEFAULT_CONTENT_TYPE))
         if not headers is None:
             self.headers += headers
-        self.status_code = status_code
+
+        if status_code in responses:
+            self.status_code = "%s %s" % (status_code, responses[status_code])
+        else:
+            self.status_code = status_code
 
         self.cookies = ResponseCookieHandler(self.headers)
 
