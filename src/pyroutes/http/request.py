@@ -79,7 +79,15 @@ class Request(object):
         return data
 
     def get_GET_data(self, environment):
-        return dict(cgi.parse_qsl(environment.get('QUERY_STRING', '')))
+        ret_dict = {}
+        for (key, value) in cgi.parse_qsl(environment.get('QUERY_STRING', '')):
+            if key in ret_dict:
+                if not isinstance(ret_dict[key], list):
+                    ret_dict[key] = [ret_dict[key]]
+                ret_dict[key].append(value)
+            else:
+                ret_dict[key] = value
+        return ret_dict
 
     def _assign_field_to_section(self, key, value):
         if isinstance(value, list):
