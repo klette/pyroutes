@@ -4,6 +4,7 @@
 """
 
 import xmltemplate
+from pyroutes import settings
 
 class TemplateRenderer(object):
     """
@@ -17,19 +18,25 @@ class TemplateRenderer(object):
     to do any inclusion and only render the given template.
     """
 
-    def __init__(self, base_template=None, inclusion_param='contents'):
+    def __init__(self, base_template=None, inclusion_param='contents', template_dir=None):
         """
         """
         self.base_template = base_template
         self.inclusion_param = inclusion_param
+        if template_dir != None:
+            self.template_dir = template_dir
+        elif settings.TEMPLATE_DIR:
+            self.template_dir = settings.TEMPLATE_DIR
+        else:
+            self.template_dir = ''
 
     def render(self, template, data):
         """
         """
         if self.base_template:
-            doc = xmltemplate.process_file(template, data, False)
+            doc = xmltemplate.process_file(self.template_dir + template, data, False)
             data[self.inclusion_param] = doc
-            master = xmltemplate.process_file(self.base_template, data);
+            master = xmltemplate.process_file(self.template_dir + self.base_template, data);
         else:
-            master = xmltemplate.process_file(template, data)
+            master = xmltemplate.process_file(self.template_dir + template, data)
         return master.toxml().encode("utf-8")

@@ -18,6 +18,9 @@ DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 # Secret key for crypto. CHANGE THIS IS pyroutes_settings!
 SECRET_KEY = 'asdfnaj2308sydfahli37flas36al9gaiufw'
 
+# Location for templates. Used by TemplateRenderer
+TEMPLATE_DIR = None # /foo/bar/templates/
+
 # Attempt to get custom settings. Not obligatory.
 try:
     from pyroutes_settings import *
