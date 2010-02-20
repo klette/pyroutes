@@ -56,6 +56,18 @@ def find_request_handler(current_path):
             return None
     return handler
 
+def reverse_url(handler_name):
+    """
+    Returns the path for a handler.
+    Example usage:
+    >>> reverse_url('login')
+    /account/login
+    """
+    for path, handler in __request__handlers__.items():
+        if handler.__name__ == handler_name:
+            return path
+    raise ValueError('No handler named %s' % handler_name)
+
 def application(environ, start_response):
     """
     Searches for a handler for a certain request and
