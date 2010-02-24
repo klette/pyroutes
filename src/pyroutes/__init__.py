@@ -26,6 +26,7 @@ def route(path):
             raise ValueError("Tried to redefine handler for %s with %s" % \
                     (path, func))
         __request__handlers__[path] = func
+        return func
     return decorator
 
 def create_request_path(environ):
