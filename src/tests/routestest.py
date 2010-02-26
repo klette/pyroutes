@@ -4,6 +4,8 @@ import unittest
 import minimock
 import cgi
 
+from minimock import TraceTracker
+
 import pyroutes
 
 
@@ -53,7 +55,7 @@ class TestRoute(unittest.TestCase):
 
     def testApplication404(self):
         environ = {'PATH_INFO': '/foo'}
-        tracker = minimock.TraceTracker()
+        tracker = TraceTracker()
         start_response = minimock.Mock('start_response', tracker=tracker)
 
         response = pyroutes.application(environ, start_response)
@@ -66,7 +68,7 @@ class TestRoute(unittest.TestCase):
 
     def testApplication200(self):
         environ = {'PATH_INFO': '/'}
-        tracker = minimock.TraceTracker()
+        tracker = TraceTracker()
         start_response = minimock.Mock('start_response', tracker=tracker)
 
         pyroutes.create_data_dict = minimock.Mock('create_data_dict', returns={}, tracker=None)
@@ -87,7 +89,7 @@ class TestRoute(unittest.TestCase):
 
     def testApplication403(self):
         environ = {'PATH_INFO': '/'}
-        tracker = minimock.TraceTracker()
+        tracker = TraceTracker()
         start_response = minimock.Mock('start_response', tracker=tracker)
 
         pyroutes.create_data_dict = minimock.Mock('create_data_dict', returns={}, tracker=None)
@@ -101,7 +103,7 @@ class TestRoute(unittest.TestCase):
 
     def testApplication500(self):
         environ = {'PATH_INFO': '/'}
-        tracker = minimock.TraceTracker()
+        tracker = TraceTracker()
         start_response = minimock.Mock('start_response', tracker=tracker)
 
         pyroutes.create_data_dict = minimock.Mock('create_data_dict', returns={}, tracker=None)
