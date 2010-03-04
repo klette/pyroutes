@@ -61,12 +61,12 @@ class TestFileServer(unittest.TestCase):
         self.assertTrue(('Content-Type', 'text/x-python') in response.headers)
         self.assertTrue(hasattr(response.content, 'filelike'))
 
-    def test_nonexistant(self):
+    def test_noaccess(self):
         test_file = os.path.join('.', 'tests', 'responsetest.py')
         mode = os.stat(test_file).st_mode
         os.chmod(test_file, 0)
         try:
-            self.request.ENV['PATH_INFO'] = '/tests/httpstest.py'
+            self.request.ENV['PATH_INFO'] = '/tests/responsetest.py'
             self.assertRaises(Http403, utils.fileserver, self.request)
         finally:
             os.chmod(test_file, mode)
