@@ -65,9 +65,11 @@ class TestFileServer(unittest.TestCase):
         test_file = os.path.join('.', 'tests', 'responsetest.py')
         mode = os.stat(test_file).st_mode
         os.chmod(test_file, 0)
-        self.request.ENV['PATH_INFO'] = '/tests/httpstest.py'
-        self.assertRaises(Http403, utils.fileserver, self.request)
-        os.chmod(test_file, mode)
+        try:
+            self.request.ENV['PATH_INFO'] = '/tests/httpstest.py'
+            self.assertRaises(Http403, utils.fileserver, self.request)
+        finally:
+            os.chmod(test_file, mode)
 
     def test_noaccess(self):
         self.request.ENV['PATH_INFO'] = '/404path/'
