@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 #encoding: utf-8
 
+"""
+Main pyroutes module
+
+This module handles all the dispatching services for pyroutes.
+"""
+
 from pyroutes.http.response import HttpException, Http404, Http500
 from pyroutes.http.request import Request
 from pyroutes import settings
@@ -11,7 +17,6 @@ import os
 import sys
 import traceback
 
-global __request__handlers__
 __request__handlers__ = {}
 
 def route(path):
@@ -19,9 +24,11 @@ def route(path):
     Decorates a function for handling page requests to
     a certain path
     """
-    global __request__handlers__
 
     def decorator(func):
+        """
+        See the pyroutes.route-docstring
+        """
         if path in __request__handlers__:
             raise ValueError("Tried to redefine handler for %s with %s" % \
                     (path, func))
@@ -91,9 +98,10 @@ def application(environ, start_response):
         req = Request(environ)
         try:
             response = handler(req)
-        except HttpException, e:
-            response = e.get_response(environ['PATH_INFO'])
-        start_response(response.status_code, response.headers + response.cookies.cookie_headers)
+        except HttpException, exception:
+            response = exception.get_response(environ['PATH_INFO'])
+        headers = response.headers + response.cookies.cookie_headers
+        start_response(response.status_code, headers)
         if isinstance(response.content, basestring):
             return [response.content]
         else:
@@ -101,15 +109,15 @@ def application(environ, start_response):
     except Exception, exception:
         error = Http500()
         if settings.DEBUG:
-            exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-            tb = "".join(traceback.format_exception(exceptionType,
-                                                    exceptionValue,
-                                                    exceptionTraceback))
+            exception_type, exception_value, exception_trace = sys.exc_info()
+            trace = "".join(traceback.format_exception(exception_type,
+                                                    exception_value,
+                                                    exception_trace))
             response = error.get_response(
                     environ['PATH_INFO'],
                     description="%s: %s" % (exception.__class__.__name__,
                                             exception),
-                    traceback=tb)
+                    traceback=trace)
         else:
             response = error.get_response(environ['PATH_INFO'])
         start_response(response.status_code, response.headers)
