@@ -28,7 +28,8 @@ class Request(object):
 
 
     def __repr__(self):
-        return "GET: %s\nPOST: %s\nCOOKIES: %s\nFILES: %s" % (self.GET, self.POST,self.COOKIES._raw_cookies, self.FILES.keys())
+        return "GET: %s\nPOST: %s\nCOOKIES: %s\nFILES: %s" % \
+            (self.GET, self.POST, self.COOKIES._raw_cookies, self.FILES.keys())
 
     def extract_post_data(self, environment):
         data = {}
@@ -83,12 +84,11 @@ class Request(object):
 
     def _assign_field_to_section(self, key, value):
         if isinstance(value, list):
-            for v in value:
-                self._assign_field_to_section(key, v)
+            for val in value:
+                self._assign_field_to_section(key, val)
         else:
-            if isinstance(value, tuple) and value[1] \
-                and (isinstance(value[1], file) or  hasattr(value[1], 'read')):
-                # ^^^ FIXME: Yuk. Find a better way.
+            if isinstance(value, tuple) and value[1] and \
+              (isinstance(value[1], file) or  hasattr(value[1], 'read')):
 
                 # If an existing value exists for this key, convert to list-result
                 if key in self.FILES and not isinstance(self.FILES[key], list):
