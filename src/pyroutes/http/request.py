@@ -1,17 +1,9 @@
 # encoding: utf-8
 
 import cgi
-import hmac
-import base64
 import os
 
-from pyroutes import settings
 from pyroutes.http.cookies import RequestCookieHandler
-
-try:
-    from hashlib import sha1
-except ImportError:
-    import sha as sha1
 
 try:
     import cStringIO as StringIO
