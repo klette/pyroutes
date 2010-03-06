@@ -17,12 +17,12 @@ class Request(object):
         self.ENV = environment
 
         # Initialize GET
-        self.GET = self.get_GET_data(environment)
+        self.GET = self.extract_get_data(environment)
 
         # Initialize POST and FILES
         self.POST = {}
         self.FILES = {}
-        self.get_POST_data(environment)
+        self.extract_post_data(environment)
 
         self.COOKIES = RequestCookieHandler(environment)
 
@@ -30,7 +30,7 @@ class Request(object):
     def __repr__(self):
         return "GET: %s\nPOST: %s\nCOOKIES: %s\nFILES: %s" % (self.GET, self.POST,self.COOKIES._raw_cookies, self.FILES.keys())
 
-    def get_POST_data(self, environment):
+    def extract_post_data(self, environment):
         data = {}
 
         # Copy enviroment so we dont get GET-variables in the result.
@@ -70,7 +70,7 @@ class Request(object):
             input_buffer.close()
         return data
 
-    def get_GET_data(self, environment):
+    def extract_get_data(self, environment):
         ret_dict = {}
         for (key, value) in cgi.parse_qsl(environment.get('QUERY_STRING', '')):
             if key in ret_dict:
