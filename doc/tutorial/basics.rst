@@ -46,7 +46,7 @@ creating a simple Hello World-app.
 Create a file called hello.py::
 
     from pyroutes import route
-    from pyroutes.http.respone import Response
+    from pyroutes.http.response import Response
 
     @route('/')
     def say_hello(request):
@@ -136,7 +136,7 @@ Now, let us create a request handler to use the templates.
 
     tmpl_renderer = TemplateRenderer('base.xml')
 
-    @route('/)
+    @route('/')
     def templated_handler(request):
         template_data = {'#message': 'Hello World'}
 
