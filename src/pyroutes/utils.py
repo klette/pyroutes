@@ -82,6 +82,8 @@ def fileserver(request):
                 "%a, %d %b %Y %H:%M:%S"
             )[0:6]
         )
+        last_time = datetime.datetime.strftime(last_time, "%a, %d %b %Y %H:%M:%S")
+        modified = datetime.datetime.strftime(modified, "%a, %d %b %Y %H:%M:%S")
         if last_time == modified:
             return Response(status_code='304 Not Modified',
                     default_content_header=False)
