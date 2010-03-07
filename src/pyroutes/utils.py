@@ -1,7 +1,10 @@
 import datetime
 import mimetypes
 import os
+import posixpath
 import time
+
+os.path = posixpath
 
 from pyroutes import settings
 from pyroutes.template import TemplateRenderer
