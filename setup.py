@@ -17,6 +17,7 @@ setup(
     package_dir = {'': 'src'},
     install_requires = ['setuptools'],
     requires = ['wsgiref'],
+    package_data = {'pyroutes': ['default_templates/*.xml', 'default_templates/fileserver/*.xml']},
 
     classifiers = [
         'Development Status :: 3 - Alpha',
