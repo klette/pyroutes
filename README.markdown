@@ -1,6 +1,6 @@
 pyroutes
 =========
-A really small wrapper for rapid development of small python
+A really small framework for rapid development of small python
 web applications
 
 Why?
@@ -20,16 +20,10 @@ That means `@route('/foo/bar')` will always be used over `@route('/foo')`
 given that request path is `/foo/bar` or longer that is :-)
 Notice that paths have to be given without a trailing slash.
 
-The decorated function should return the helper `Response` class.
-The `Response` class takes three arguments: `content`, `headers` and `status_code`.
-`content` is the data that should be returned, `headers` a list of tuples representing
-the http-headers returned and `status_code` a valid HTTP status code. If `headers` and `status_code`
-is omitted it defaults to `text/html` as content type and `200 OK` as status code.
-
 Example:
 
     @route('/')
-    def index(environ, data):
+    def index(request):
         return Response('Hello world!')
 
 
