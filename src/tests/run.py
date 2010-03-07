@@ -4,6 +4,7 @@ import sys
 from routestest import TestRoute 
 from utilstest import *
 from responsetest import *
+from cookietest import *
 
 import xmlrunner
 
@@ -13,6 +14,8 @@ unittest.TestLoader().loadTestsFromTestCase(TestDevServer),
 unittest.TestLoader().loadTestsFromTestCase(TestFileServer),
 unittest.TestLoader().loadTestsFromTestCase(TestResponse),
 unittest.TestLoader().loadTestsFromTestCase(TestExceptions),
+unittest.TestLoader().loadTestsFromTestCase(TestRequestCookieHandler),
+unittest.TestLoader().loadTestsFromTestCase(TestResponseCookieHandler),
 ])
 
 if __name__ == '__main__':
