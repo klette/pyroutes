@@ -21,8 +21,53 @@ __request__handlers__ = {}
 
 def route(path):
     """
-    Decorates a function for handling page requests to
-    a certain path
+    Routes define which methods handles requests to certain paths, and are defined
+    using the `@route`-decorator. The decorator takes one argument that defines which
+    path the method is used for. The decorated function recieves one argument from pyroutes
+    containing a `Request`-instance with all the information for that particular request.
+
+    **Defining routes**
+
+    This is a simple example route ::
+
+      from pyroutes import route
+      from pyroutes.http.response import Response
+
+      @route('/')
+      def index(request):
+          return Response('Hello world')
+
+
+    **How routes are matched to paths.**
+
+    One property of the routes are that matches are done on an best effort basis, starting
+    from the top of the tree and going down. This results in handler being delt request for
+    their defined path and every path over it. This is true for all paths except the
+    root-handler ('/'). Let's have a look at some examples. ::
+
+        In [7]: @pyroutes.route('/')
+            ...: def foo(req):
+            ...:     return None
+            ...:
+
+        In [8]: pyroutes.find_request_handler('/')
+        Out[8]: <function foo at 0x2688de8>
+
+        In [9]: pyroutes.find_request_handler('/foobar')
+
+        In [10]: @pyroutes.route('/foo')
+            ...: def bar(req):
+            ...:     return None
+            ...:
+
+        In [11]: pyroutes.find_request_handler('/foo/')
+        Out[11]: <function bar at 0x27881b8>
+
+        In [12]: pyroutes.find_request_handler('/foo/bar')
+        Out[12]: <function bar at 0x27881b8>
+
+        In [13]: pyroutes.find_request_handler('/foo/bar/baz')
+        Out[13]: <function bar at 0x27881b8>
     """
 
     def decorator(func):
