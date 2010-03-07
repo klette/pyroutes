@@ -12,6 +12,7 @@ sys.path.insert(0, base_dir)
 mapping = (
     ('__init__.py', 'routestest.py'),
     ('http/response.py', 'responsetest.py'),
+    ('http/cookies.py', 'cookietest.py'),
     ('utils.py', 'utilstest.py')
 )
 
