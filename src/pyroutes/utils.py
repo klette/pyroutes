@@ -1,7 +1,10 @@
 import datetime
 import mimetypes
 import os
+import posixpath
 import time
+
+os.path = posixpath
 
 from pyroutes import settings
 from pyroutes.template import TemplateRenderer
@@ -15,12 +18,12 @@ def devserver(application, port=8001, address='0.0.0.0', auto_reload=True):
     """
     Simple development server for rapid development. Use to create a simple web
     server. For testing purposes only. Has no builting handling of file
-    serving, use fileserver in this class. Typical usage:
+    serving, use fileserver in this class. Typical usage::
 
-    from pyroutes import route, application, utils
-    <define routes>
-    if __name__ == '__main__':
-        utils.devserver(application)
+        from pyroutes import route, application, utils
+        #<define routes>
+        if __name__ == '__main__':
+            utils.devserver(application)
 
     This starts a server listening on all interfaces, port 8001. It
     automatically reloads modified files.
@@ -38,18 +41,19 @@ def devserver(application, port=8001, address='0.0.0.0', auto_reload=True):
 def fileserver(request):
     """
     Simple file server for development servers. Not for use in production
-    environments. Typical usage:
+    environments. Typical usage::
 
-    from pyroutes import route, utils
-    route('/media')(utils.fileserver)
+        from pyroutes import route, utils
+        route('/media')(utils.fileserver)
 
     That will add the fileserver to the route /media. If DEV_MEDIA_BASE is
     defined in settings, host files from this folder. Otherwise, use current
     working directory.
 
-    NOTE: DEV_MEDIA_BASE and route path is concatenated, i.e. if you use
-    '/srv/media' for as the media base, and map the route to '/files', all
-    files will be looked for in '/srv/media/files'
+    .. note::
+        DEV_MEDIA_BASE and route path is concatenated, i.e. if you use
+        '/srv/media' for as the media base, and map the route to '/files', all
+        files will be looked for in '/srv/media/files'
     """
 
     path = request.ENV['PATH_INFO']
@@ -79,6 +83,8 @@ def fileserver(request):
                 "%a, %d %b %Y %H:%M:%S"
             )[0:6]
         )
+        last_time = datetime.datetime.strftime(last_time, "%a, %d %b %Y %H:%M:%S")
+        modified = datetime.datetime.strftime(modified, "%a, %d %b %Y %H:%M:%S")
         if last_time == modified:
             return Response(status_code='304 Not Modified',
                     default_content_header=False)

@@ -1,17 +1,9 @@
 # encoding: utf-8
 
 import cgi
-import hmac
-import base64
 import os
 
-from pyroutes import settings
 from pyroutes.http.cookies import RequestCookieHandler
-
-try:
-    from hashlib import sha1
-except ImportError:
-    import sha as sha1
 
 try:
     import cStringIO as StringIO
@@ -25,20 +17,21 @@ class Request(object):
         self.ENV = environment
 
         # Initialize GET
-        self.GET = self.get_GET_data(environment)
+        self.GET = self.extract_get_data(environment)
 
         # Initialize POST and FILES
         self.POST = {}
         self.FILES = {}
-        self.get_POST_data(environment)
+        self.extract_post_data(environment)
 
         self.COOKIES = RequestCookieHandler(environment)
 
 
     def __repr__(self):
-        return "GET: %s\nPOST: %s\nCOOKIES: %s\nFILES: %s" % (self.GET, self.POST,self.COOKIES._raw_cookies, self.FILES.keys())
+        return "GET: %s\nPOST: %s\nCOOKIES: %s\nFILES: %s" % \
+            (self.GET, self.POST, self.COOKIES._raw_cookies, self.FILES.keys())
 
-    def get_POST_data(self, environment):
+    def extract_post_data(self, environment):
         data = {}
 
         # Copy enviroment so we dont get GET-variables in the result.
@@ -78,7 +71,7 @@ class Request(object):
             input_buffer.close()
         return data
 
-    def get_GET_data(self, environment):
+    def extract_get_data(self, environment):
         ret_dict = {}
         for (key, value) in cgi.parse_qsl(environment.get('QUERY_STRING', '')):
             if key in ret_dict:
@@ -91,12 +84,11 @@ class Request(object):
 
     def _assign_field_to_section(self, key, value):
         if isinstance(value, list):
-            for v in value:
-                self._assign_field_to_section(key, v)
+            for val in value:
+                self._assign_field_to_section(key, val)
         else:
-            if isinstance(value, tuple) and value[1] \
-                and (isinstance(value[1], file) or  hasattr(value[1], 'read')):
-                # ^^^ FIXME: Yuk. Find a better way.
+            if isinstance(value, tuple) and value[1] and \
+              (isinstance(value[1], file) or  hasattr(value[1], 'read')):
 
                 # If an existing value exists for this key, convert to list-result
                 if key in self.FILES and not isinstance(self.FILES[key], list):

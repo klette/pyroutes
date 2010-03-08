@@ -35,13 +35,13 @@ Installation with easy_install::
 
   # easy_install pyroutes
 
-
 Developer documentation
 =======================
 
 .. toctree::
    :maxdepth: 2
 
+   changelog
    cookies
 
 Deployment
@@ -75,6 +75,10 @@ Module documentation
    :maxdepth: 2
 
    modules/pyroutes
+   modules/pyroutes.http.cookies
+   modules/pyroutes.http.response
+   modules/pyroutes.http.request
+   modules/pyroutes.utils
 
 Indices and tables
 ==================
