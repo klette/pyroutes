@@ -3,16 +3,22 @@
 import unittest
 import minimock
 import cgi
+import wsgiref.util
 
 from minimock import TraceTracker
 
 import pyroutes
 
+from pyroutes.http.request import Request
 
 class TestRoute(unittest.TestCase):
     def setUp(self):
         pyroutes.__request__handlers__ = {}
         pyroutes.settings.DEBUG = True
+
+        self.request_env = {}
+        wsgiref.util.setup_testing_defaults(self.request_env)
+        self.request = Request(self.request_env)
 
     def tearDown(self):
         minimock.restore()
@@ -26,21 +32,17 @@ class TestRoute(unittest.TestCase):
         return foo
 
     def testBasicRoute(self):
-
         self.createAnonRoute('/')
-
         self.assertTrue('/' in pyroutes.__request__handlers__)
         self.assertTrue(len(pyroutes.__request__handlers__) == 1)
 
     def testDoubleRouteException(self):
-
         self.createAnonRoute('/')
         self.assertRaises(ValueError, self.createAnonRoute, '/')
         self.assertTrue(len(pyroutes.__request__handlers__) == 1)
 
 
     def testCreateRequestPath(self):
-
         self.assertEquals(['foo', 'bar'], pyroutes.create_request_path({'PATH_INFO': '/foo/bar'}))
         self.assertEquals(['foo', 'bar'], pyroutes.create_request_path({'PATH_INFO': '/foo/bar/'}))
         self.assertEquals(['/'], pyroutes.create_request_path({'PATH_INFO': '/'}))
@@ -52,4 +54,11 @@ class TestRoute(unittest.TestCase):
         self.assertTrue(pyroutes.find_request_handler('/') != None)
         self.assertTrue(pyroutes.find_request_handler('/bar') != None)
         self.assertTrue(pyroutes.find_request_handler('/baz') == None)
+
+    def testReverseUrl(self):
+        self.createAnonRoute('/')
+        self.assertEquals(pyroutes.reverse_url('foo'), '/')
+
+    def testReverseUrlNotFound(self):
+        self.assertRaises(ValueError, pyroutes.reverse_url, 'bar')
 

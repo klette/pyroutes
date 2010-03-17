@@ -1,7 +1,7 @@
 import unittest
 import sys
 
-from routestest import TestRoute 
+from routestest import *
 from utilstest import *
 from responsetest import *
 from cookietest import *
