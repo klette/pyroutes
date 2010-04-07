@@ -45,7 +45,7 @@ class TestRequestCookieHandler(unittest.TestCase):
 class TestResponseCookieHandler(unittest.TestCase):
    
     def setUp(self):
-        self.cookies = ResponseCookieHandler([])
+        self.cookies = ResponseCookieHandler()
 
     def test_add_cookie(self):
         self.cookies.add_cookie('foo', 'bar')
