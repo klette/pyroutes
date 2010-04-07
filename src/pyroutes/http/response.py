@@ -75,8 +75,8 @@ class Response(object):
 
         self.headers = []
         if default_content_header:
-            # We can do this regardless of if the header is set in headers.
-            # That's because the last header definition takes precedense.
+            # Whether or not this is a safe operation may be python/wsgiref
+            # version dependent. Should be tested and documented.
             self.headers.append(('Content-Type', settings.DEFAULT_CONTENT_TYPE))
         if not headers is None:
             self.headers += headers
@@ -86,7 +86,7 @@ class Response(object):
         else:
             self.status_code = status_code
 
-        self.cookies = ResponseCookieHandler(self.headers)
+        self.cookies = ResponseCookieHandler()
 
 class Redirect(Response):
     """
@@ -97,7 +97,7 @@ class Redirect(Response):
         self.content = "redirect"
         self.headers = [('Location', location)]
         self.status_code = "302 See Other"
-        self.cookies = ResponseCookieHandler(self.headers)
+        self.cookies = ResponseCookieHandler()
 
 class HttpException(Exception):
     def __init__(self):
