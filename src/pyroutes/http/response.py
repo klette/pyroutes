@@ -86,7 +86,7 @@ class Response(object):
         else:
             self.status_code = status_code
 
-        self.cookies = ResponseCookieHandler(self.headers)
+        self.cookies = ResponseCookieHandler()
 
 class Redirect(Response):
     """
@@ -97,7 +97,7 @@ class Redirect(Response):
         self.content = "redirect"
         self.headers = [('Location', location)]
         self.status_code = "302 See Other"
-        self.cookies = ResponseCookieHandler(self.headers)
+        self.cookies = ResponseCookieHandler()
 
 class HttpException(Exception):
     def __init__(self):

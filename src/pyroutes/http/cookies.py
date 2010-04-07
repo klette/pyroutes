@@ -52,8 +52,8 @@ class ResponseCookieHandler(object):
     Handle cookie adding to request.
     """
 
-    def __init__(self, response_headers):
-        self.cookie_headers = response_headers
+    def __init__(self):
+        self.cookie_headers = []
 
     def add_cookie(self, key, value, expires=None):
         cookie_hash = hmac.HMAC(settings.SECRET_KEY, key + value, sha1).hexdigest()
@@ -75,7 +75,7 @@ class ResponseCookieHandler(object):
     def del_cookie(self, key):
         self.cookie_headers.append(('Set-Cookie', "%s=null; expires=Thu, 01-Jan-1970 00:00:01 GMT" % key))
         self.cookie_headers.append(('Set-Cookie', "%s_hash=null; expires=Thu, 01-Jan-1970 00:00:01 GMT" % key))
-        
+
 class CookieHashMissing(LookupError):
     pass
 
