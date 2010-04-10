@@ -10,7 +10,7 @@ setup(
     url = 'http://github.com/klette/pyroutes',
     license = 'GPLv2',
     description = "A small WSGI wrapper for creating small python web apps",
-    long_description = open(os.path.join(os.path.dirname(__file__), 'README')).read(),
+    long_description = open(os.path.join(os.path.dirname(__file__), 'README.markdown')).read(),
     author = 'Kristian Klette',
     author_email = 'klette@samfundet.no',
     packages = find_packages('src'),
