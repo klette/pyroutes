@@ -14,7 +14,6 @@ setup(
     author = 'Kristian Klette',
     author_email = 'klette@samfundet.no',
     packages = ['pyroutes','pyroutes.http', 'pyroutes.template', 'pyroutes.contrib'],
-    package_dir = {'': 'src'},
     requires = ['wsgiref'],
     package_data = {'pyroutes': ['default_templates/*.xml', 'default_templates/fileserver/*.xml']},
 
