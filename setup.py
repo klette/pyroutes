@@ -19,6 +19,7 @@ setup(
     requires = ['wsgiref'],
     package_data = {'pyroutes': ['default_templates/*.xml', 'default_templates/fileserver/*.xml']},
     zip_ok=False,
+    zip_safe=False,
 
     classifiers = [
         'Development Status :: 3 - Alpha',
