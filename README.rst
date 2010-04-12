@@ -16,20 +16,16 @@ The core of the system is WSGI, and a decorator called @route.
 You simple create add a route decorator in front of the function
 you want to handle requests to a certain path. pyroutes always
 tries to use the most specified path-handler available for the request.
-That means `@route('/foo/bar')` will always be used over `@route('/foo')`
-given that request path is `/foo/bar` or longer that is :-)
+That means ``@route('/foo/bar')`` will always be used over ``@route('/foo')``
+given that request path is ``/foo/bar`` or longer that is :-)
 Notice that paths have to be given without a trailing slash.
 
-Example:
+Example::
 
     @route('/')
     def index(request):
         return Response('Hello world!')
 
-
-Noticed the parameters to the index function? Those are mandatory. 
-The `environ`-parameter is the unmodified environment from WSGI and
-`data` is a dictionary with the GET and POST parameters.
 
 Templating
 ----------
