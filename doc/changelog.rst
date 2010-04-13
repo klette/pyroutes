@@ -1,6 +1,15 @@
 Changelog
 =========
 
+
+Release 0.2.1
+-------------
+
+- Reduce setup.py dependencies to only distutils.
+- Fix packaging of default templates
+- Fix pypi-package complaining about README file missing.
+- Fix unstable cookie handling in some cornercases.
+
 Release 0.2.0
 -------------
 
