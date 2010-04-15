@@ -21,7 +21,7 @@ class TestFileServer(unittest.TestCase):
 
     def test_with_custom_settings(self):
         settings.DEV_MEDIA_BASE = '..'
-        self.request.ENV['PATH_INFO'] = '/src/'
+        self.request.ENV['PATH_INFO'] = '/'
         response = utils.fileserver(self.request)
         self.assertNotEqual(response.content.find('<a href="pyroutes/">pyroutes/</a>'), -1)
 
