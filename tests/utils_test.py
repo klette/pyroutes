@@ -53,7 +53,7 @@ class TestFileServer(unittest.TestCase):
         self.assertNotEqual(response.content.find('<a href="__init__.py">__init__.py</a>'), -1)
 
     def test_host_file(self):
-        self.request.ENV['PATH_INFO'] = '/tests/utilstest.py'
+        self.request.ENV['PATH_INFO'] = '/tests/utils_test.py'
         response = utils.fileserver(self.request)
         self.assertEqual(response.status_code, '200 OK')
         for header in ['Last-Modified', 'Content-Length']:
