@@ -73,8 +73,12 @@ class Response(object):
         else:
             self.content = content
 
+        header_names = []
+        if headers:
+            header_names = map(lambda h: h[0], headers);
+
         self.headers = []
-        if default_content_header:
+        if default_content_header and 'Content-Type' not in header_names:
             # Whether or not this is a safe operation may be python/wsgiref
             # version dependent. Should be tested and documented.
             self.headers.append(('Content-Type', settings.DEFAULT_CONTENT_TYPE))
