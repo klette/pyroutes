@@ -17,6 +17,13 @@ class TestResponse(unittest.TestCase):
         self.assertEqual(response.headers, [('Content-Type', settings.DEFAULT_CONTENT_TYPE), ('Content-Length', 1000)])
         self.assertEqual(response.status_code, '500 Error')
 
+    def test_duplicated_content_type_header(self):
+        content_header = [("Content-Type", "application/pdf")]
+        response = Response(headers=content_header)
+        self.assertTrue(len(response.headers) == 1, "Should contain only one Content-Type header")
+        # And this header should not be settings.DEFAULT_CONTENT_TYPE
+        self.assertEqual(response.headers, content_header)
+
 class TestExceptions(unittest.TestCase):
     def test_base_exception(self):
         self.assertRaises(TypeError, HttpException)
