@@ -35,6 +35,7 @@ Use this configuration as an example. More configuration options are available a
             WSGIScriptAlias / /home/klette/dev/myproject/handler.py
             # Increase or remove maximum-requests when not developing
             WSGIDaemonProcess progark-backend maximum-requests=1
+            WSGIProcessGroup  progark-backend
     </VirtualHost>
 
 The most important line here is the ``WSGIScriptAlias`` line. In the example we declare that every path under ``/`` should
