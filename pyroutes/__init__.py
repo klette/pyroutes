@@ -49,8 +49,9 @@ def route(path):
         if path in __request__handlers__:
             raise ValueError("Tried to redefine handler for %s with %s" % \
                     (path, func))
-        __request__handlers__[path] = Route(func, path)
-        return func
+        route_instance = Route(func, path)
+        __request__handlers__[path] = route_instance
+        return route_instance
     return decorator
 
 def create_request_path(environ):
@@ -103,4 +104,4 @@ def application(environ, start_response):
     complete_path = '/%s' % '/'.join(request)
     handler = find_request_handler(complete_path)
 
-    return ErrorHandlerMiddleware(NotFoundMiddleware(handler(environ, start_response)))()
+    return ErrorHandlerMiddleware(NotFoundMiddleware(handler))(environ, start_response)

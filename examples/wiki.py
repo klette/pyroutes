@@ -9,7 +9,6 @@ from pyroutes import route, application, utils
 from pyroutes.http.response import Response, Redirect
 from pyroutes.template import TemplateRenderer
 
-
 renderer = TemplateRenderer("templates/base.xml")
 nodes = {}
 

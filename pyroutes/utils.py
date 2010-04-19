@@ -6,6 +6,7 @@ import time
 
 os.path = posixpath
 
+import pyroutes
 from pyroutes import settings
 from pyroutes.template import TemplateRenderer
 from pyroutes.http.response import Response, Redirect, Http403, Http404
