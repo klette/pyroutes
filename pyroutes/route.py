@@ -6,6 +6,10 @@ class Route(object):
         self.handler = handler
         self.path = path
 
+    @property
+    def __name__(self):
+        return self.handler.__name__
+
     def __call__(self, environ, start_response):
         safe_data = threading.local()
         safe_data.request = Request(environ)
