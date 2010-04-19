@@ -9,7 +9,8 @@ This module handles all the dispatching services for pyroutes.
 
 from pyroutes.http.response import HttpException, Http404, Http500
 from pyroutes.http.request import Request
-from pyroutes import settings
+from pyroutes.route import Route
+import pyroutes.settings as settings
 
 from wsgiref.util import shift_path_info
 import cgi
@@ -77,7 +78,7 @@ def route(path):
         if path in __request__handlers__:
             raise ValueError("Tried to redefine handler for %s with %s" % \
                     (path, func))
-        __request__handlers__[path] = func
+        __request__handlers__[path] = Route(func, path)
         return func
     return decorator
 
@@ -141,17 +142,7 @@ def application(environ, start_response):
         return [response.content]
 
     try:
-        req = Request(environ)
-        try:
-            response = handler(req)
-        except HttpException, exception:
-            response = exception.get_response(environ['PATH_INFO'])
-        headers = response.headers + response.cookies.cookie_headers
-        start_response(response.status_code, headers)
-        if isinstance(response.content, basestring):
-            return [response.content]
-        else:
-            return response.content
+        return handler(environ, start_response)()
     except Exception, exception:
         error = Http500()
         if settings.DEBUG:
