@@ -1,3 +1,5 @@
+import threading
+
 class Route(object):
 
     def __init__(self, handler, path):
@@ -5,12 +7,13 @@ class Route(object):
         self.path = path
 
     def __call__(self, environ, start_response):
-        request = Request(environ)
-        response = self.handler(request)
+        safe_data = threading.local()
+        safe_data.request = Request(environ)
+        safe_data.response = self.handler(request)
 
-        headers = response.headers + response.cookies.cookie_headers
-        start_response(response.status_code, headers)
-        if isinstance(response.content, basestring):
-            return [response.content]
+        safe_data.headers = safe_data.response.headers + safe_data.response.cookies.cookie_headers
+        start_response(safe_data.response.status_code, safe_data.headers)
+        if isinstance(safe_data.response.content, basestring):
+            return [safe_data.response.content]
         else:
-            return response.content
+            return safe_data.response.content
