@@ -115,13 +115,12 @@ def fileserver(request):
         }
 
         templaterenderer = TemplateRenderer(
-            settings.BUILTIN_BASE_TEMPLATE
+            settings.BUILTIN_BASE_TEMPLATE,
+            template_dir=settings.BUILTIN_TEMPLATES_DIR
         )
         return Response(
             templaterenderer.render(
-                os.path.join(settings.BUILTIN_TEMPLATES_DIR,
-                    'fileserver', 'directory_listing.xml'
-                ),
+                os.path.join('fileserver', 'directory_listing.xml'),
                 template_data
             ),
             headers
