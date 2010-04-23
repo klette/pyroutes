@@ -51,7 +51,7 @@ class TestExceptions(unittest.TestCase):
     def test_rendering_with_template_dir_defined(self):
         old_template_dir = settings.TEMPLATE_DIR
         try:
-            settings.TEMPLATE_DIR='/tmp'
+            settings.TEMPLATE_DIR='no_such_folder'
             exception = Http500
             content = '500 Server Error'
             self._test_http_exception(exception, 500, content)
