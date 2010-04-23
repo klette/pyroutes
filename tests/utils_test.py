@@ -20,10 +20,11 @@ class TestFileServer(unittest.TestCase):
         self.request = Request(self.request_env)
 
     def test_with_custom_settings(self):
-        settings.DEV_MEDIA_BASE = '..'
+        settings.DEV_MEDIA_BASE = '.'
         self.request.ENV['PATH_INFO'] = '/'
         response = utils.fileserver(self.request)
-        self.assertNotEqual(response.content.find('<a href="pyroutes/">pyroutes/</a>'), -1)
+        for dir in [d for d in os.listdir(os.path.abspath(os.path.curdir)) if os.path.isdir(d)]:
+            self.assertNotEqual(response.content.find('<a href="%s/">%s/</a>' % (dir, dir)), -1)
 
     def test_if_modified_since(self):
         modified = datetime.fromtimestamp(os.path.getmtime('pyroutes'))
