@@ -76,17 +76,8 @@ def fileserver(request):
 
     modified = datetime.datetime.fromtimestamp(os.path.getmtime(path))
     if 'HTTP_IF_MODIFIED_SINCE' in request.ENV:
-        # This is a hack for python2.4 compat
-        try:
-            asked_time = datetime.datetime(
-                *time.strptime(
-                    request.ENV['HTTP_IF_MODIFIED_SINCE'],
-                    "%a, %d %b %Y %H:%M:%S"
-                )[0:6]
-            )
-        except ValueError:
-            asked_time = None
-        if asked_time == modified:
+        modified = datetime.datetime.strftime(modified, "%a, %d %b %Y %H:%M:%S")
+        if request.ENV.get('HTTP_IF_MODIFIED_SINCE') == modified:
             return Response(status_code='304 Not Modified',
                     default_content_header=False)
     modified = datetime.datetime.strftime(modified, "%a, %d %b %Y %H:%M:%S")
