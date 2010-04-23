@@ -85,7 +85,7 @@ pygments_style = 'pastie'
 # The style sheet to use for HTML and HTML Help pages. A file of that name
 # must exist either in Sphinx' static/ path, or in one of the custom paths
 # given in html_static_path.
-html_style = 'nature.css'
+html_style = 'pyroutes.css'
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -147,7 +147,7 @@ html_use_smartypants = True
 htmlhelp_basename = 'pyroutesdoc'
 
 html_theme_path = ['_themes']
-html_theme = 'nature'
+html_theme = 'pyroutes'
 
 
 

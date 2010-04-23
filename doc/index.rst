@@ -11,7 +11,7 @@ developing small python web apps.
 If you're developing a larger project, I suggest you point your browser to http://djangoproject.com instead :-)
 
 
-Tutorials
+User manual
 =========
 
 Contents:
@@ -19,21 +19,11 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   installation
+   usage
    tutorial/basics
 
 
-Installation
-============
-
-pyroutes is available trough pypi and is easily installed by using either pip or easy_install.
-
-Installation with pip::
-
-  # pip install pyroutes
-
-Installation with easy_install::
-
-  # easy_install pyroutes
 
 Developer documentation
 =======================
