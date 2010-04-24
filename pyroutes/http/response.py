@@ -127,12 +127,10 @@ class HttpException(Exception):
             self.template = getattr(settings, self.template_variable)
         else:
             self.templaterenderer = TemplateRenderer(
-                settings.BUILTIN_BASE_TEMPLATE
+                settings.BUILTIN_BASE_TEMPLATE,
+                template_dir=settings.BUILTIN_TEMPLATES_DIR
             )
-            self.template = os.path.join(
-                settings.BUILTIN_TEMPLATES_DIR,
-                self.template_filename
-            )
+            self.template = self.template_filename
 
     def get_response(self, path, **kwargs):
         template_data = {
