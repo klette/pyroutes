@@ -31,4 +31,9 @@ class Route(object):
 
     def extract_url_params(self, environ):
         parts = environ.get('PATH_INFO','')[len(self.path)+1:].split('/')
-        return dict(((k,v or '') for k,v in map(None, *[self.maps or [], parts]) if k))
+        parameters = {}
+        if self.maps:
+            for key, value in map(None, *[self.maps, parts]):
+                if key:
+                    parameters[key] = value or ''
+        return parameters
