@@ -9,7 +9,7 @@ class Route(object):
         self.maps = None
 
         if len(handler.func_code.co_varnames) > 1:
-            self.maps = handler.func_code.co_varnames[1:]
+            self.maps = handler.func_code.co_varnames[1: handler.func_code.co_argcount]
 
     def __repr__(self):
         return u'Route(%s, %s)' % (self.handler.__name__, self.path)
