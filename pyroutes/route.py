@@ -3,9 +3,10 @@ from pyroutes.http.request import Request
 
 class Route(object):
 
-    def __init__(self, handler, path):
+    def __init__(self, handler, path, *args, **kwargs):
         self.handler = handler
         self.path = path
+        self.maps = args
 
     def __repr__(self):
         return u'Route(%s, %s)' % (self.handler.__name__, self.path)

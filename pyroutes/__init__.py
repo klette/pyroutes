@@ -15,7 +15,7 @@ from wsgiref.util import shift_path_info
 
 __request__handlers__ = {}
 
-def route(path):
+def route(path, *args, **kwargs):
     """
     Routes define which methods handles requests to certain paths, and are defined
     using the `@route`-decorator. The decorator takes one argument that defines which
@@ -49,7 +49,7 @@ def route(path):
         if path in __request__handlers__:
             raise ValueError("Tried to redefine handler for %s with %s" % \
                     (path, func))
-        route_instance = Route(func, path)
+        route_instance = Route(func, path, *args, **kwargs)
         __request__handlers__[path] = route_instance
         return route_instance
     return decorator
