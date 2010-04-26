@@ -16,10 +16,8 @@ nodes = {}
 def main(request):
     return Redirect('/show/index')
 
-@route('/edit', 'node')
-def edit(request):
-    node = request.params.get('node')
-
+@route('/edit')
+def edit(request,node):
     if 'new_node_data' in request.POST:
         nodes[node] = request.POST['new_node_data']
         return Redirect('/show/%s' % node)
@@ -31,9 +29,8 @@ def edit(request):
     }
     return Response(renderer.render("templates/edit.xml", template_data), status_code="404 Not Found")
 
-@route('/show', 'node')
-def show(request):
-    node = request.params.get('node')
+@route('/show')
+def show(request, node):
     node_contents = nodes.get(node)
 
     if node_contents is None:
