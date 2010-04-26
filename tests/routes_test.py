@@ -61,49 +61,43 @@ class TestRoute(unittest.TestCase):
 
     def testUrlParameters(self):
         #TODO: Make this test prettier.
-        @pyroutes.route('/archive', 'year','mon','day','type')
-        def archive(request):
-            return Response(simplejson.dumps({'params': request.params}))
+        @pyroutes.route('/archive')
+        def archive(request, year, month, day):
+            return Response(";".join((year, month, day)))
+        self.request_env['PATH_INFO'] = '/archive/2010/01/02'
+        def foo(x,y):
+            pass
+        req = "".join(pyroutes.application(self.request_env, foo))
+        params = req.split(";")
+        self.assertEquals(params[0], '2010')
+        self.assertEquals(params[1], '01')
+        self.assertEquals(params[2], '02')
+
+    def testUrlParametersTooManyParams(self):
+        #TODO: Make this test prettier.
+        @pyroutes.route('/archive')
+        def archive(request, year, month, day):
+            return Response(";".join((year, month, day)))
         self.request_env['PATH_INFO'] = '/archive/2010/01/02/atom'
         def foo(x,y):
             pass
         req = "".join(pyroutes.application(self.request_env, foo))
-        req = simplejson.loads(req)
-        self.assertTrue(req['params'])
-        self.assertEquals(req['params'].get('year'), '2010')
-        self.assertEquals(req['params'].get('mon'), '01')
-        self.assertEquals(req['params'].get('day'), '02')
-        self.assertEquals(req['params'].get('type'), 'atom')
+        params = req.split(";")
+        self.assertEquals(params[0], '2010')
+        self.assertEquals(params[1], '01')
+        self.assertEquals(params[2], '02')
 
     def testUrlParametersTooFewParams(self):
         #TODO: Make this test prettier.
-        @pyroutes.route('/archive', 'year','mon','day','type')
-        def archive(request):
-            return Response(simplejson.dumps({'params': request.params}))
+        @pyroutes.route('/archive')
+        def archive(request, year, month, day):
+            return Response(";".join((year, month, day)))
         self.request_env['PATH_INFO'] = '/archive/2010/01'
         def foo(x,y):
             pass
         req = "".join(pyroutes.application(self.request_env, foo))
-        req = simplejson.loads(req)
-        self.assertTrue(req['params'])
-        self.assertEquals(req['params'].get('year'), '2010')
-        self.assertEquals(req['params'].get('mon'), '01')
-        self.assertTrue('day' not in req['params'])
-        self.assertTrue('type' not in req['params'])
-    
-    def testUrlParametersTooManyParams(self):
-        #TODO: Make this test prettier.
-        @pyroutes.route('/archive', 'year','mon','day','type')
-        def archive(request):
-            return Response(simplejson.dumps({'params': request.params}))
-        self.request_env['PATH_INFO'] = '/archive/2010/01/02/atom/foo/bar'
-        def foo(x,y):
-            pass
-        req = "".join(pyroutes.application(self.request_env, foo))
-        req = simplejson.loads(req)
-        self.assertTrue(req['params'])
-        self.assertEquals(req['params'].get('year'), '2010')
-        self.assertEquals(req['params'].get('mon'), '01')
-        self.assertEquals(req['params'].get('day'), '02')
-        self.assertEquals(req['params'].get('type'), 'atom')
-        self.assertEquals(len(req['params'].keys()), 4)
+        params = req.split(";")
+        self.assertEquals(params[0], '2010')
+        self.assertEquals(params[1], '01')
+        self.assertEquals(params[2], '')
+

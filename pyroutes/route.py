@@ -3,10 +3,13 @@ from pyroutes.http.request import Request
 
 class Route(object):
 
-    def __init__(self, handler, path, *args, **kwargs):
+    def __init__(self, handler, path):
         self.handler = handler
         self.path = path
-        self.maps = args
+        self.maps = None
+
+        if len(handler.func_code.co_varnames) > 1:
+            self.maps = handler.func_code.co_varnames[1:]
 
     def __repr__(self):
         return u'Route(%s, %s)' % (self.handler.__name__, self.path)
@@ -18,9 +21,7 @@ class Route(object):
     def __call__(self, environ, start_response):
         safe_data = threading.local()
         safe_data.request = Request(environ)
-        safe_data.request.params = self.extract_url_params(environ)
-        safe_data.response = self.handler(safe_data.request)
-
+        safe_data.response = self.handler(safe_data.request, **self.extract_url_params(environ))
         safe_data.headers = safe_data.response.headers + safe_data.response.cookies.cookie_headers
         start_response(safe_data.response.status_code, safe_data.headers)
         if isinstance(safe_data.response.content, basestring):
@@ -30,4 +31,4 @@ class Route(object):
 
     def extract_url_params(self, environ):
         parts = environ.get('PATH_INFO','')[len(self.path)+1:].split('/')
-        return dict(zip(self.maps, parts))
+        return dict(((k,v or '') for k,v in map(None, *[self.maps, parts]) if k))
