@@ -7,7 +7,7 @@ BUILTIN_TEMPLATES_DIR = os.path.join(
     os.path.dirname(__file__),
     'default_templates'
 )
-BUILTIN_BASE_TEMPLATE = os.path.join(BUILTIN_TEMPLATES_DIR, 'base.xml')
+BUILTIN_BASE_TEMPLATE = 'base.xml'
 
 # This should have an override for development servers
 DEBUG = False

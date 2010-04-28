@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Release 0.2.2
+-------------
+
+- Fixed bug where setting the TEMPLATE_DIR-option in ``pyroutes_settings.py``
+  would cause the default 404,403 and 400 error pages to not work.
+- Fix bug where pyroutes would add two content-type headers to responses. (Thanks to Dalton Barreto)
+- Fixed IF_MODIFIED_SINCE handling in utils.fileserver on windows.
 
 Release 0.2.1
 -------------

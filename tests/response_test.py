@@ -37,16 +37,29 @@ class TestExceptions(unittest.TestCase):
         self.assertEqual(response.status_code, code_status)
 
     def _test_including_custom_templates(self, exception, code, code_status):
-        # First, test with defalt settings
-        self._test_http_exception(exception, code, code_status)
-        base = settings.BUILTIN_TEMPLATES_DIR
-        setattr(settings, 'TEMPLATE_%s' % code, settings.BUILTIN_BASE_TEMPLATE)
-        # Then, with a template without inheritence
-        self._test_http_exception(exception, code, code_status)
-        setattr(settings, 'TEMPLATE_%s' % code, path.join(base, '%d.xml' % code))
-        settings.CUSTOM_BASE_TEMPLATE = path.join(base, 'base.xml')
-        # Finally, with templates with inheritance
-        self._test_http_exception(exception, code, code_status)
+        try:
+            # First, test with defalt settings
+            self._test_http_exception(exception, code, code_status)
+            base = settings.BUILTIN_TEMPLATES_DIR
+            setattr(settings, 'TEMPLATE_%s' % code, path.join(base, settings.BUILTIN_BASE_TEMPLATE))
+            # Then, with a template without inheritence
+            self._test_http_exception(exception, code, code_status)
+            setattr(settings, 'TEMPLATE_%s' % code, path.join(base, '%d.xml' % code))
+            settings.CUSTOM_BASE_TEMPLATE = path.join(base, 'base.xml')
+            # Finally, with templates with inheritance
+            self._test_http_exception(exception, code, code_status)
+        finally:
+            delattr(settings, 'TEMPLATE_%s' % code)
+
+    def test_rendering_with_template_dir_defined(self):
+        old_template_dir = settings.TEMPLATE_DIR
+        try:
+            settings.TEMPLATE_DIR='no_such_folder'
+            exception = Http500
+            content = '500 Server Error'
+            self._test_http_exception(exception, 500, content)
+        finally:
+            settings.TEMPLATE_DIR = old_template_dir
 
     def test_403_exception(self):
         exception = Http403
