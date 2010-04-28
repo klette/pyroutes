@@ -12,7 +12,7 @@ If you're developing a larger project, I suggest you point your browser to http:
 
 
 User manual
-=========
+===========
 
 Contents:
 
@@ -21,27 +21,15 @@ Contents:
 
    installation
    usage
-   tutorial/basics
+   deployment
 
-
-
-Developer documentation
-=======================
+Release changelogs
+==================
 
 .. toctree::
    :maxdepth: 2
 
    changelog
-   cookies
-
-Deployment
-==========
-
-.. toctree::
-   :maxdepth: 1
-
-   deployment/apache
-
 
 Contributing
 ============
@@ -55,25 +43,5 @@ debian/ubuntu package name.
 
  * python-minimock, http://blog.ianbicking.org/minimock.html
  * python-coverage, http://nedbatchelder.com/code/coverage/
- * python-coverage-test-runner, http://liw.fi/coverage-test-runner/
- * python-unit, http://docs.python.org/library/unittest.html
-
-Module documentation
-====================
-
-.. toctree::
-   :maxdepth: 2
-
-   modules/pyroutes
-   modules/pyroutes.http.cookies
-   modules/pyroutes.http.response
-   modules/pyroutes.http.request
-   modules/pyroutes.utils
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+ * python-nose
 
