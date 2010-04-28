@@ -15,15 +15,16 @@
  
 body {
     font-family: 'Georgia', serif;
-    font-size: 17px;
-    background-color: #ddd;
-    color: #000;
+    font-size: 1.1em;
+    background-color: #555753;
+    color: #EEEEEC;
     margin: 0;
     padding: 0;
 }
 
 div.document {
-    background: #fafafa;
+    background: #D3D7CF;
+    background: #0F1E23;
 }
 
 div.documentwrapper {
@@ -40,8 +41,8 @@ hr {
 }
  
 div.body {
-    background-color: #ffffff;
-    color: #3E4349;
+    background-color: #2E3436;
+    color: #EEEEEC;
     padding: 0 30px 30px 30px;
     min-height: 34em;
 }
@@ -76,7 +77,7 @@ div.related ul {
 }
  
 div.related a {
-    color: #444;
+    color: #729FCF;
 }
  
 div.sphinxsidebar {
@@ -97,7 +98,7 @@ div.sphinxsidebarwrapper p.logo {
 div.sphinxsidebar h3,
 div.sphinxsidebar h4 {
     font-family: 'Garamond', 'Georgia', serif;
-    color: #222;
+    color: white;
     font-size: 24px;
     font-weight: normal;
     margin: 20px 0 5px 0;
@@ -109,22 +110,22 @@ div.sphinxsidebar h4 {
 }
  
 div.sphinxsidebar h3 a {
-    color: #444;
+    color: #e6e6e6;
 }
  
 div.sphinxsidebar p {
-    color: #555;
+    color: #e6e6e6;
     margin: 10px 0;
 }
  
 div.sphinxsidebar ul {
     margin: 10px 0;
     padding: 0;
-    color: #000;
+    color: #e6e6e6;
 }
  
 div.sphinxsidebar a {
-    color: #444;
+    color: #e6e6e6;
     text-decoration: none;
 }
 
@@ -141,12 +142,12 @@ div.sphinxsidebar input {
 /* -- body styles ----------------------------------------------------------- */
  
 a {
-    color: #004B6B;
+    color: #729FCF;
     text-decoration: underline;
 }
  
 a:hover {
-    color: #6D4100;
+    color: #3465A4;
     text-decoration: underline;
 }
 
@@ -174,7 +175,7 @@ div.body h5 { font-size: 100%; }
 div.body h6 { font-size: 100%; }
  
 a.headerlink {
-    color: white;
+    color: #3465A4;
     padding: 0 4px;
     text-decoration: none;
 }
@@ -210,16 +211,18 @@ div.admonition p.last {
 }
 
 div.highlight{
-    background-color: white;
+    background-color: #333;
 }
 
 dt:target, .highlight {
-    background: #FAF3E8;
+    background: #333;
 }
 
 div.note {
     background-color: #eee;
     border: 1px solid #ccc;
+    margin: 0.7em;
+    color: #333;
 }
  
 div.seealso {
@@ -234,6 +237,8 @@ div.topic {
 div.warning {
     background-color: #ffe4e4;
     border: 1px solid #f66;
+    margin: 0.7em;
+    color: #333;
 }
  
 p.admonition-title {
@@ -245,7 +250,8 @@ p.admonition-title:after {
 }
 
 pre, tt {
-    font-family: 'Consolas', 'Menlo', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+    font-family: 'terminus', 'Consolas', 'Menlo', 'Deja Vu Sans Mono',
+    'Bitstream Vera Sans Mono', monospace;
     font-size: 0.9em;
 }
 
@@ -313,10 +319,11 @@ dl dd {
 }
  
 pre {
-    background: #eee;
+    background: #333;
     padding: 7px 30px;
-    margin: 15px -30px;
+    margin: 0.7em;
     line-height: 1.3em;
+    border: 1px solid #e6e6e6;
 }
 
 dl pre {
@@ -330,15 +337,17 @@ dl dl pre {
 }
  
 tt {
-    background-color: #ecf0f3;
-    color: #222;
+    background-color: #333;
+    color: #729FCF;
     /* padding: 1px 2px; */
 }
 
 tt.xref, a tt {
-    background-color: #FBFBFB;
+/*    background-color: #FBFBFB;
+*/
 }
 
 a:hover tt {
     background: #EEE;
 }
+
