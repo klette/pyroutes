@@ -158,6 +158,26 @@ Pyroutes gives you easy access to the POST, GET and FILES posted to your request
 .. note:: If multiple fields have the same name, the value in the respective
           dicts are a list of the given values.
 
+Sending responses to the user
+-----------------------------
+
+Every route must return an instance of ``pyroutes.http.response.Response``, or
+one of it's subclasses. The former defaults to sending a
+``text/html``-response with status code ``200 OK``.
+
+We have the follow built-in responses::
+
+    Response(content=None, headers=None, status_code='200 OK', default_content_header=True)
+    Redirect(location)
+
+content may be any string or iterable. This means you can do something like this:::
+
+    @route('/pdf')
+    def pdf(request):
+        pdf = open("pdf", "r")
+        return Response(pdf, [('Content-Type', 'application/pdf')], default_content_header=False)
+
+
 
 C is for cookie..
 -----------------
