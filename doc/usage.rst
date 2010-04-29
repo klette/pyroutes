@@ -141,8 +141,11 @@ declaration.
 Accessing request data
 ----------------------
 
-One common operation in developing web applications is doing stuff with user data.
-Pyroutes gives you easy access to the POST, GET and FILES posted to your request handler.::
+One common operation in developing web applications is doing stuff with user
+data.  Pyroutes gives you easy access to the POST, GET and FILES posted to your
+request handler.
+
+::
 
     @route('/newpost')
     def new_post(request):
@@ -167,15 +170,20 @@ one of it's subclasses. The former defaults to sending a
 
 We have the follow built-in responses::
 
-    Response(content=None, headers=None, status_code='200 OK', default_content_header=True)
+    Response(content=None, headers=None, status_code='200 OK',
+    	default_content_header=True)
+
     Redirect(location)
 
-content may be any string or iterable. This means you can do something like this:::
+content may be any string or iterable. This means you can do something like this::
 
     @route('/pdf')
     def pdf(request):
-        pdf = open("pdf", "r")
-        return Response(pdf, [('Content-Type', 'application/pdf')], default_content_header=False)
+        buffer = cStringIO.StringIO()
+        with open("mypdf.pdf", "rb") as pdf_file:
+            buffer.write(pdf_file.read())
+        return Response(buffer, [('Content-Type', 'application/pdf')],
+            default_content_header=False)
 
 
 
