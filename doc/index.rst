@@ -23,7 +23,15 @@ Contents:
    usage
    deployment
 
-Release changelogs
+Appendices
+==========
+
+.. toctree::
+    :maxdepth: 2
+
+    appendix/xmltemplate
+
+Release change logs
 ==================
 
 .. toctree::

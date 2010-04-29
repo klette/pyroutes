@@ -239,6 +239,4 @@ current task.::
     def index(request):
     	return Response(tmpl.render('index.xml', {}))
 
-You can read more about the template system in TODO: Write node about templates.
-
-
+For more information about XML-Template, see :ref:`xml_template_intro`.
