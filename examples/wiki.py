@@ -9,7 +9,6 @@ from pyroutes import route, application, utils
 from pyroutes.http.response import Response, Redirect
 from pyroutes.template import TemplateRenderer
 
-
 renderer = TemplateRenderer("templates/base.xml")
 nodes = {}
 
@@ -18,9 +17,7 @@ def main(request):
     return Redirect('/show/index')
 
 @route('/edit')
-def edit(request):
-    node = request.ENV['PATH_INFO'][6:]
-
+def edit(request,node):
     if 'new_node_data' in request.POST:
         nodes[node] = request.POST['new_node_data']
         return Redirect('/show/%s' % node)
@@ -33,8 +30,7 @@ def edit(request):
     return Response(renderer.render("templates/edit.xml", template_data), status_code="404 Not Found")
 
 @route('/show')
-def show(request):
-    node = request.ENV['PATH_INFO'][6:]
+def show(request, node):
     node_contents = nodes.get(node)
 
     if node_contents is None:

@@ -25,6 +25,7 @@ class Request(object):
         self.extract_post_data(environment)
 
         self.COOKIES = RequestCookieHandler(environment)
+        self.params = {}
 
 
     def __repr__(self):

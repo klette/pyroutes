@@ -7,19 +7,15 @@ Main pyroutes module
 This module handles all the dispatching services for pyroutes.
 """
 
-from pyroutes.http.response import HttpException, Http404, Http500
-from pyroutes.http.request import Request
-from pyroutes import settings
+from pyroutes.route import Route
+from pyroutes.middleware.errors import *
+import pyroutes.settings as settings
 
 from wsgiref.util import shift_path_info
-import cgi
-import os
-import sys
-import traceback
 
 __request__handlers__ = {}
 
-def route(path):
+def route(path, *args, **kwargs):
     """
     Routes define which methods handles requests to certain paths, and are defined
     using the `@route`-decorator. The decorator takes one argument that defines which
@@ -43,31 +39,7 @@ def route(path):
     One property of the routes are that matches are done on an best effort basis, starting
     from the top of the tree and going down. This results in handler being delt request for
     their defined path and every path over it. This is true for all paths except the
-    root-handler ('/'). Let's have a look at some examples. ::
-
-        In [7]: @pyroutes.route('/')
-            ...: def foo(req):
-            ...:     return None
-            ...:
-
-        In [8]: pyroutes.find_request_handler('/')
-        Out[8]: <function foo at 0x2688de8>
-
-        In [9]: pyroutes.find_request_handler('/foobar')
-
-        In [10]: @pyroutes.route('/foo')
-            ...: def bar(req):
-            ...:     return None
-            ...:
-
-        In [11]: pyroutes.find_request_handler('/foo/')
-        Out[11]: <function bar at 0x27881b8>
-
-        In [12]: pyroutes.find_request_handler('/foo/bar')
-        Out[12]: <function bar at 0x27881b8>
-
-        In [13]: pyroutes.find_request_handler('/foo/bar/baz')
-        Out[13]: <function bar at 0x27881b8>
+    root-handler ('/').
     """
 
     def decorator(func):
@@ -77,8 +49,9 @@ def route(path):
         if path in __request__handlers__:
             raise ValueError("Tried to redefine handler for %s with %s" % \
                     (path, func))
-        __request__handlers__[path] = func
-        return func
+        route_instance = Route(func, path, *args, **kwargs)
+        __request__handlers__[path] = route_instance
+        return route_instance
     return decorator
 
 def create_request_path(environ):
@@ -130,41 +103,5 @@ def application(environ, start_response):
     request = create_request_path(environ.copy())
     complete_path = '/%s' % '/'.join(request)
     handler = find_request_handler(complete_path)
-    if not handler:
-        error = Http404()
-        if settings.DEBUG:
-            response = error.get_response(environ['PATH_INFO'],
-                    details="Debug: No handler for path %s" % complete_path)
-        else:
-            response = error.get_response(environ['PATH_INFO'])
-        start_response(response.status_code, response.headers)
-        return [response.content]
 
-    try:
-        req = Request(environ)
-        try:
-            response = handler(req)
-        except HttpException, exception:
-            response = exception.get_response(environ['PATH_INFO'])
-        headers = response.headers + response.cookies.cookie_headers
-        start_response(response.status_code, headers)
-        if isinstance(response.content, basestring):
-            return [response.content]
-        else:
-            return response.content
-    except Exception, exception:
-        error = Http500()
-        if settings.DEBUG:
-            exception_type, exception_value, exception_trace = sys.exc_info()
-            trace = "".join(traceback.format_exception(exception_type,
-                                                    exception_value,
-                                                    exception_trace))
-            response = error.get_response(
-                    environ['PATH_INFO'],
-                    description="%s: %s" % (exception.__class__.__name__,
-                                            exception),
-                    traceback=trace)
-        else:
-            response = error.get_response(environ['PATH_INFO'])
-        start_response(response.status_code, response.headers)
-        return [response.content]
+    return ErrorHandlerMiddleware(NotFoundMiddleware(handler))(environ, start_response)
