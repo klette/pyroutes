@@ -36,7 +36,9 @@ class Route(object):
         parts = environ.get('PATH_INFO','')[len(self.path)+1:].split('/')
         parameters = {}
         if self.maps:
-            for key, value in map(None, *[self.maps, parts]):
+            parts.extend((len(self.maps)-len(parts)-len(self.handler.func_defaults))*[None])
+            for key, value in zip(self.maps, parts + list(self.handler.func_defaults)):
                 if key:
                     parameters[key] = value or ''
+
         return parameters
