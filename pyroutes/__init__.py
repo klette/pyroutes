@@ -110,7 +110,7 @@ def application(environ, start_response):
         module_name = full_path[:last_dot]
         class_name = full_path[last_dot + 1:]
 
-        module = __import__(module_name)
+        module = __import__(module_name, globals(), locals(), [class_name], -1)
         middleware = getattr(module, class_name)
 
         chain = middleware(chain)
