@@ -54,20 +54,6 @@ def route(path, *args, **kwargs):
         return route_instance
     return decorator
 
-def create_request_path(environ):
-    """
-    Returns a tuple consisting of the individual request parts
-    """
-    path = shift_path_info(environ)
-    request = []
-    if not path:
-        request = ['/']
-    else:
-        while path:
-            request.append(path)
-            path = shift_path_info(environ)
-    return request
-
 def find_request_handler(current_path):
     """
     Locates the handler for the specified path. Return None if not found.
@@ -100,8 +86,6 @@ def application(environ, start_response):
     dispatches it if found. Returns 404 if not found.
     """
 
-    request = create_request_path(environ.copy())
-    complete_path = '/%s' % '/'.join(request)
-    handler = find_request_handler(complete_path)
+    handler = find_request_handler(environ['PATH_INFO'])
 
     return ErrorHandlerMiddleware(NotFoundMiddleware(handler))(environ, start_response)
