@@ -1,12 +1,9 @@
 import datetime
 import mimetypes
-import os
 import posixpath
-import time
-
+import os
 os.path = posixpath
 
-import pyroutes
 from pyroutes import settings
 from pyroutes.template import TemplateRenderer
 from pyroutes.http.response import Response, Redirect, Http403, Http404
@@ -93,11 +90,12 @@ def fileserver(request):
 
         listing = []
         files = []
-        for file in sorted(os.listdir(path)):
-            if os.path.isdir(os.path.join(path, file)):
-                listing.append({'li': {'a': file + "/", 'a/href': file + "/"}})
+        for entry in sorted(os.listdir(path)):
+            if os.path.isdir(os.path.join(path, entry)):
+                listing.append({'li': 
+                    {'a': entry + "/", 'a/href': entry + "/"}})
             else:
-                files.append({'li': {'a': file, 'a/href': file}})
+                files.append({'li': {'a': entry, 'a/href': entry}})
         # Done to list folders before files
         listing += files
 
@@ -119,10 +117,10 @@ def fileserver(request):
         )
 
     contenttype = mimetypes.guess_type(path)[0] or "application/octet-stream"
-    file = FileWrapper(open(path))
+    file_to_send = FileWrapper(open(path))
     size = os.path.getsize(path)
 
     headers.append(('Content-Type', contenttype))
     headers.append(('Content-Length', str(size)))
 
-    return Response(file, headers=headers)
+    return Response(file_to_send, headers=headers)

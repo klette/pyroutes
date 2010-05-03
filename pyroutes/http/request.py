@@ -91,7 +91,8 @@ class Request(object):
             if isinstance(value, tuple) and value[1] and \
               (isinstance(value[1], file) or  hasattr(value[1], 'read')):
 
-                # If an existing value exists for this key, convert to list-result
+                # If an existing value exists for this key, convert to
+                # list-result
                 if key in self.FILES and not isinstance(self.FILES[key], list):
                     self.FILES[key] = [self.FILES[key]]
 
@@ -100,7 +101,8 @@ class Request(object):
                 else:
                     self.FILES[key] = value
             elif isinstance(value, basestring):
-                # If an existing value exists for this key, convert to list-result
+                # If an existing value exists for this key, convert to
+                # list-result
                 if key in self.POST and not isinstance(self.POST[key], list):
                     self.POST[key] = [self.POST[key]]
 

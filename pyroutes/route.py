@@ -9,7 +9,8 @@ class Route(object):
         self.maps = None
 
         if len(handler.func_code.co_varnames) > 1:
-            self.maps = handler.func_code.co_varnames[1: handler.func_code.co_argcount]
+            self.maps = \
+                handler.func_code.co_varnames[1:handler.func_code.co_argcount]
 
     def __repr__(self):
         return u'Route(%s, %s)' % (self.handler.__name__, self.path)
@@ -21,8 +22,10 @@ class Route(object):
     def __call__(self, environ, start_response):
         safe_data = threading.local()
         safe_data.request = Request(environ)
-        safe_data.response = self.handler(safe_data.request, **self.extract_url_params(environ))
-        safe_data.headers = safe_data.response.headers + safe_data.response.cookies.cookie_headers
+        safe_data.response = self.handler(safe_data.request, 
+            **self.extract_url_params(environ))
+        safe_data.headers = safe_data.response.headers
+        safe_data.headers += safe_data.response.cookies.cookie_headers
         start_response(safe_data.response.status_code, safe_data.headers)
         if isinstance(safe_data.response.content, basestring):
             return [safe_data.response.content]
