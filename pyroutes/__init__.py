@@ -104,4 +104,16 @@ def application(environ, start_response):
     complete_path = '/%s' % '/'.join(request)
     handler = find_request_handler(complete_path)
 
-    return ErrorHandlerMiddleware(NotFoundMiddleware(handler))(environ, start_response)
+    chain = handler
+    for full_path in settings.MIDDLEWARE:
+        last_dot = full_path.rfind(".")
+        module_name = full_path[:last_dot]
+        class_name = full_path[last_dot + 1:]
+
+        module = __import__(module_name)
+        middleware = getattr(module, class_name)
+
+        chain = middleware(chain)
+
+    return chain(environ, start_response)
+#    return ErrorHandlerMiddleware(NotFoundMiddleware(handler))(environ, start_response)

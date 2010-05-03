@@ -21,6 +21,12 @@ SECRET_KEY = 'asdfnaj2308sydfahli37flas36al9gaiufw'
 # Location for templates. Used by TemplateRenderer
 TEMPLATE_DIR = None # /foo/bar/templates/
 
+# Middleware
+MIDDLEWARE = [
+    'pyroutes.middleware.errors.NotFoundMiddleware',
+    'pyroutes.middleware.errors.ErrorHandlerMiddleware',
+]
+
 # Attempt to get custom settings. Not obligatory.
 try:
     from pyroutes_settings import *
