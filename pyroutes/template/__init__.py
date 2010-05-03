@@ -3,22 +3,24 @@
 """
 """
 import os
-import xmltemplate
+from pyroutes.template import xmltemplate
 from pyroutes import settings
 
 class TemplateRenderer(object):
     """
     A small wrapper for doing basic template includes with xml-template
 
-    The constructor takes two arguments, a base template and an inclusion parameter.
-    The base template must have a <t:contents /> node in it which will be replaced with
-    the contents of the included template. The contents identifier can
-    be overriden with the second constructor argument, `inclusion_param`.
-    If None is given as the base template, the `render`-method will not try
-    to do any inclusion and only render the given template.
+    The constructor takes two arguments, a base template and an inclusion
+    parameter.  The base template must have a <t:contents /> node in it which
+    will be replaced with the contents of the included template. The contents
+    identifier can be overriden with the second constructor argument,
+    `inclusion_param`.  If None is given as the base template, the
+    `render`-method will not try to do any inclusion and only render the given
+    template.
     """
 
-    def __init__(self, base_template=None, inclusion_param='contents', template_dir=None):
+    def __init__(self, base_template=None, inclusion_param='contents',
+            template_dir=None):
         """
         """
         self.base_template = base_template
@@ -34,9 +36,12 @@ class TemplateRenderer(object):
         """
         """
         if self.base_template:
-            doc = xmltemplate.process_file(os.path.join(self.template_dir, template), data, False)
+            doc = xmltemplate.process_file(
+                os.path.join(self.template_dir, template), data, False)
             data[self.inclusion_param] = doc
-            master = xmltemplate.process_file(os.path.join(self.template_dir, self.base_template), data);
+            master = xmltemplate.process_file(
+                os.path.join(self.template_dir, self.base_template), data);
         else:
-            master = xmltemplate.process_file(os.path.join(self.template_dir, template), data)
+            master = xmltemplate.process_file(
+                os.path.join(self.template_dir, template), data)
         return master.toxml().encode("utf-8")

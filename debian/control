@@ -1,0 +1,15 @@
+Source: python-pyroutes
+Section: python
+Priority: optional
+Maintainer: Kristian Klette <klette@samfundet.no>
+Build-Depends: debhelper (>= 7)
+Build-Depends-Indep: python-support
+Standards-Version: 3.8.3
+Homepage: http://www.pyroutes.com
+Vcs-Git: git://github.com/klette/pyroutes.git
+Vcs-Browser: http://github.com/klette/pyroutes
+
+Package: python-pyroutes
+Architecture: all
+Depends: ${misc:Depends},  ${python:Depends}, python-wsgiref
+Description: Small python web framework built for WSGI.

@@ -38,13 +38,6 @@ class TestRoute(unittest.TestCase):
         self.assertRaises(ValueError, self.createAnonRoute, '/')
         self.assertTrue(len(pyroutes.__request__handlers__) == 1)
 
-
-    def testCreateRequestPath(self):
-        self.assertEquals(['foo', 'bar'], pyroutes.create_request_path({'PATH_INFO': '/foo/bar'}))
-        self.assertEquals(['foo', 'bar'], pyroutes.create_request_path({'PATH_INFO': '/foo/bar/'}))
-        self.assertEquals(['/'], pyroutes.create_request_path({'PATH_INFO': '/'}))
-        self.assertEquals(['/'], pyroutes.create_request_path({'PATH_INFO': '//'}))
-
     def testFindRequestHandler(self):
         self.createAnonRoute('/')
         self.createAnonRoute('/bar')

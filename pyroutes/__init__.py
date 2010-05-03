@@ -36,10 +36,10 @@ def route(path, *args, **kwargs):
 
     **How routes are matched to paths.**
 
-    One property of the routes are that matches are done on an best effort basis, starting
-    from the top of the tree and going down. This results in handler being delt request for
-    their defined path and every path over it. This is true for all paths except the
-    root-handler ('/').
+    One property of the routes are that matches are done on an best effort
+    basis, starting from the top of the tree and going down. This results in
+    handler being delt request for their defined path and every path over it.
+    This is true for all paths except the root-handler ('/').
     """
 
     def decorator(func):
@@ -53,20 +53,6 @@ def route(path, *args, **kwargs):
         __request__handlers__[path] = route_instance
         return route_instance
     return decorator
-
-def create_request_path(environ):
-    """
-    Returns a tuple consisting of the individual request parts
-    """
-    path = shift_path_info(environ)
-    request = []
-    if not path:
-        request = ['/']
-    else:
-        while path:
-            request.append(path)
-            path = shift_path_info(environ)
-    return request
 
 def find_request_handler(current_path):
     """
@@ -100,8 +86,9 @@ def application(environ, start_response):
     dispatches it if found. Returns 404 if not found.
     """
 
-    request = create_request_path(environ.copy())
-    complete_path = '/%s' % '/'.join(request)
-    handler = find_request_handler(complete_path)
+    handler = find_request_handler(environ['PATH_INFO'])
 
-    return ErrorHandlerMiddleware(NotFoundMiddleware(handler))(environ, start_response)
+    return ErrorHandlerMiddleware(
+             NotFoundMiddleware(
+               handler)
+        )(environ, start_response)

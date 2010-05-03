@@ -6,8 +6,6 @@ http.py
 A collection of Response classes for pyroutes
 """
 
-import os
-
 from pyroutes.template import TemplateRenderer
 from pyroutes.http.cookies import ResponseCookieHandler
 from pyroutes import settings
@@ -75,7 +73,7 @@ class Response(object):
 
         header_names = []
         if headers:
-            header_names = map(lambda h: h[0], headers);
+            header_names = map(lambda h: h[0], headers)
 
         self.headers = []
         if default_content_header and 'Content-Type' not in header_names:
