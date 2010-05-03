@@ -116,4 +116,3 @@ def application(environ, start_response):
         chain = middleware(chain)
 
     return chain(environ, start_response)
-#    return ErrorHandlerMiddleware(NotFoundMiddleware(handler))(environ, start_response)
