@@ -5,8 +5,8 @@ from distutils.core import setup
 import os
 
 setup(
-    name = "pyroutes-daily",
-    version = "0.2.3-rc1",
+    name = "pyroutes",
+    version = "0.3.0",
     url = 'http://github.com/klette/pyroutes',
     license = 'GPLv2',
     description = "A small WSGI wrapper for creating small python web apps",
