@@ -217,6 +217,9 @@ div.highlight{
 dt:target, .highlight {
     background: #333;
 }
+dd .highlight {
+    margin-left: 80px;
+}
 
 div.note {
     background-color: #eee;
