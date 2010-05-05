@@ -151,6 +151,8 @@ request handler.
     def new_post(request):
         if 'image' in request.FILES:
 	    # Do stuff with image
+	    filename = request.FILES['image'][0]
+	    data = request.FILES['image'][1].read()
 	    pass
 	category = request.GET.get('category','default')
 	title = request.POST.get('title', 'None')

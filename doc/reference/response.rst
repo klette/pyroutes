@@ -42,8 +42,7 @@ Attributes
 
    A dictionary of the given files. As with the ``POST`` variables,
    multiple keys with the same name will result in a list.
-   The values are standard python file objects, and should be
-   treated as such.
+   The values are tuples consisting of the filename and a file-like object.
 
 .. attribute:: Request.COOKIES
 
