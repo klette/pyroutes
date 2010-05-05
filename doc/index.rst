@@ -22,7 +22,18 @@ Contents:
    installation
    usage
    deployment
-   reference
+
+Reference documentation
+=======================
+
+.. toctree::
+   :maxdepth: 2
+
+   reference/pyroutes
+   reference/response
+   reference/template
+   reference/utils
+   reference/settings
 
 Appendices
 ==========
