@@ -22,6 +22,7 @@ Contents:
    installation
    usage
    deployment
+   reference
 
 Appendices
 ==========
