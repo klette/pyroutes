@@ -10,10 +10,13 @@ This module handles all the dispatching services for pyroutes.
 from pyroutes.route import Route
 from pyroutes.middleware.errors import *
 import pyroutes.settings as settings
+from pyroutes.dispatcher import Dispatcher
 
 from wsgiref.util import shift_path_info
 
 __request__handlers__ = {}
+
+dispatcher = Dispatcher()
 
 def route(path, *args, **kwargs):
     """
@@ -54,20 +57,6 @@ def route(path, *args, **kwargs):
         return route_instance
     return decorator
 
-def find_request_handler(current_path):
-    """
-    Locates the handler for the specified path. Return None if not found.
-    """
-    handler = None
-    while handler is None:
-        if current_path in __request__handlers__:
-            handler = __request__handlers__[current_path]
-            break
-        current_path = current_path[:current_path.rfind("/")]
-        if not current_path:
-            return None
-    return handler
-
 def reverse_url(handler_name):
     """
     Returns the path for a handler.
@@ -82,21 +71,7 @@ def reverse_url(handler_name):
 
 def application(environ, start_response):
     """
-    Searches for a handler for a certain request and
-    dispatches it if found. Returns 404 if not found.
     """
+    return dispatcher.dispatch(environ, start_response)
 
-    handler = find_request_handler(environ['PATH_INFO'])
 
-    chain = handler
-    for full_path in settings.MIDDLEWARE:
-        last_dot = full_path.rfind(".")
-        module_name = full_path[:last_dot]
-        class_name = full_path[last_dot + 1:]
-
-        module = __import__(module_name, globals(), locals(), [class_name])
-        middleware = getattr(module, class_name)
-
-        chain = middleware(chain)
-
-    return chain(environ, start_response)

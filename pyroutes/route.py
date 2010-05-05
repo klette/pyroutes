@@ -19,18 +19,8 @@ class Route(object):
     def __name__(self):
         return self.handler.__name__
 
-    def __call__(self, environ, start_response):
-        safe_data = threading.local()
-        safe_data.request = Request(environ)
-        safe_data.response = self.handler(safe_data.request, 
-            **self.extract_url_params(environ))
-        safe_data.headers = safe_data.response.headers
-        safe_data.headers += safe_data.response.cookies.cookie_headers
-        start_response(safe_data.response.status_code, safe_data.headers)
-        if isinstance(safe_data.response.content, basestring):
-            return [safe_data.response.content]
-        else:
-            return safe_data.response.content
+    def __call__(self, request):
+        return self.handler(request, **self.extract_url_params(request.ENV))
 
     def extract_url_params(self, environ):
         parts = environ.get('PATH_INFO','')[len(self.path)+1:].split('/')
