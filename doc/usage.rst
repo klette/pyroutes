@@ -112,8 +112,6 @@ Now refresh the page with the error, and you'll get a lot more information to wo
 Using URLs as data
 ------------------
 
-.. warning:: This is only available in development version. 0.3.0 is not released yet.
-
 As of Pyroutes >= 0.3.0 using URLs as data for your handler really simple.
 Let's create an ``archive`` route as an example::
 

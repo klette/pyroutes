@@ -38,15 +38,15 @@ master_doc = 'index'
 
 # General substitutions.
 project = 'pyroutes'
-copyright = '2009, Kristian Klette'
+copyright = '2009-2010, Kristian Klette'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = 'development branch'
+version = '0.3.0'
 # The full version, including alpha/beta/rc tags.
-release = 'development branch'
+release = '0.3.0'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
