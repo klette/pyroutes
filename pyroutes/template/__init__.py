@@ -22,6 +22,10 @@ class TemplateRenderer(object):
     def __init__(self, base_template=None, inclusion_param='contents',
             template_dir=None):
         """
+        Takes three parameters.
+        - ``base_template``: The base template. Usually with the html headers, css, etc.
+        - ``inclusion_param``: The <t:id=".."/> id which will be replaced with the content of the child template.
+        - ``template_dir``: Override the ``TEMPLATE_DIR`` setting from pyroutes.settings.
         """
         self.base_template = base_template
         self.inclusion_param = inclusion_param
@@ -34,6 +38,9 @@ class TemplateRenderer(object):
 
     def render(self, template, data):
         """
+        Return the X(HT)ML from based on the base template, with the given
+        template parameter as the child template, and the data parameter passed
+        to the templates.
         """
         if self.base_template:
             doc = xmltemplate.process_file(
