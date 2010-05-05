@@ -49,7 +49,6 @@ documentation, unittest or simply breaks the existing tests. Bugfixes to the tes
 For the tests to run, you will need some extra packages. Names are by
 debian/ubuntu package name.
 
- * python-minimock, http://blog.ianbicking.org/minimock.html
- * python-coverage, http://nedbatchelder.com/code/coverage/
+ * python-coverage
  * python-nose
 
