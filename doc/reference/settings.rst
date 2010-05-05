@@ -1,4 +1,4 @@
-.. _ref-pyroutes-settings
+.. _pyroutes-settings:
 
 Settings
 ========
@@ -8,7 +8,6 @@ Pyroutes enables you to have per project settings by overriding
 ``PYTHON_PATH``.
 
 The following settings are defined and can be overridden:
-
 
 .. attribute:: DEBUG
    
@@ -48,3 +47,4 @@ The following settings are defined and can be overridden:
 
    **Default**: ``['pyroutes.middleware.errors.NotFoundMiddleware',
    'pyroutes.middleware.errors.ErrorHandlerMiddleware',]``
+

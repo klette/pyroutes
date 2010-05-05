@@ -22,6 +22,7 @@ Contents:
    installation
    usage
    deployment
+   middleware
 
 Reference documentation
 =======================
