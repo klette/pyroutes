@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Release 0.3.0
+-------------
+
+- Added support for autopopulating handler method with data from the URL.
+- Added middleware support
+- New and improved documentation
+- Lots of cleanups on the code.
+
+
 Release 0.2.2
 -------------
 

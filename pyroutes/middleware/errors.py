@@ -10,39 +10,41 @@ class NotFoundMiddleware(object):
         self.d = threading.local()
         self.d.passthrough = passthrough
 
-    def __call__(self, environ, start_response):
+    def __call__(self, request):
         # If we got a handler, run it.
         if self.d.passthrough:
-            return self.d.passthrough(environ, start_response)
+            return self.d.passthrough(request)
 
         error = Http404()
-        response = error.get_response(environ['PATH_INFO'])
+        return error.get_response(request.ENV['PATH_INFO'])
 
-        start_response(response.status_code, response.headers)
-        return [response.content]
 
 class ErrorHandlerMiddleware(object):
     def __init__(self, passthrough):
         self.d = threading.local()
         self.d.passthrough = passthrough
+        self.d.response = None
 
-    def __call__(self, environ, start_response):
+    def __call__(self, request):
         try:
-            return self.d.passthrough(environ, start_response)
+            self.d.response = self.d.passthrough(request)
         except Exception, exception:
+            print exception
             error = Http500()
             if settings.DEBUG:
                 exception_type, exception_value, exception_trace = sys.exc_info()
                 trace = "".join(traceback.format_exception(exception_type,
                                                     exception_value,
                                                     exception_trace))
-                response = error.get_response(
-                        environ['PATH_INFO'],
+                self.d.response = error.get_response(
+                        request.ENV['PATH_INFO'],
                         description="%s: %s" % (exception.__class__.__name__,
                                             exception),
                         traceback=trace)
             else:
-                response = error.get_response(environ['PATH_INFO'])
+                self.d.response = error.get_response(request.ENV['PATH_INFO'])
         
-        start_response(response.status_code, response.headers)
-        return [response.content]
+        return self.d.response
+
+class HandlerDidNotReturnReponseObjectException(Exception):
+    pass
