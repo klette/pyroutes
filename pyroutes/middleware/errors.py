@@ -1,4 +1,3 @@
-import threading
 import sys
 import traceback
 
@@ -7,13 +6,12 @@ from pyroutes.http.response import Http404, Http500
 
 class NotFoundMiddleware(object):
     def __init__(self, passthrough):
-        self.d = threading.local()
-        self.d.passthrough = passthrough
+        self.passthrough = passthrough
 
     def __call__(self, request):
         # If we got a handler, run it.
-        if self.d.passthrough:
-            return self.d.passthrough(request)
+        if self.passthrough:
+            return self.passthrough(request)
 
         error = Http404()
         return error.get_response(request.ENV['PATH_INFO'])
@@ -21,13 +19,12 @@ class NotFoundMiddleware(object):
 
 class ErrorHandlerMiddleware(object):
     def __init__(self, passthrough):
-        self.d = threading.local()
-        self.d.passthrough = passthrough
-        self.d.response = None
+        self.passthrough = passthrough
+        self.response = None
 
     def __call__(self, request):
         try:
-            self.d.response = self.d.passthrough(request)
+            self.response = self.passthrough(request)
         except Exception, exception:
             error = Http500()
             if settings.DEBUG:
@@ -35,15 +32,15 @@ class ErrorHandlerMiddleware(object):
                 trace = "".join(traceback.format_exception(exception_type,
                                                     exception_value,
                                                     exception_trace))
-                self.d.response = error.get_response(
+                self.response = error.get_response(
                         request.ENV['PATH_INFO'],
                         description="%s: %s" % (exception.__class__.__name__,
                                             exception),
                         traceback=trace)
             else:
-                self.d.response = error.get_response(request.ENV['PATH_INFO'])
+                self.response = error.get_response(request.ENV['PATH_INFO'])
         
-        return self.d.response
+        return self.response
 
 class HandlerDidNotReturnReponseObjectException(Exception):
     pass
