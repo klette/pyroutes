@@ -1,6 +1,7 @@
-from pyroutes import settings
 import time
 import threading
+
+from pyroutes import settings
 
 class TimingMiddleware(object):
     """
