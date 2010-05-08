@@ -29,7 +29,6 @@ class ErrorHandlerMiddleware(object):
         try:
             self.d.response = self.d.passthrough(request)
         except Exception, exception:
-            print exception
             error = Http500()
             if settings.DEBUG:
                 exception_type, exception_value, exception_trace = sys.exc_info()
