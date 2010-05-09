@@ -1,6 +1,6 @@
-from pyroutes import settings
 import time
-import threading
+
+from pyroutes import settings
 
 class TimingMiddleware(object):
     """
@@ -11,21 +11,20 @@ class TimingMiddleware(object):
     Primitive profiling, but quite useful.
     """
     def __init__(self, passthrough):
-        self.d = threading.local()
-        self.d.passthrough = passthrough
+        self.passthrough = passthrough
 
     def __call__(self, request):
         if not settings.DEBUG:
-            return self.d.passthrough(request)
+            return self.passthrough(request)
 
-        self.d.start_time = time.time()
-        response = self.d.passthrough(request)
-        self.d.end_time = time.time()
+        start_time = time.time()
+        response = self.passthrough(request)
+        end_time = time.time()
         for (header, value) in response.headers:
             if header == 'Content-Type':
                 if value.startswith('text/html') or \
                   value.startswith('application/xhtml+xml'):
-                    elapsed = (self.d.end_time - self.d.start_time) * 1000
+                    elapsed = (end_time - start_time) * 1000
                     if response.content.endswith('</html>'):
                         response.content = response.content[:-len('</html>')] + \
                         '<pre>Page took %0.3f ms to generate</pre></html>' % elapsed
