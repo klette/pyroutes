@@ -1,4 +1,3 @@
-import threading
 import sys
 import traceback
 
@@ -7,28 +6,25 @@ from pyroutes.http.response import Http404, Http500
 
 class NotFoundMiddleware(object):
     def __init__(self, passthrough):
-        self.d = threading.local()
-        self.d.passthrough = passthrough
+        self.passthrough = passthrough
 
-    def __call__(self, environ, start_response):
+    def __call__(self, request):
         # If we got a handler, run it.
-        if self.d.passthrough:
-            return self.d.passthrough(environ, start_response)
+        if self.passthrough:
+            return self.passthrough(request)
 
         error = Http404()
-        response = error.get_response(environ['PATH_INFO'])
+        return error.get_response(request.ENV['PATH_INFO'])
 
-        start_response(response.status_code, response.headers)
-        return [response.content]
 
 class ErrorHandlerMiddleware(object):
     def __init__(self, passthrough):
-        self.d = threading.local()
-        self.d.passthrough = passthrough
+        self.passthrough = passthrough
+        self.response = None
 
-    def __call__(self, environ, start_response):
+    def __call__(self, request):
         try:
-            return self.d.passthrough(environ, start_response)
+            self.response = self.passthrough(request)
         except Exception, exception:
             error = Http500()
             if settings.DEBUG:
@@ -36,13 +32,15 @@ class ErrorHandlerMiddleware(object):
                 trace = "".join(traceback.format_exception(exception_type,
                                                     exception_value,
                                                     exception_trace))
-                response = error.get_response(
-                        environ['PATH_INFO'],
+                self.response = error.get_response(
+                        request.ENV['PATH_INFO'],
                         description="%s: %s" % (exception.__class__.__name__,
                                             exception),
                         traceback=trace)
             else:
-                response = error.get_response(environ['PATH_INFO'])
+                self.response = error.get_response(request.ENV['PATH_INFO'])
         
-        start_response(response.status_code, response.headers)
-        return [response.content]
+        return self.response
+
+class HandlerDidNotReturnReponseObjectException(Exception):
+    pass

@@ -10,10 +10,13 @@ This module handles all the dispatching services for pyroutes.
 from pyroutes.route import Route
 from pyroutes.middleware.errors import *
 import pyroutes.settings as settings
+from pyroutes.dispatcher import Dispatcher
 
 from wsgiref.util import shift_path_info
 
 __request__handlers__ = {}
+
+dispatcher = Dispatcher()
 
 def route(path, *args, **kwargs):
     """
@@ -36,10 +39,10 @@ def route(path, *args, **kwargs):
 
     **How routes are matched to paths.**
 
-    One property of the routes are that matches are done on an best effort basis, starting
-    from the top of the tree and going down. This results in handler being delt request for
-    their defined path and every path over it. This is true for all paths except the
-    root-handler ('/').
+    One property of the routes are that matches are done on an best effort
+    basis, starting from the top of the tree and going down. This results in
+    handler being delt request for their defined path and every path over it.
+    This is true for all paths except the root-handler ('/').
     """
 
     def decorator(func):
@@ -53,34 +56,6 @@ def route(path, *args, **kwargs):
         __request__handlers__[path] = route_instance
         return route_instance
     return decorator
-
-def create_request_path(environ):
-    """
-    Returns a tuple consisting of the individual request parts
-    """
-    path = shift_path_info(environ)
-    request = []
-    if not path:
-        request = ['/']
-    else:
-        while path:
-            request.append(path)
-            path = shift_path_info(environ)
-    return request
-
-def find_request_handler(current_path):
-    """
-    Locates the handler for the specified path. Return None if not found.
-    """
-    handler = None
-    while handler is None:
-        if current_path in __request__handlers__:
-            handler = __request__handlers__[current_path]
-            break
-        current_path = current_path[:current_path.rfind("/")]
-        if not current_path:
-            return None
-    return handler
 
 def reverse_url(handler_name):
     """
@@ -96,12 +71,7 @@ def reverse_url(handler_name):
 
 def application(environ, start_response):
     """
-    Searches for a handler for a certain request and
-    dispatches it if found. Returns 404 if not found.
     """
+    return dispatcher.dispatch(environ, start_response)
 
-    request = create_request_path(environ.copy())
-    complete_path = '/%s' % '/'.join(request)
-    handler = find_request_handler(complete_path)
 
-    return ErrorHandlerMiddleware(NotFoundMiddleware(handler))(environ, start_response)

@@ -11,47 +11,46 @@ developing small python web apps.
 If you're developing a larger project, I suggest you point your browser to http://djangoproject.com instead :-)
 
 
-Tutorials
-=========
+User manual
+===========
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-   tutorial/basics
+   installation
+   usage
+   deployment
+   middleware
 
-
-Installation
-============
-
-pyroutes is available trough pypi and is easily installed by using either pip or easy_install.
-
-Installation with pip::
-
-  # pip install pyroutes
-
-Installation with easy_install::
-
-  # easy_install pyroutes
-
-Developer documentation
+Reference documentation
 =======================
 
 .. toctree::
    :maxdepth: 2
 
-   changelog
-   cookies
+   reference/pyroutes
+   reference/response
+   reference/template
+   reference/utils
+   reference/settings
 
-Deployment
+Appendices
 ==========
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 2
 
-   deployment/apache
+    appendix/xmltemplate
 
+Release change logs
+==================
+
+.. toctree::
+   :maxdepth: 2
+
+   changelog
 
 Contributing
 ============
@@ -63,27 +62,6 @@ documentation, unittest or simply breaks the existing tests. Bugfixes to the tes
 For the tests to run, you will need some extra packages. Names are by
 debian/ubuntu package name.
 
- * python-minimock, http://blog.ianbicking.org/minimock.html
- * python-coverage, http://nedbatchelder.com/code/coverage/
- * python-coverage-test-runner, http://liw.fi/coverage-test-runner/
- * python-unit, http://docs.python.org/library/unittest.html
-
-Module documentation
-====================
-
-.. toctree::
-   :maxdepth: 2
-
-   modules/pyroutes
-   modules/pyroutes.http.cookies
-   modules/pyroutes.http.response
-   modules/pyroutes.http.request
-   modules/pyroutes.utils
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+ * python-coverage
+ * python-nose
 
