@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-http.py
+response.py
 
 A collection of Response classes for pyroutes
 """
