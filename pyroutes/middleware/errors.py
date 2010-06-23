@@ -27,11 +27,14 @@ class ErrorHandlerMiddleware(object):
             self.response = self.passthrough(request)
         except Exception, exception:
             error = Http500()
+
+            exception_type, exception_value, exception_trace = sys.exc_info()
+            trace = "".join(traceback.format_exception(exception_type,
+                                                exception_value,
+                                                exception_trace))
+            sys.stderr.write(trace)
+
             if settings.DEBUG:
-                exception_type, exception_value, exception_trace = sys.exc_info()
-                trace = "".join(traceback.format_exception(exception_type,
-                                                    exception_value,
-                                                    exception_trace))
                 self.response = error.get_response(
                         request.ENV['PATH_INFO'],
                         description="%s: %s" % (exception.__class__.__name__,
@@ -39,7 +42,7 @@ class ErrorHandlerMiddleware(object):
                         traceback=trace)
             else:
                 self.response = error.get_response(request.ENV['PATH_INFO'])
-        
+
         return self.response
 
 class HandlerDidNotReturnReponseObjectException(Exception):
