@@ -109,11 +109,7 @@ class HttpException(Exception):
 
         self.template_variable = 'TEMPLATE_%d' % self.code
         self.template_filename = '%d.xml' % self.code
-        self.status_code = {
-            403: '403 Forbidden',
-            404: '404 Not Found',
-            500: '500 Server Error'
-        }[self.code]
+        self.status_code = "%d %s" % (self.code, responses[self.code])
 
         if hasattr(settings, self.template_variable):
             if hasattr(settings, 'CUSTOM_BASE_TEMPLATE'):
