@@ -19,11 +19,7 @@ class Request(object):
         self.ENV = environment
 
         self.GET = self.extract_get_data(environment)
-
-        # Initialize POST and FILES
-        self.POST = {}
-        self.FILES = {}
-        self.extract_post_data(environment)
+        self.POST = self.extract_post_data(environment)
 
         self.COOKIES = RequestCookieHandler(environment)
         self.params = {}
@@ -49,7 +45,7 @@ class Request(object):
             for key in _data.keys():
                 value = self._parse_field(_data[key], key, _data)
                 if value is not None:
-                    self._assign_field_to_section(key, value)
+                    self._assign_field_to_section(key, value, data)
 
         return data
 
@@ -64,10 +60,10 @@ class Request(object):
                 ret_dict[key] = value
         return ret_dict
 
-    def _assign_field_to_section(self, key, value):
+    def _assign_field_to_section(self, key, value, storage):
         if isinstance(value, list):
             for val in value:
-                self._assign_field_to_section(key, val)
+                self._assign_field_to_section(key, val, storage)
         else:
             if isinstance(value, tuple) and value[1] and \
               (isinstance(value[1], file) or  hasattr(value[1], 'read')):
@@ -84,13 +80,13 @@ class Request(object):
             elif isinstance(value, basestring):
                 # If an existing value exists for this key, convert to
                 # list-result
-                if key in self.POST and not isinstance(self.POST[key], list):
-                    self.POST[key] = [self.POST[key]]
+                if key in storage and not isinstance(storage[key], list):
+                    storage[key] = [storage[key]]
 
-                if key in self.POST and isinstance(self.POST[key], list):
-                    self.POST[key].append(value)
+                if key in storage and isinstance(storage[key], list):
+                    storage[key].append(value)
                 else:
-                    self.POST[key] = value
+                    storage[key] = value
 
     def _parse_field(self, field, key, data):
         value = None
