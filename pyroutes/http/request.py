@@ -13,10 +13,11 @@ except ImportError:
 class Request(object):
 
     def __init__(self, environment):
-        self.ERRORS = []
+        self.GET = {}
+        self.POST = {}
+        self.FILES = {}
         self.ENV = environment
 
-        # Initialize GET
         self.GET = self.extract_get_data(environment)
 
         # Initialize POST and FILES
