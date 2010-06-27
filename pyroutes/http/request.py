@@ -40,27 +40,8 @@ class Request(object):
         env['QUERY_STRING'] = ''
 
         if env.get('REQUEST_METHOD', 'GET') == 'POST':
-            length = int(env.get('CONTENT_LENGTH', 0))
-            if length > 5*1024:
-                input_buffer = os.tmpfile()
-            else:
-                input_buffer = StringIO.StringIO()
-            read_bytes = 1024*32
-            while length:
-                if read_bytes > length:
-                    read_bytes = length
-                input_buffer.write(environment['wsgi.input'].read(read_bytes))
-                length = length - read_bytes
-                if length < 0:
-                    length = 0
-
-            if hasattr(input_buffer, 'reset'):
-                input_buffer.reset()
-            else:
-                input_buffer.seek(0)
-
             _data = cgi.FieldStorage(
-                fp=input_buffer,
+                fp=environment['wsgi.input'],
                 environ=env,
                 keep_blank_values=False
             )
@@ -69,7 +50,6 @@ class Request(object):
                 if value is not None:
                     self._assign_field_to_section(key, value)
 
-            input_buffer.close()
         return data
 
     def extract_get_data(self, environment):
