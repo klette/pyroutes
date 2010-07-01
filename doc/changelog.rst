@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Release 0.3.1
+-------------
+
+- Remove leftover print statement causing errors using mod_wsgi
+
 Release 0.3.0
 -------------
 
