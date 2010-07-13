@@ -1,3 +1,9 @@
+python-pyroutes (0.3.1) lucid; urgency=low
+
+  * 0.3.1 bugfix release
+
+ -- Kristian Klette <klette@samfundet.no>  Tue, 13 Jul 2010 21:28:24 +0200
+
 python-pyroutes (0.3.0-1ubuntu2) lucid; urgency=low
 
   * 0.3.0 Release! 
