@@ -6,7 +6,7 @@ import os
 
 setup(
     name = "pyroutes",
-    version = "0.3.0",
+    version = "0.3.1",
     url = 'http://github.com/klette/pyroutes',
     license = 'GPLv2',
     description = "A small WSGI wrapper for creating small python web apps",
