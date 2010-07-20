@@ -28,6 +28,7 @@ class Route(object):
     def extract_url_params(self, handler, environ):
         parts = environ.get('PATH_INFO','')[len(self.path)+1:].split('/')
         parameters = {}
+        maps = None
 
         if hasattr(handler, 'im_func'):
             if len(handler.im_func.func_code.co_varnames) > 2:
