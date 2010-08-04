@@ -45,12 +45,23 @@ class Dispatcher(object):
         """
         Locates the handler for the specified path. Return None if not found.
         """
-        handler = None
-        while handler is None:
+        complete_path = current_path
+        handler = pyroutes.__request__handlers__.get(current_path, None)
+        while handler is None and current_path:
             if current_path in pyroutes.__request__handlers__:
                 handler = pyroutes.__request__handlers__[current_path]
-                break
+                arg_count = len(complete_path.rstrip('/').split('/')) - len(current_path.rstrip('/').split('/'))
+                if hasattr(handler, 'im_func'):
+                    if handler.handler.im_func.func_code.co_argcount -2 != arg_count:
+                        # Return the handler if even if the argument count from the url is wrong if we have defaults on everything
+                        if len(handler.handler.im_func.func_defaults) + 1 == handler.handler.im_func.func_code.co_argcount:
+                            return handler
+                        return None
+                elif handler.handler.func_code.co_argcount - 1 != arg_count:
+                    # Return the handler if even if the argument count from the url is wrong if we have defaults on everything
+                    if len(handler.handler.func_defaults) + 1 == handler.handler.func_code.co_argcount:
+                        return handler
+                    return None
+
             current_path = current_path[:current_path.rfind("/")]
-            if not current_path:
-                return None
         return handler
