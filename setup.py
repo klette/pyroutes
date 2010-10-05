@@ -16,7 +16,7 @@ setup(
     packages = ['pyroutes','pyroutes.http', 'pyroutes.template', 'pyroutes.contrib', 'pyroutes.middleware'],
     requires = ['wsgiref'],
     package_data = {'pyroutes': ['default_templates/*.xml', 'default_templates/fileserver/*.xml']},
-
+    scripts = ['bin/pyroutes-admin.py'],
     classifiers = [
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
