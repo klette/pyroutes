@@ -231,7 +231,7 @@ Now, pyroutes has a small wrapper around XML-Template for handling the most
 common template task; having a base-template, and a separate template for your
 current task.::
 
-    from pyroutes.templates import TemplateRenderer
+    from pyroutes.template import TemplateRenderer
 
     tmpl = TemplateRenderer('base.xml')
 
