@@ -73,7 +73,7 @@ class TestExceptions(unittest.TestCase):
 
     def test_500_exception(self):
         exception = Http500
-        content = '500 Server Error'
+        content = '500 Internal Server Error'
         self._test_including_custom_templates(exception, 500, content)
 
 class TestRedirectResponse(unittest.TestCase):
