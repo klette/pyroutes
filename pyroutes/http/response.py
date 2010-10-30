@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-http.py
+response.py
 
 A collection of Response classes for pyroutes
 """
@@ -78,7 +78,7 @@ class Response(object):
         self.headers = []
         if default_content_header and 'Content-Type' not in header_names:
             # Whether or not this is a safe operation may be python/wsgiref
-            # version dependent. Should be tested and documented.
+            # version dependent. TODO: Should be tested and documented.
             self.headers.append(('Content-Type', settings.DEFAULT_CONTENT_TYPE))
         if not headers is None:
             self.headers += headers
@@ -109,11 +109,7 @@ class HttpException(Exception):
 
         self.template_variable = 'TEMPLATE_%d' % self.code
         self.template_filename = '%d.xml' % self.code
-        self.status_code = {
-            403: '403 Forbidden',
-            404: '404 Not Found',
-            500: '500 Server Error'
-        }[self.code]
+        self.status_code = "%d %s" % (self.code, responses[self.code])
 
         if hasattr(settings, self.template_variable):
             if hasattr(settings, 'CUSTOM_BASE_TEMPLATE'):

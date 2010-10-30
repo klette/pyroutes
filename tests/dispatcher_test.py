@@ -26,3 +26,4 @@ class TestDispatcher(unittest.TestCase):
         self.assertTrue(dispatcher.find_request_handler('/bar') != None)
         self.assertTrue(dispatcher.find_request_handler('/baz') == None)
         self.assertTrue(dispatcher.find_request_handler('/class') != None)
+        self.assertTrue(dispatcher.find_request_handler('') != None)
