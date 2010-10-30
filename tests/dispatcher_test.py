@@ -20,10 +20,10 @@ class TestDispatcher(unittest.TestCase):
     def testFindRequestHandler(self):
         dispatcher = Dispatcher()
         self.createAnonRoute('/')
-        self.createAnonRoute('/bar')
+        self.createAnonRoute('/bar/baz/foo')
         self.createClassAnonRoute('/class')
         self.assertTrue(dispatcher.find_request_handler('/') != None)
-        self.assertTrue(dispatcher.find_request_handler('/bar') != None)
-        self.assertTrue(dispatcher.find_request_handler('/baz') == None)
+        self.assertTrue(dispatcher.find_request_handler('/bar/baz/foo') != None)
+        self.assertTrue(dispatcher.find_request_handler('/baz/param') == None)
         self.assertTrue(dispatcher.find_request_handler('/class') != None)
         self.assertTrue(dispatcher.find_request_handler('') != None)
