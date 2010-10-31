@@ -21,9 +21,9 @@ class Route(object):
             localstore = threading.local()
             localstore.handler_class_instance = self.handler.im_class()
             localstore.handler = getattr(localstore.handler_class_instance, self.handler.__name__)
-            return localstore.handler(request, **self.extract_url_params(localstore.handler, request.ENV))
+            return localstore.handler(request, **self.extract_url_params(request.ENV))
         else:
-            return self.handler(request, **self.extract_url_params(self.handler, request.ENV))
+            return self.handler(request, **self.extract_url_params(request.ENV))
 
     def extract_url_params(self, environ):
         parts = environ.get('PATH_INFO','')[len(self.path)+1:].split('/')
