@@ -4,6 +4,8 @@ Testing of the Route-class
 
 import unittest
 from pyroutes.route import Route
+from pyroutes import *
+from pyroutes.http.request import Request
 
 def _pass(request, bar, baz):
     pass
@@ -23,11 +25,25 @@ class RouteTest(unittest.TestCase):
         route = Route(_pass, '/foo')
         self.assertEquals(_pass.__name__, route.__name__)
 
+    def testCall(self):
+        env = {'PATH_INFO': '/foo/foo/faz'}
+        route = Route(_pass, '/foo')
+        self.assertEquals(route(Request(env)), None)
+
+
     def testExtractUrlParams(self):
         route = Route(_pass, '/foo')
         env = {'PATH_INFO': '/foo/foo/faz'}
         def test(req, bar, baz):
             pass
-        self.assertEquals(route.extract_url_params(test, env), {'bar': 'foo', 'baz': 'faz'})
+        self.assertEquals(route.extract_url_params(env), {'bar': 'foo', 'baz': 'faz'})
 
+    def testExtractUrlParamsFromClassView(self):
+        class Foo(object):
+            @route('/classtest')
+            def foo(request, bar):
+                pass
+        env = {'PATH_INFO': '/classtest/foo'}
+        _route = dispatcher.find_request_handler('/classtest')
+        self.assertEquals(_route.extract_url_params(env), {'bar': 'foo'})
 

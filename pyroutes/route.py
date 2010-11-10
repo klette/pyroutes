@@ -21,23 +21,23 @@ class Route(object):
             localstore = threading.local()
             localstore.handler_class_instance = self.handler.im_class()
             localstore.handler = getattr(localstore.handler_class_instance, self.handler.__name__)
-            return localstore.handler(request, **self.extract_url_params(localstore.handler, request.ENV))
+            return localstore.handler(request, **self.extract_url_params(request.ENV))
         else:
-            return self.handler(request, **self.extract_url_params(self.handler, request.ENV))
+            return self.handler(request, **self.extract_url_params(request.ENV))
 
-    def extract_url_params(self, handler, environ):
+    def extract_url_params(self, environ):
         parts = environ.get('PATH_INFO','')[len(self.path)+1:].split('/')
         parameters = {}
         maps = None
 
-        if hasattr(handler, 'im_func'):
-            if len(handler.im_func.func_code.co_varnames) > 2:
-                maps = handler.im_func.func_code.co_varnames[2:handler.im_func.func_code.co_argcount]
-            defaults = handler.im_func.func_defaults
+        if hasattr(self.handler, 'im_func'):
+            if len(self.handler.im_func.func_code.co_varnames) > 2:
+                maps = self.handler.im_func.func_code.co_varnames[2:self.handler.im_func.func_code.co_argcount]
+            defaults = self.handler.im_func.func_defaults
         else:
-            if len(handler.func_code.co_varnames) > 1:
-                maps = handler.func_code.co_varnames[1:handler.func_code.co_argcount]
-            defaults = handler.func_defaults
+            if len(self.handler.func_code.co_varnames) > 1:
+                maps = self.handler.func_code.co_varnames[1:self.handler.func_code.co_argcount]
+            defaults = self.handler.func_defaults
 
         if maps:
             parts.extend((len(maps)-len(parts)-len(defaults or []))*[None])
