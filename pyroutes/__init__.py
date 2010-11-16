@@ -71,7 +71,11 @@ def reverse_url(handler_name):
 
 def application(environ, start_response):
     """
+    The application method, which is for use in a WSGI setup
+    (Hint: this is how you set this up with any web server)
+    Example usage:
+    >>> from pyroutes import application
+
+    See the documentation for more details.
     """
     return dispatcher.dispatch(environ, start_response)
-
-
