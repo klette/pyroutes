@@ -104,12 +104,11 @@ class Redirect(Response):
 
     def __init__(self, location, absolute_path=False):
         self.content = "redirect"
-        final_location = '/'.join([settings.SITE_ROOT, location.strip('/')])
 
-        if absolute_path:
-          final_location = location
+        if not absolute_path and not '://' in location:
+            location = '/'.join([settings.SITE_ROOT, location.strip('/')])
 
-        self.headers = [('Location', final_location)]
+        self.headers = [('Location', location)]
         self.status_code = "302 See Other"
         self.cookies = ResponseCookieHandler()
 
