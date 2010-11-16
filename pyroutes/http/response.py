@@ -93,11 +93,23 @@ class Response(object):
 class Redirect(Response):
     """
     A redirect shortcut class for redirection responses
+    This class can make two types of redirects:
+     1. Absolute path redirects: When you want do redirect to outside your application.
+     2. Root App relative redirect: If you want your redirection relative to the root application path
+
+     e.g If Your application is deployed on http://server/apps/myapp, a Redirect("/some/path") 
+       actually will generate a redirect to "/apps/myapp/some/path". 
+       And a Redirect("/some/path", absolute_path=True) will return a redirect to "/some/path".
     """
 
-    def __init__(self, location):
+    def __init__(self, location, absolute_path=False):
         self.content = "redirect"
-        self.headers = [('Location', location)]
+        final_location = '/'.join([settings.SITE_ROOT, location.strip('/')])
+
+        if absolute_path:
+          final_location = location
+
+        self.headers = [('Location', final_location)]
         self.status_code = "302 See Other"
         self.cookies = ResponseCookieHandler()
 

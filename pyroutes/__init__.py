@@ -57,7 +57,7 @@ def route(path, *args, **kwargs):
         return route_instance
     return decorator
 
-def reverse_url(handler_name):
+def reverse_url(handler_name, absolute_path=False):
     """
     Returns the path for a handler.
     Example usage:
@@ -66,7 +66,10 @@ def reverse_url(handler_name):
     """
     for path, handler in __request__handlers__.items():
         if handler.__name__ == handler_name:
-            return path
+            if absolute_path:
+                return path
+            else:
+                return '/'.join([settings.SITE_ROOT, path.strip('/')])
     raise ValueError('No handler named %s' % handler_name)
 
 def application(environ, start_response):

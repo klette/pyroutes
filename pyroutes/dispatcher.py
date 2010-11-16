@@ -27,6 +27,10 @@ class Dispatcher(object):
         safe_data = threading.local()
         safe_data.request = Request(environ)
 
+        # Update site root value so pyroutes can make root-relative path redirects
+        # http://github.com/pyroutes/pyroutes/issues/1
+        settings.SITE_ROOT = environ.get('SCRIPT_NAME', '').rstrip('/')
+
         safe_data.handler = self.find_request_handler(environ['PATH_INFO'])
 
         safe_data.response = self.create_middleware_chain(safe_data.handler,
