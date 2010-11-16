@@ -28,7 +28,7 @@ class Dispatcher(object):
         safe_data.request = Request(environ)
 
         # Update site root value so pyroutes can make root-relative path redirects
-        if not hasattr(setting, 'SITE_ROOT'):
+        if not hasattr(settings, 'SITE_ROOT'):
             settings.SITE_ROOT = environ.get('SCRIPT_NAME', '').rstrip('/')
 
         safe_data.handler = self.find_request_handler(environ['PATH_INFO'])

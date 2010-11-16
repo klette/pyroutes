@@ -18,6 +18,8 @@ class TestDispatcher(unittest.TestCase):
            'PATH_INFO': '/path'
            }
       self.dispatcher = Dispatcher()
+      if hasattr(settings, self.SITE_ROOT_ATTR_NAME):
+        delattr(settings, self.SITE_ROOT_ATTR_NAME)
 
     def createAnonRoute(self, path):
         @pyroutes.route(path)
@@ -67,7 +69,7 @@ class TestDispatcher(unittest.TestCase):
       self._check_settings_attribute(self.SITE_ROOT_ATTR_NAME, '')
 
     '''
-      Don't panis if we don't have a SCRIPT_NAME value.
+      Don't panic if we don't have a SCRIPT_NAME value.
     '''
     def testUpdateApplicationRootAbsentValue(self):
       del self.ENV['SCRIPT_NAME']
