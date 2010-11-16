@@ -47,7 +47,7 @@ def route(path, *args, **kwargs):
 
     def decorator(func):
         """
-        See the pyroutes.route-docstring
+        See the pyroutes.route docstring
         """
         if path in __request__handlers__:
             raise ValueError("Tried to redefine handler for %s with %s" % \
