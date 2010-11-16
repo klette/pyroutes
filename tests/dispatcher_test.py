@@ -68,6 +68,11 @@ class TestDispatcher(unittest.TestCase):
       self.dispatcher.dispatch(self.ENV, self.start_response)
       self._check_settings_attribute(self.SITE_ROOT_ATTR_NAME, '')
 
+    def testDoNotUpdateApplicatinRootIfAlreadyExist(self):
+      settings.SITE_ROOT = '/some/path'
+      self.dispatcher.dispatch(self.ENV, self.start_response)
+      self.assertEquals(settings.SITE_ROOT, '/some/path')
+
     '''
       Don't panic if we don't have a SCRIPT_NAME value.
     '''
