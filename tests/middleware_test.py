@@ -33,9 +33,17 @@ class TestErrorHandlerMiddleware(unittest.TestCase):
         ehm = ErrorHandlerMiddleware(passtrough)
         self.assertTrue(isinstance(ehm(self.request), bool))
 
-    def test_should_return_500_if_exception(self):
+    def test_should_return_500_and_print_to_stderr_if_exception(self):
         def errorous(req):
             raise ValueError("foobar")
-
-        ehm = ErrorHandlerMiddleware(errorous)
-        self.assertEquals(ehm(self.request).status_code, '500 Internal Server Error')
+        try:
+            import sys
+            import cStringIO
+            old_sys = sys.stderr
+            sys.stderr = cStringIO.StringIO()
+            ehm = ErrorHandlerMiddleware(errorous)
+            self.assertEquals(ehm(self.request).status_code, '500 Internal Server Error')
+            sys.stderr.seek(0)
+            self.assertTrue('ValueError' in sys.stderr.read())
+        finally:
+            sys.stderr = old_sys
