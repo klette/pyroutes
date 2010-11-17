@@ -52,30 +52,50 @@ class Dispatcher(object):
             current_path = '/'
 
         complete_path = current_path
-
         handler = pyroutes.__request__handlers__.get(current_path, None)
 
         while handler is None and current_path:
             if current_path in pyroutes.__request__handlers__:
                 handler = pyroutes.__request__handlers__[current_path]
-                complete_path_comps = complete_path.rstrip('/').split('/')
-                current_path_comps = current_path.rstrip('/').split('/')
-                arg_count = len(complete_path_comps) - len(current_path_comps)
-                if hasattr(handler, 'im_func'):
-                    if handler.handler.im_func.func_code.co_argcount -2 != arg_count:
-                        # Return the handler if even if the argument count from
-                        # the url is wrong if we have defaults on everything
-                        if len(handler.handler.im_func.func_defaults or '') + 1 \
-                            == handler.handler.im_func.func_code.co_argcount:
-                            return handler
-                        return None
-                elif handler.handler.func_code.co_argcount - 1 != arg_count:
-                    # Return the handler if even if the argument count from the
-                    # url is wrong if we have defaults on everything
-                    if len(handler.handler.func_defaults or '') + 1 == \
-                            handler.handler.func_code.co_argcount:
-                        return handler
-                    return None
+                argument_count = self._get_argument_count(complete_path, current_path)
+                if self._match_with_arguments(handler, argument_count):
+                    return handler
 
             current_path = current_path[:current_path.rfind('/')]
         return handler
+
+    def _get_argument_count(self, complete_path, current_path):
+        """
+        Returns the number of URL elements left over for between
+        the current path and the complete path.
+        """
+        complete_path_comps = complete_path.rstrip('/').split('/')
+        current_path_comps = current_path.rstrip('/').split('/')
+        return len(complete_path_comps) - len(current_path_comps)
+
+    def _match_with_arguments(self, handler, arg_count):
+        """
+        Returns True if the number of remaining URL elements for
+        the tested handler matches the number of arguments for the
+        handler. It also tries to match against handlers with defaults
+        on their arguments.
+        """
+        if hasattr(handler, 'im_func'):
+            return self._match_class_handler_arguments(handler, arg_count)
+        else:
+            return self._match_function_handler_arguments(handler, arg_count)
+
+    def _match_class_handler_arguments(self, handler, arg_count):
+        handler_func = handler.handler.im_func
+        if handler_func.func_code.co_argcount - 2 != arg_count:
+            if len(handler_func.func_defaults or '') + 1 \
+                == handler_func.func_code.co_argcount:
+                return True
+        return False
+
+    def _match_function_handler_arguments(self, handler, arg_count):
+        if handler.handler.func_code.co_argcount - 1 != arg_count:
+            if len(handler.handler.func_defaults or '') + 1 == \
+                    handler.handler.func_code.co_argcount:
+                return True
+        return False
