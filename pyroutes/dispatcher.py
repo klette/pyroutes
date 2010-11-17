@@ -49,7 +49,7 @@ class Dispatcher(object):
         # If we don't have a current path, look or the root handler.
         # See issue #2 <http://github.com/pyroutes/pyroutes/issues/2>
         if current_path == '':
-          current_path = '/'
+            current_path = '/'
 
         complete_path = current_path
 
@@ -58,16 +58,22 @@ class Dispatcher(object):
         while handler is None and current_path:
             if current_path in pyroutes.__request__handlers__:
                 handler = pyroutes.__request__handlers__[current_path]
-                arg_count = len(complete_path.rstrip('/').split('/')) - len(current_path.rstrip('/').split('/'))
+                complete_path_comps = complete_path.rstrip('/').split('/')
+                current_path_comps = current_path.rstrip('/').split('/')
+                arg_count = len(complete_path_comps) - len(current_path_comps)
                 if hasattr(handler, 'im_func'):
                     if handler.handler.im_func.func_code.co_argcount -2 != arg_count:
-                        # Return the handler if even if the argument count from the url is wrong if we have defaults on everything
-                        if len(handler.handler.im_func.func_defaults or '') + 1 == handler.handler.im_func.func_code.co_argcount:
+                        # Return the handler if even if the argument count from
+                        # the url is wrong if we have defaults on everything
+                        if len(handler.handler.im_func.func_defaults or '') + 1 \
+                            == handler.handler.im_func.func_code.co_argcount:
                             return handler
                         return None
                 elif handler.handler.func_code.co_argcount - 1 != arg_count:
-                    # Return the handler if even if the argument count from the url is wrong if we have defaults on everything
-                    if len(handler.handler.func_defaults or '') + 1 == handler.handler.func_code.co_argcount:
+                    # Return the handler if even if the argument count from the
+                    # url is wrong if we have defaults on everything
+                    if len(handler.handler.func_defaults or '') + 1 == \
+                            handler.handler.func_code.co_argcount:
                         return handler
                     return None
 
