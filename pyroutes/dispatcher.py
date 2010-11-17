@@ -62,12 +62,12 @@ class Dispatcher(object):
                 if hasattr(handler, 'im_func'):
                     if handler.handler.im_func.func_code.co_argcount -2 != arg_count:
                         # Return the handler if even if the argument count from the url is wrong if we have defaults on everything
-                        if len(handler.handler.im_func.func_defaults) + 1 == handler.handler.im_func.func_code.co_argcount:
+                        if len(handler.handler.im_func.func_defaults or '') + 1 == handler.handler.im_func.func_code.co_argcount:
                             return handler
                         return None
                 elif handler.handler.func_code.co_argcount - 1 != arg_count:
                     # Return the handler if even if the argument count from the url is wrong if we have defaults on everything
-                    if len(handler.handler.func_defaults) + 1 == handler.handler.func_code.co_argcount:
+                    if len(handler.handler.func_defaults or '') + 1 == handler.handler.func_code.co_argcount:
                         return handler
                     return None
 
