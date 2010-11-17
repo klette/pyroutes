@@ -86,6 +86,10 @@ class Dispatcher(object):
             return self._match_function_handler_arguments(handler, arg_count)
 
     def _match_class_handler_arguments(self, handler, arg_count):
+        """
+        Helper method for `_match_with_arguments` for dealing with
+        class based handlers.
+        """
         handler_func = handler.handler.im_func
         if handler_func.func_code.co_argcount - 2 != arg_count:
             if len(handler_func.func_defaults or '') + 1 \
@@ -94,6 +98,10 @@ class Dispatcher(object):
         return False
 
     def _match_function_handler_arguments(self, handler, arg_count):
+        """
+        Helper method for `_match_with_arguments` for dealing with
+        function based handlers.
+        """
         if handler.handler.func_code.co_argcount - 1 != arg_count:
             if len(handler.handler.func_defaults or '') + 1 == \
                     handler.handler.func_code.co_argcount:
