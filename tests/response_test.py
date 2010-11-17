@@ -79,7 +79,7 @@ class TestExceptions(unittest.TestCase):
 class TestRedirectResponse(unittest.TestCase):
     def test_init(self):
         redirect = Redirect('http://google.com')
-        self.assertEqual(redirect.status_code, '302 See Other')
+        self.assertEqual(redirect.status_code, '302 Found')
         self.assertEqual(redirect.headers, [('Location', "http://google.com")])
         self.assertEqual(redirect.content, 'redirect')
 
