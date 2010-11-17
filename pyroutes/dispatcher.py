@@ -52,11 +52,11 @@ class Dispatcher(object):
             current_path = '/'
 
         complete_path = current_path
-        handler = pyroutes.__request__handlers__.get(current_path, None)
+        handler = pyroutes.thread_data.__request__handlers__.get(current_path, None)
 
         while handler is None and current_path:
-            if current_path in pyroutes.__request__handlers__:
-                handler = pyroutes.__request__handlers__[current_path]
+            if current_path in pyroutes.thread_data.__request__handlers__:
+                handler = pyroutes.thread_data.__request__handlers__[current_path]
                 argument_count = self._get_argument_count(complete_path, current_path)
                 if self._match_with_arguments(handler, argument_count):
                     return handler
