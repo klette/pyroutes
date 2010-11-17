@@ -27,7 +27,9 @@ class TimingMiddleware(object):
                     elapsed = (end_time - start_time) * 1000
                     if response.content.endswith('</html>'):
                         response.content = response.content[:-len('</html>')] + \
-                        '<pre>Page took %0.3f ms to generate</pre></html>' % elapsed
+                                '<pre id="pyroutes_timing">Page took %0.3f' + \
+                                ' ms to generate</pre></html>' % elapsed
                     else:
-                        response.content += '\n<pre>Page took %0.3f ms to generate</pre>' % elapsed
+                        response.content += '\n<pre id="pyroutes_timing">' + \
+                                'Page took %0.3f ms to generate</pre>' % elapsed
         return response

@@ -47,7 +47,7 @@ def route(path, *args, **kwargs):
 
     def decorator(func):
         """
-        See the pyroutes.route-docstring
+        See the pyroutes.route docstring
         """
         if path in __request__handlers__:
             raise ValueError("Tried to redefine handler for %s with %s" % \
@@ -71,7 +71,11 @@ def reverse_url(handler_name):
 
 def application(environ, start_response):
     """
+    The application method, which is for use in a WSGI setup
+    (Hint: this is how you set this up with any web server)
+    Example usage:
+    >>> from pyroutes import application
+
+    See the documentation for more details.
     """
     return dispatcher.dispatch(environ, start_response)
-
-

@@ -12,7 +12,7 @@ class Dispatcher(object):
     def create_middleware_chain(self, handler, request):
         chain = handler
         for full_path in settings.MIDDLEWARE:
-            last_dot = full_path.rfind(".")
+            last_dot = full_path.rfind('.')
             module_name = full_path[:last_dot]
             class_name = full_path[last_dot + 1:]
 
@@ -45,16 +45,16 @@ class Dispatcher(object):
         """
         Locates the handler for the specified path. Return None if not found.
         """
-       
-        # If we don't have a current path, look or the root handler. 
+
+        # If we don't have a current path, look or the root handler.
         # See issue #2 <http://github.com/pyroutes/pyroutes/issues/2>
         if current_path == '':
-          current_path = "/"
-        
+          current_path = '/'
+
         complete_path = current_path
 
         handler = pyroutes.__request__handlers__.get(current_path, None)
-        
+
         while handler is None and current_path:
             if current_path in pyroutes.__request__handlers__:
                 handler = pyroutes.__request__handlers__[current_path]
@@ -71,5 +71,5 @@ class Dispatcher(object):
                         return handler
                     return None
 
-            current_path = current_path[:current_path.rfind("/")]
+            current_path = current_path[:current_path.rfind('/')]
         return handler
