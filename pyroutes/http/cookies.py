@@ -29,7 +29,7 @@ class RequestCookieHandler(object):
         if key in self._raw_cookies:
             if '%s_hash' % key in self._raw_cookies:
                 if settings.SECRET_KEY is None:
-                    raise ImportError('Set SECRET_KEY in settings to use cookies')
+                    raise CookieKeyMissing('Set SECRET_KEY in settings to use cookies')
                 cookie_hash = self._raw_cookies['%s_hash' % key]
                 value_hash = \
                     hmac.HMAC(settings.SECRET_KEY, key + self._raw_cookies[key],
@@ -63,7 +63,7 @@ class ResponseCookieHandler(object):
 
     def add_cookie(self, key, value, expires=None):
         if settings.SECRET_KEY is None:
-            raise ImportError('Set SECRET_KEY in settings to use cookies')
+            raise AttributeError('Set SECRET_KEY in settings to use cookies')
         cookie_hash = hmac.HMAC(settings.SECRET_KEY, key + value, sha1)\
           .hexdigest()
         if expires:
@@ -98,3 +98,6 @@ class CookieHashMissing(LookupError):
 
 class CookieHashInvalid(ValueError):
     pass
+
+class CookieKeyMissing(AttributeError):
+    """Raised when SECRET_KEY is missing"""

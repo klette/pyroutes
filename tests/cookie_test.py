@@ -45,7 +45,7 @@ class TestRequestCookieHandler(unittest.TestCase):
 
     def test_get_cookie_without_key_setting(self):
         reload(settings)
-        self.assertRaises(ImportError, self.cookie_request_handler.get_cookie, 'foo')
+        self.assertRaises(CookieKeyMissing, self.cookie_request_handler.get_cookie, 'foo')
         settings.SECRET_KEY = 'asdfnaj2308sydfahli37flas36al9gaiufw'
 
 class TestResponseCookieHandler(unittest.TestCase):
