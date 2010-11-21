@@ -11,12 +11,10 @@ from pyroutes.route import Route
 from pyroutes.middleware.errors import *
 import pyroutes.settings as settings
 from pyroutes.dispatcher import Dispatcher
-import threading
 
 from wsgiref.util import shift_path_info
 
-thread_data = threading.local()
-thread_data.__request__handlers__ = {}
+__request__handlers__ = {}
 
 dispatcher = Dispatcher()
 
@@ -51,11 +49,11 @@ def route(path, *args, **kwargs):
         """
         See the pyroutes.route docstring
         """
-        if path in thread_data.__request__handlers__:
+        if path in __request__handlers__:
             raise ValueError("Tried to redefine handler for %s with %s" % \
                     (path, func))
         route_instance = Route(func, path, *args, **kwargs)
-        thread_data.__request__handlers__[path] = route_instance
+        __request__handlers__[path] = route_instance
         return route_instance
     return decorator
 
@@ -66,7 +64,7 @@ def reverse_url(handler_name):
     >>> reverse_url('login')
     /account/login
     """
-    for path, handler in thread_data.__request__handlers__.items():
+    for path, handler in __request__handlers__.items():
         if handler.__name__ == handler_name:
             return path
     raise ValueError('No handler named %s' % handler_name)
