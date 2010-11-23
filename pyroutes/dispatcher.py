@@ -9,9 +9,7 @@ class Dispatcher(object):
     def create_middleware_chain(self, handler, request):
         chain = handler
         for full_path in settings.MIDDLEWARE:
-            last_dot = full_path.rfind('.')
-            module_name = full_path[:last_dot]
-            class_name = full_path[last_dot + 1:]
+            module_name, class_name = full_path.rsplit('.', 1)
 
             module = __import__(module_name, globals(), locals(), [class_name])
             middleware = getattr(module, class_name)
