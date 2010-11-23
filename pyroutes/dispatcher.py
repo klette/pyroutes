@@ -6,9 +6,6 @@ import pyroutes.settings as settings
 
 class Dispatcher(object):
 
-    def __init__(self):
-        pass
-
     def create_middleware_chain(self, handler, request):
         chain = handler
         for full_path in settings.MIDDLEWARE:
