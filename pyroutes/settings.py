@@ -25,10 +25,10 @@ SECRET_KEY = None
 TEMPLATE_DIR = None # /foo/bar/templates/
 
 # Middleware
-MIDDLEWARE = [
+MIDDLEWARE = (
     'pyroutes.middleware.errors.NotFoundMiddleware',
     'pyroutes.middleware.errors.ErrorHandlerMiddleware',
-]
+)
 
 # Attempt to get custom settings. Not obligatory.
 try:
