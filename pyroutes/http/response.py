@@ -109,7 +109,7 @@ class Redirect(Response):
             location = '/'.join([settings.SITE_ROOT, location.strip('/')])
 
         self.headers = [('Location', location)]
-        self.status_code = "302 See Other"
+        self.status_code = '302 %s' % responses[302]
         self.cookies = ResponseCookieHandler()
 
 class HttpException(Exception):

@@ -6,8 +6,8 @@ import os
 
 setup(
     name = "pyroutes",
-    version = "0.3.1",
-    url = 'http://github.com/klette/pyroutes',
+    version = "0.3.2",
+    url = 'http://github.com/pyroutes/pyroutes',
     license = 'GPLv2',
     description = "A small WSGI wrapper for creating small python web apps",
     long_description = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read(),

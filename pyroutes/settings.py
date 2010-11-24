@@ -18,17 +18,17 @@ DEBUG = False
 # For setting the default content type
 DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 
-# Secret key for crypto. CHANGE THIS IS pyroutes_settings!
-SECRET_KEY = 'asdfnaj2308sydfahli37flas36al9gaiufw'
+# Secret key for crypto. SET THIS IN pyroutes_settings!
+SECRET_KEY = None
 
 # Location for templates. Used by TemplateRenderer
 TEMPLATE_DIR = None # /foo/bar/templates/
 
 # Middleware
-MIDDLEWARE = [
+MIDDLEWARE = (
     'pyroutes.middleware.errors.NotFoundMiddleware',
     'pyroutes.middleware.errors.ErrorHandlerMiddleware',
-]
+)
 
 # Attempt to get custom settings. Not obligatory.
 try:

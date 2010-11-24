@@ -9,11 +9,12 @@ except ImportError:
     import sha as sha1
 
 from pyroutes.http.cookies import *
-import pyroutes.settings
+from pyroutes import settings
 
 class TestRequestCookieHandler(unittest.TestCase):
 
     def setUp(self):
+        settings.SECRET_KEY = 'asdfnaj2308sydfahli37flas36al9gaiufw'
         self.env = {'HTTP_COOKIE': 'foo=bar;foo_hash=%s;bar=foo;baz=b;baz_hash=b' % \
             hmac.HMAC(settings.SECRET_KEY, 'foobar', sha1).hexdigest()}
         self.cookie_request_handler = RequestCookieHandler(self.env)
@@ -42,9 +43,15 @@ class TestRequestCookieHandler(unittest.TestCase):
     def test_get_non_existing_unsigned_cookie(self):
         self.assertEqual(self.cookie_request_handler.get_unsigned_cookie('test'), None)
 
+    def test_get_cookie_without_key_setting(self):
+        reload(settings)
+        self.assertRaises(CookieKeyMissing, self.cookie_request_handler.get_cookie, 'foo')
+        settings.SECRET_KEY = 'asdfnaj2308sydfahli37flas36al9gaiufw'
+
 class TestResponseCookieHandler(unittest.TestCase):
    
     def setUp(self):
+        settings.SECRET_KEY = 'asdfnaj2308sydfahli37flas36al9gaiufw'
         self.cookies = ResponseCookieHandler()
 
     def test_add_cookie(self):

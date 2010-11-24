@@ -43,7 +43,7 @@ class TestFileServer(unittest.TestCase):
     def test_redirects(self):
         self.request.ENV['PATH_INFO'] = '/pyroutes'
         response = utils.fileserver(self.request)
-        self.assertEqual(response.status_code, '302 See Other')
+        self.assertEqual(response.status_code, '302 Found')
 
     def test_listing(self):
         self.request.ENV['PATH_INFO'] = '/pyroutes/'
