@@ -58,8 +58,8 @@ Using it is as easy as adding this to ``handler.py`` from the previous
 examples.::
 
     if __name__ == '__main__':
-        from pyroutes.utils import devserver
-        devserver(application)
+        from pyroutes import utils
+        utils.devserver(application)
 
 Serving static media
 ^^^^^^^^^^^^^^^^^^^^
@@ -72,7 +72,7 @@ previous code to something like this::
     if __name__ == '__main__':
         from import utils
         route('/media')(utils.fileserver)
-        devserver(application)
+        utils.devserver(application)
 
 This will now serve anything you have in the folder called ``media`` in your
 working directory in the ``/media`` path. This behaviour can be modified in
@@ -112,7 +112,7 @@ Now refresh the page with the error, and you'll get a lot more information to wo
 Using URLs as data
 ------------------
 
-As of Pyroutes >= 0.3.0 using URLs as data for your handler really simple.
+As of Pyroutes >= 0.3.0 using URLs as data for your handler is really simple.
 Let's create an ``archive`` route as an example::
 
     @route('/archive')
@@ -168,14 +168,14 @@ Every route must return an instance of ``pyroutes.http.response.Response``, or
 one of it's subclasses. The former defaults to sending a
 ``text/html``-response with status code ``200 OK``.
 
-We have the follow built-in responses::
+We have the following built-in responses::
 
     Response(content=None, headers=None, status_code='200 OK',
     	default_content_header=True)
 
     Redirect(location)
 
-content may be any string or iterable. This means you can do something like this::
+Content may be any string or iterable. This means you can do something like this::
 
     @route('/pdf')
     def pdf(request):
@@ -193,7 +193,7 @@ C is for cookie..
 Cookies are the de-facto way of storing data on the clients. Pyroutes uses
 secure cookies by default. This means that if a user edits his own cookies,
 pyroutes will not accept them. This is done by storing a HMAC-signature, based
-on the cookie its signing and the ``SECRET_KEY`` in your settings, along with
+on the cookie it is signing and the ``SECRET_KEY`` in your settings, along with
 the actual cookie.
 
 Settings cookies::
@@ -202,7 +202,7 @@ Settings cookies::
     def set_cookies(request):
         response = Response()
         response.cookies.add_cookie('logged_in', 'true')
-        # Insecure cookie setting
+        # Send an insecure cookie
         response.cookies.add_unsigned_cookie('blapp', 'foo')
         return response
 
