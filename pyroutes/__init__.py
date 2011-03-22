@@ -13,7 +13,7 @@ from pyroutes.dispatcher import Dispatcher
 __request__handlers__ = {}
 dispatcher = Dispatcher()
 
-def route(path, *args, **kwargs):
+def route(path):
     """
     Routes define which methods handles requests to certain paths, and are defined
     using the `@route`-decorator. The decorator takes one argument that defines which
