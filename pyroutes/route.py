@@ -1,4 +1,3 @@
-import threading
 from pyroutes.http.request import Request
 
 class Route(object):
@@ -18,10 +17,9 @@ class Route(object):
     def __call__(self, request):
         # Check if handler is a class based route
         if hasattr(self.handler, 'im_self'):
-            localstore = threading.local()
-            localstore.handler_class_instance = self.handler.im_class()
-            localstore.handler = getattr(localstore.handler_class_instance, self.handler.__name__)
-            return localstore.handler(request, **self.extract_url_params(request.ENV))
+            handler_class_instance = self.handler.im_class()
+            handler = getattr(handler_class_instance, self.handler.__name__)
+            return handler(request, **self.extract_url_params(request.ENV))
         else:
             return self.handler(request, **self.extract_url_params(request.ENV))
 

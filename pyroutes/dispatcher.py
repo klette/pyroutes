@@ -1,4 +1,3 @@
-import threading
 import pyroutes
 
 from pyroutes.http.request import Request
@@ -19,22 +18,16 @@ class Dispatcher(object):
         return chain(request)
 
     def dispatch(self, environ, start_response):
-        safe_data = threading.local()
-        safe_data.request = Request(environ)
+        request = Request(environ)
+        handler = self.find_request_handler(environ['PATH_INFO'])
+        response = self.create_middleware_chain(handler, request)
+        headers = self._combine_headers(response)
+        start_response(response.status_code, headers)
 
-        safe_data.handler = self.find_request_handler(environ['PATH_INFO'])
-
-        safe_data.response = self.create_middleware_chain(safe_data.handler,
-            safe_data.request)
-
-        safe_data.headers = safe_data.response.headers
-        safe_data.headers += safe_data.response.cookies.cookie_headers
-        start_response(safe_data.response.status_code, safe_data.headers)
-
-        if isinstance(safe_data.response.content, basestring):
-            return [safe_data.response.content]
+        if isinstance(response.content, basestring):
+            return [response.content]
         else:
-            return safe_data.response.content
+            return response.content
 
     def find_request_handler(self, current_path):
         """
@@ -102,3 +95,9 @@ class Dispatcher(object):
                     handler.handler.func_code.co_argcount:
                 return True
         return False
+
+    def _combine_headers(self, response):
+        """
+        Combine "normal" http headers with the cookie headers into single list
+        """
+        return response.headers + response.cookies.cookie_headers
