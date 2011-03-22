@@ -15,19 +15,45 @@ class Request(object):
     def __init__(self, environment):
         self.GET = {}
         self.POST = {}
+        self.PUT = {}
         self.FILES = {}
         self.ENV = environment
 
         self.GET = self.extract_get_data(environment)
         self.POST = self.extract_post_data(environment)
+        self.PUT = self.extract_put_data(environment)
 
         self.COOKIES = RequestCookieHandler(environment)
         self.params = {}
 
-
     def __repr__(self):
-        return "GET: %s\nPOST: %s\nCOOKIES: %s\nFILES: %s" % \
-            (self.GET, self.POST, self.COOKIES._raw_cookies, self.FILES.keys())
+        values = (self.GET, self.POST, self.PUT, self.COOKIES._raw_cookies,
+                  self.FILES.keys())
+        return "GET: %s\nPOST: %s\nPUT: %s\nCOOKIES: %s\nFILES: %s" % values
+
+    def extract_put_data(self, environment):
+        '''Extracts the file pointer from a PUT request.
+
+        The PUT method allows you to write the contents of the file to the
+        socket connection that is established with the server directly.
+
+        According to the [HTTP/1.1 specification (RFC2616)][0], the server must
+        return a status code of 201 (Created) if the file in question is newly
+        created, and 200 (OK) or 204 (No Content) if the request results in a
+        successful update.
+
+        When using the POST method, all the fields and files are combined into a
+        single multipart/form-data type object, and this has to be decoded by
+        the server side handler.
+
+        [0]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+
+        '''
+        if environment.get('REQUEST_METHOD', 'GET') == 'PUT':
+            if hasattr(environment['wsgi.input'], 'read'):
+                return environment['wsgi.input']
+
+        return None
 
     def extract_post_data(self, environment):
         data = {}
