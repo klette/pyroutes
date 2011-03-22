@@ -8,14 +8,9 @@ This module handles all the dispatching services for pyroutes.
 """
 
 from pyroutes.route import Route
-from pyroutes.middleware.errors import *
-import pyroutes.settings as settings
 from pyroutes.dispatcher import Dispatcher
 
-from wsgiref.util import shift_path_info
-
 __request__handlers__ = {}
-
 dispatcher = Dispatcher()
 
 def route(path, *args, **kwargs):
