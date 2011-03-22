@@ -47,7 +47,7 @@ def route(path, *args, **kwargs):
         if path in __request__handlers__:
             raise ValueError("Tried to redefine handler for %s with %s" % \
                     (path, func))
-        route_instance = Route(func, path, *args, **kwargs)
+        route_instance = Route(func, path)
         __request__handlers__[path] = route_instance
         return route_instance
     return decorator
