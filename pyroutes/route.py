@@ -28,7 +28,9 @@ class Route(object):
         defaults = self.handler.func_defaults or []
 
         if maps:
-            parts.extend((len(maps)-len(parts)-len(defaults))*[None])
+            spaces_to_extend = len(maps)-len(parts)-len(defaults)
+            if spaces_to_extend:
+                parts.extend(spaces_to_extend*[None])
             for key, value in zip(maps, parts + list(defaults)):
                 if key:
                     parameters[key] = value or ''
