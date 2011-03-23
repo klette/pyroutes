@@ -22,11 +22,9 @@ class Route(object):
         parameters = {}
         maps = None
 
-        return {}
-
         if len(self.handler.func_code.co_varnames) > 1:
             maps = self.handler.func_code.co_varnames[1:self.handler.func_code.co_argcount]
-        
+
         defaults = self.handler.func_defaults or []
 
         if maps:
