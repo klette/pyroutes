@@ -18,6 +18,7 @@ class TestFileServer(unittest.TestCase):
         self.request_env = {}
         wsgiref.util.setup_testing_defaults(self.request_env)
         self.request = Request(self.request_env)
+        self.request.matched_path = '/'
 
     def test_with_custom_settings(self):
         settings.DEV_MEDIA_BASE = '.'
@@ -30,15 +31,15 @@ class TestFileServer(unittest.TestCase):
         modified = datetime.fromtimestamp(os.path.getmtime('pyroutes'))
         modified = datetime.strftime(modified, "%a, %d %b %Y %H:%M:%S")
         self.request.ENV['PATH_INFO'] = '/pyroutes/'
-        response = utils.fileserver(self.request)
+        response = utils.fileserver(self.request, 'pyroutes')
         self.assertTrue(('Last-Modified', modified) in response.headers)
         self.request.ENV['HTTP_IF_MODIFIED_SINCE'] = modified
-        response = utils.fileserver(self.request)
+        response = utils.fileserver(self.request, 'pyroutes')
         self.assertEqual(response.status_code, '304 Not Modified')
 
     def test_no_upperlevel(self):
-        self.request.ENV['PATH_INFO'] = '/pyroutes/../../'
-        self.assertRaises(Http404, utils.fileserver, self.request)
+        self.request.ENV['PATH_INFO'] = '/../'
+        self.assertRaises(Http404, utils.fileserver, self.request, '..')
 
     def test_redirects(self):
         self.request.ENV['PATH_INFO'] = '/pyroutes'
@@ -47,7 +48,7 @@ class TestFileServer(unittest.TestCase):
 
     def test_listing(self):
         self.request.ENV['PATH_INFO'] = '/pyroutes/'
-        response = utils.fileserver(self.request)
+        response = utils.fileserver(self.request, 'pyroutes')
         self.assertEqual(response.status_code, '200 OK')
         for header in ['Content-Type', 'Last-Modified']:
             self.assertTrue(header in [a[0] for a in response.headers])
@@ -55,7 +56,7 @@ class TestFileServer(unittest.TestCase):
 
     def test_host_file(self):
         self.request.ENV['PATH_INFO'] = '/tests/utils_test.py'
-        response = utils.fileserver(self.request)
+        response = utils.fileserver(self.request, 'tests', 'utils_test.py')
         self.assertEqual(response.status_code, '200 OK')
         for header in ['Last-Modified', 'Content-Length']:
             self.assertTrue(header in [a[0] for a in response.headers])
@@ -74,4 +75,4 @@ class TestFileServer(unittest.TestCase):
 
     def test_noaccess(self):
         self.request.ENV['PATH_INFO'] = '/404path/'
-        self.assertRaises(Http404, utils.fileserver, self.request)
+        self.assertRaises(Http404, utils.fileserver, self.request, '404path')

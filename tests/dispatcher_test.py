@@ -23,30 +23,56 @@ class TestDispatcher(unittest.TestCase):
       if hasattr(settings, self.SITE_ROOT_ATTR_NAME):
         delattr(settings, self.SITE_ROOT_ATTR_NAME)
 
-    def createAnonRoute(self, path):
+    def createAnonRouteZero(self, path):
         @pyroutes.route(path)
-        def foo(bar, baz):
+        def foo(req):
             pass
         return foo
 
-    def createClassAnonRoute(self, path):
-        class Foo(object):
-            @pyroutes.route(path)
-            def foo(req, baz):
-                pass
+    def createAnonRouteOne(self, path):
+        @pyroutes.route(path)
+        def foo(req, bar):
+            pass
+        return foo
+
+    def createAnonRouteInf(self, path):
+        @pyroutes.route(path)
+        def foo(req, *args):
+            pass
+        return foo
+
+    def createAnonRouteOnePlus(self, path):
+        @pyroutes.route(path)
+        def foo(req, bar, baz='foo'):
+            pass
+        return foo
 
     def testFindRequestHandler(self):
         dispatcher = Dispatcher()
-        self.createAnonRoute('/')
-        self.createAnonRoute('/bar/baz/foo')
-        self.createAnonRoute('/baz')
-        self.createClassAnonRoute('/class')
-        self.assertTrue(dispatcher.find_request_handler('/foo') == None)
-        self.assertTrue(dispatcher.find_request_handler('/') != None)
-        self.assertTrue(dispatcher.find_request_handler('/bar/baz/foo') != None)
-        self.assertTrue(dispatcher.find_request_handler('/baz/param') != None)
-        self.assertTrue(dispatcher.find_request_handler('/class') != None)
-        self.assertTrue(dispatcher.find_request_handler('') != None)
+        root = self.createAnonRouteOnePlus('/')
+        self.assertEqual(dispatcher.find_request_handler(''), None)
+        self.assertEqual(dispatcher.find_request_handler('/'), None)
+        self.assertEqual(dispatcher.find_request_handler('/one'), root)
+        self.assertEqual(dispatcher.find_request_handler('/one/two'), root)
+        self.assertEqual(dispatcher.find_request_handler('/one/two/'), root)
+        self.assertEqual(dispatcher.find_request_handler('/one/two/three'), None)
+
+        foo = self.createAnonRouteZero('/foo')
+        self.assertEqual(dispatcher.find_request_handler('/foo'), foo)
+        self.assertEqual(dispatcher.find_request_handler('/foo/'), foo)
+        self.assertNotEqual(dispatcher.find_request_handler('/foo/bar'), foo)
+
+        infi = self.createAnonRouteInf('/bar/baz/foo/xim')
+        self.assertEqual(dispatcher.find_request_handler('/bar/baz/foo'), None)
+        self.assertEqual(dispatcher.find_request_handler('/bar/baz/foo/xim'), infi)
+        self.assertEqual(dispatcher.find_request_handler('/bar/baz/foo/xim/'), infi)
+        self.assertEqual(dispatcher.find_request_handler('/bar/baz/foo/xim/one/two/three/four/what/the/hell/you/waiting/for'), infi)
+
+        baz = self.createAnonRouteOne('/baz')
+        self.assertNotEqual(dispatcher.find_request_handler('/baz'), baz)
+        self.assertEqual(dispatcher.find_request_handler('/baz/param'), baz)
+        self.assertEqual(dispatcher.find_request_handler('/baz/param/two'), None)
+
 
     def testUpdateApplicationRootValue(self):
       self.dispatcher.dispatch(self.ENV, self.start_response)
