@@ -36,7 +36,7 @@ def devserver(application, port=8001, address='0.0.0.0', auto_reload=True):
     else:
         server_thread()
 
-def fileserver(request):
+def fileserver(request, *path_list):
     """
     Simple file server for development servers. Not for use in production
     environments. Typical usage::
@@ -54,8 +54,7 @@ def fileserver(request):
         files will be looked for in '/srv/media/files'
     """
 
-    path = request.ENV['PATH_INFO']
-    path_list = path.lstrip('/').split('/')
+    path_list = request.matched_path.strip('/').split('/') + list(path_list)
 
     # Do not expose entire file system
     if '..' in path_list:
@@ -85,8 +84,8 @@ def fileserver(request):
     ]
 
     if os.path.isdir(path):
-        if not path.endswith('/'):
-            return Redirect(path + '/')
+        if not request.ENV['PATH_INFO'].endswith('/'):
+            return Redirect(path.lstrip('.') + '/')
 
         listing = []
         files = []
@@ -101,7 +100,7 @@ def fileserver(request):
 
         template_data = {
             'file_list': listing,
-            'title': 'Listing of %s' % path
+            'title': 'Listing of %s' % path.lstrip('.')
         }
 
         templaterenderer = TemplateRenderer(
