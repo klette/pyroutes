@@ -78,31 +78,23 @@ class Dispatcher(object):
         on their arguments.
         """
         if hasattr(handler, 'im_func'):
-            return self._match_class_handler_arguments(handler, arg_count)
+            return self._match_handler_arguments(handler.im_func, arg_count, 2)
         else:
-            return self._match_function_handler_arguments(handler, arg_count)
+            return self._match_handler_arguments(handler, arg_count, 1)
 
-    def _match_class_handler_arguments(self, handler, arg_count):
-        """
-        Helper method for `_match_with_arguments` for dealing with
-        class based handlers.
-        """
-        handler_func = handler.handler.im_func
-        if handler_func.func_code.co_argcount - 2 != arg_count:
-            if len(handler_func.func_defaults or '') + 1 \
-                == handler_func.func_code.co_argcount:
-                return True
-        return False
-
-    def _match_function_handler_arguments(self, handler, arg_count):
+    def _match_handler_arguments(self, handler, arg_count, obligatories):
         """
         Helper method for `_match_with_arguments` for dealing with
         function based handlers.
+
+        The "obligatories" argument tells the function how many arguments the
+        handler will recieve from a different source. (i.e. classes get self as
+        well as the requestpassed to them, functions only the request)
         """
-        if handler.handler.func_code.co_argcount - 1 != arg_count:
-            if len(handler.handler.func_defaults or '') + 1 == \
-                    handler.handler.func_code.co_argcount:
-                return True
+        required_args = handler.handler.func_code.co_argcount - obligatories
+        defaults = len(handler.handler.func_defaults or '')
+        if arg_count <= required_args <= (defaults + arg_count):
+            return True
         return False
 
     def _combine_headers(self, response):
