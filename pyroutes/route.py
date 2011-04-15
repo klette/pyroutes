@@ -15,25 +15,9 @@ class Route(object):
         return self.handler.__name__
 
     def __call__(self, request):
-        return self.handler(request, **self.extract_url_params(request.ENV))
+        return self.handler(request, *self.extract_url_params(request.ENV))
 
     def extract_url_params(self, environ):
-        parts = environ.get('PATH_INFO','')[len(self.path)+1:].split('/')
-        if parts == ['']:
-            parts.pop()
-        parameters = {}
-        maps = None
-
-        if len(self.handler.func_code.co_varnames) > 1:
-            maps = self.handler.func_code.co_varnames[1:self.handler.func_code.co_argcount]
-
-        defaults = self.handler.func_defaults or []
-
-        if maps:
-            spaces_to_extend = len(maps)-len(parts)-len(defaults)
-            if spaces_to_extend:
-                parts.extend(spaces_to_extend*[None])
-            for key, value in zip(maps, parts + list(defaults)):
-                if key:
-                    parameters[key] = value or ''
-        return parameters
+        subpath = environ.get('PATH_INFO','')[len(self.path):]
+        args = subpath.strip('/').split('/')
+        return args
