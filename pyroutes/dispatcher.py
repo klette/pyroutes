@@ -27,7 +27,8 @@ class Dispatcher(object):
             settings.SITE_ROOT = environ.get('SCRIPT_NAME', '').rstrip('/')
 
         request = Request(environ)
-        handler = self.find_request_handler(environ['PATH_INFO'])
+        handler, matched_path = self.find_request_handler(environ['PATH_INFO'])
+        request.matched_path = matched_path
         response = self.create_middleware_chain(handler, request)
         headers = self._combine_headers(response)
         start_response(response.status_code, headers)
@@ -51,13 +52,15 @@ class Dispatcher(object):
         if not current_path.endswith('/'):
             current_path += '/'
 
-        while current_path != '/':
+        while True:
             current_path = current_path[:current_path.rfind('/')] or '/'
             if current_path in pyroutes.__request__handlers__:
                 handler = pyroutes.__request__handlers__[current_path]
                 argument_count = self._get_argument_count(complete_path, current_path)
                 if self._match_with_arguments(handler, argument_count):
-                    return handler
+                    return handler, current_path
+            if current_path == '/':
+                return None, None
 
     def _get_argument_count(self, complete_path, current_path):
         """
