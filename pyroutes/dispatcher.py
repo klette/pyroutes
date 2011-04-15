@@ -80,7 +80,7 @@ class Dispatcher(object):
         """
         args, varargs, varkw, defaults = inspect.getargspec(handler.handler)
 
-        if varkw is not None or varargs is not None:
+        if varargs is not None:
             return True
 
         required_args = len(args) - 1
