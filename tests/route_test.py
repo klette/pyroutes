@@ -37,18 +37,11 @@ class RouteTest(unittest.TestCase):
             pass
         self.assertEquals(route.extract_url_params(env), ['foo', 'faz'])
 
-        route = Route(_pass, '/')
-        env = {'PATH_INFO': '/foo/foo/faz'}
-        def test(req, bar, baz, bar='foo'):
-            pass
-        self.assertEquals(route.extract_url_params(env), ['foo', 'foo', 'faz'])
+        route_instance = Route(_pass, '/')
+        env = {'PATH_INFO': '/foo/foo'}
+        self.assertEquals(route_instance.extract_url_params(env), ['foo', 'foo'])
 
-    def testExtractUrlParamsFromClassView(self):
-        class Foo(object):
-            @route('/classtest')
-            def foo(request, bar):
-                pass
-        env = {'PATH_INFO': '/classtest/foo'}
-        _route = dispatcher.find_request_handler('/classtest')
-        self.assertEquals(_route.extract_url_params(env), {'bar': 'foo'})
 
+        route_instance = Route(_pass, '/xim')
+        env = {'PATH_INFO': '/xim/foo/bar'}
+        self.assertEquals(route.extract_url_params(env), ['foo', 'bar'])
