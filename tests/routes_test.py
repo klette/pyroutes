@@ -13,6 +13,7 @@ class TestRoute(unittest.TestCase):
     def setUp(self):
         pyroutes.__request__handlers__ = {}
         pyroutes.settings.DEBUG = True
+        pyroutes.settings.SITE_ROOT = "/myapp"
 
         self.request_env = {}
         wsgiref.util.setup_testing_defaults(self.request_env)
@@ -41,7 +42,15 @@ class TestRoute(unittest.TestCase):
 
     def testReverseUrl(self):
         self.createAnonRoute('/')
-        self.assertEquals(pyroutes.reverse_url('foo'), '/')
+        self.assertEquals(pyroutes.reverse_url('foo'), '/myapp/')
 
     def testReverseUrlNotFound(self):
         self.assertRaises(ValueError, pyroutes.reverse_url, 'bar')
+
+    def testReverseUrlAbsolutePath(self):
+        self.createAnonRoute("/path")
+        self.assertEquals("/path", pyroutes.reverse_url("foo", absolute_path=True))
+
+    def testReverseUrlRelativePath(self):
+        self.createAnonRoute("/path")
+        self.assertEquals("/myapp/path", pyroutes.reverse_url("foo"))

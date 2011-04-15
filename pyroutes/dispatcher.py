@@ -18,6 +18,10 @@ class Dispatcher(object):
         return chain(request)
 
     def dispatch(self, environ, start_response):
+        # Update site root value so pyroutes can make root-relative path redirects
+        if not hasattr(settings, 'SITE_ROOT'):
+            settings.SITE_ROOT = environ.get('SCRIPT_NAME', '').rstrip('/')
+
         request = Request(environ)
         handler = self.find_request_handler(environ['PATH_INFO'])
         response = self.create_middleware_chain(handler, request)

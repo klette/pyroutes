@@ -77,10 +77,15 @@ class TestExceptions(unittest.TestCase):
         self._test_including_custom_templates(exception, 500, content)
 
 class TestRedirectResponse(unittest.TestCase):
+    def setUp(self):
+      settings.SITE_ROOT = "/app"
+
     def test_init(self):
-        redirect = Redirect('http://google.com')
+        redirect = Redirect('http://google.com', absolute_path=True)
         self.assertEqual(redirect.status_code, '302 Found')
         self.assertEqual(redirect.headers, [('Location', "http://google.com")])
         self.assertEqual(redirect.content, 'redirect')
 
-
+    def test_redirect_with_absolute_path(self):
+        redirect = Redirect("/other/path")
+        self.assertEqual(redirect.headers, [('Location', '/app/other/path')])
