@@ -27,8 +27,7 @@ class Dispatcher(object):
             settings.SITE_ROOT = environ.get('SCRIPT_NAME', '').rstrip('/')
 
         request = Request(environ)
-        handler, matched_path = self.find_request_handler(environ['PATH_INFO'])
-        request.matched_path = matched_path
+        handler = self.find_request_handler(environ['PATH_INFO'], request)
         response = self.create_middleware_chain(handler, request)
         headers = self._combine_headers(response)
         start_response(response.status_code, headers)
@@ -38,7 +37,7 @@ class Dispatcher(object):
         else:
             return response.content
 
-    def find_request_handler(self, current_path):
+    def find_request_handler(self, current_path, request=None):
         """
         Locates the handler for the specified path. Return None if not found.
         """
@@ -58,9 +57,11 @@ class Dispatcher(object):
                 handler = pyroutes.__request__handlers__[current_path]
                 argument_count = self._get_argument_count(complete_path, current_path)
                 if self._match_with_arguments(handler, argument_count):
-                    return handler, current_path
+                    if request is not None:
+                        request.matched_path = current_path
+                    return handler
             if current_path == '/':
-                return None, None
+                return
 
     def _get_argument_count(self, complete_path, current_path):
         """
