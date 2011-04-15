@@ -21,7 +21,7 @@ DEBUG = False
 # For setting the default content type
 DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 
-# Secret key for crypto. SET THIS IN pyroutes_settings!
+# Secret key for crypto. SET THIS in pyroutes_settings!
 SECRET_KEY = None
 
 # Location for templates. Used by TemplateRenderer
