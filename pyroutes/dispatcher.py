@@ -38,7 +38,7 @@ class Dispatcher(object):
         Locates the handler for the specified path. Return None if not found.
         """
 
-        # If we don't have a current path, look or the root handler.
+        # If we don't have a current path, look for the root handler.
         # See issue #2 <http://github.com/pyroutes/pyroutes/issues/2>
         if current_path == '':
             current_path = '/'
