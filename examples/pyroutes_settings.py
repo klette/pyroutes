@@ -7,7 +7,7 @@ DEBUG = True
 # Used for custom HttpException.
 # Passed variables are request and title.
 # Defining only page templates and not base template is allowed.
-#CUSTOM_#TEMPLATE_ASE = './templates/pyroutes/base_override.xml'
+#CUSTOM_BASE_TEMPLATE = './templates/pyroutes/base_override.xml'
 #TEMPLATE_403 = './templates/403.xml'
 #TEMPLATE_404 = './templates/404.xml'
 #TEMPLATE_500 = './templates/500.xml'
