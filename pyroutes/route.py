@@ -19,6 +19,8 @@ class Route(object):
 
     def extract_url_params(self, environ):
         parts = environ.get('PATH_INFO','')[len(self.path)+1:].split('/')
+        if parts == ['']:
+            parts.pop()
         parameters = {}
         maps = None
 
