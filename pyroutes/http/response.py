@@ -105,9 +105,8 @@ class Redirect(Response):
     def __init__(self, location, absolute_path=False):
         self.content = "redirect"
 
-        if location.startswith('/') and not absolute_path and \
-                not '://' in location:
-            location = '/'.join([settings.SITE_ROOT, location.lstrip('/')])
+        if location.startswith('/') and not absolute_path:
+            location = '/'.join([settings.SITE_ROOT.rstrip('/'), location.lstrip('/')])
 
         self.headers = [('Location', location)]
         self.status_code = '302 %s' % responses[302]
