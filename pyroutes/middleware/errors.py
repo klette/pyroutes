@@ -2,7 +2,7 @@ import sys
 import traceback
 
 from pyroutes import settings
-from pyroutes.http.response import Http404, Http500
+from pyroutes.http.response import HttpException, Http404, Http500
 
 class NotFoundMiddleware(object):
     def __init__(self, passthrough):
@@ -25,6 +25,8 @@ class ErrorHandlerMiddleware(object):
     def __call__(self, request):
         try:
             self.response = self.passthrough(request)
+        except HttpException, exception:
+            return exception.get_response(request.ENV['PATH_INFO'])
         except Exception, exception:
             error = Http500()
 
