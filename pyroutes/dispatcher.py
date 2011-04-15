@@ -12,6 +12,8 @@ class Dispatcher(object):
         for full_path in settings.MIDDLEWARE:
             module_name, class_name = full_path.rsplit('.', 1)
 
+            # fromlist=[classname] makes very little sense.
+            # TODO: Find out what fromlist is.
             module = __import__(module_name, fromlist=[class_name])
             middleware = getattr(module, class_name)
 
