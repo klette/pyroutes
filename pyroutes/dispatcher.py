@@ -43,23 +43,17 @@ class Dispatcher(object):
         if current_path == '':
             current_path = '/'
 
-        complete_path = current_path
-        handler = pyroutes.__request__handlers__.get(current_path, None)
+        complete_path = current_path.rstrip('/')
+        if not current_path.endswith('/'):
+            current_path += '/'
 
-        if handler:
-            return handler
-
-        while current_path:
+        while current_path != '/':
+            current_path = current_path[:current_path.rfind('/')] or '/'
             if current_path in pyroutes.__request__handlers__:
                 handler = pyroutes.__request__handlers__[current_path]
                 argument_count = self._get_argument_count(complete_path, current_path)
                 if self._match_with_arguments(handler, argument_count):
                     return handler
-
-            if current_path == '/':
-                return
-
-            current_path = current_path[:current_path.rfind('/')] or '/'
 
     def _get_argument_count(self, complete_path, current_path):
         """
