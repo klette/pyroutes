@@ -1,3 +1,5 @@
+import inspect
+
 import pyroutes
 
 from pyroutes.http.request import Request
@@ -71,8 +73,13 @@ class Dispatcher(object):
         handler. It also tries to match against handlers with defaults
         on their arguments.
         """
-        required_args = handler.handler.func_code.co_argcount - 1
-        defaults = len(handler.handler.func_defaults or '')
+        args, varargs, varkw, defaults = inspect.getargspec(handler.handler)
+
+        if varkw is not None or varargs is not None:
+            return True
+
+        required_args = len(args) - 1
+        defaults = len(defaults or '')
         if arg_count <= required_args <= (defaults + arg_count):
             return True
         return False
