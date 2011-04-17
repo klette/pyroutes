@@ -20,6 +20,6 @@ class Route(object):
     def extract_url_params(self, environ):
         subpath = environ.get('PATH_INFO','')[len(self.path):]
         args = subpath.strip('/').split('/')
-        if args == ['']:
-            return []
+        if args[-1] == '':
+            return args.pop()
         return args
