@@ -18,7 +18,6 @@ you want to handle requests to a certain path. pyroutes always
 tries to use the most specified path-handler available for the request.
 That means ``@route('/foo/bar')`` will always be used over ``@route('/foo')``
 given that request path is ``/foo/bar`` or longer that is :-)
-Notice that paths have to be given without a trailing slash.
 
 Example::
 
