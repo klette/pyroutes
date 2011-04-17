@@ -61,14 +61,12 @@ class Response(object):
     A wrapper class for a response to a route. Takes
     a content, headers and status_code parameter.
     headers should be passed in as a list of tuples.
+    status_code can be a string including status name, or an integer.
     If default_content_header is set and no Content-Type header is set,
     settings.DEFAULT_CONTENT_TYPE is added as Content-Type.
     """
     def __init__(self, content=None, headers=None, status_code='200 OK',
             default_content_header=True):
-        # TODO: Should status_code include text? Isn't it better to just pass
-        # the code and look up the name in the dict above, responses?
-        # Update: oh, we actually allow both. Maybe document that? =)
         if content is None:
             self.content = []
         else:
