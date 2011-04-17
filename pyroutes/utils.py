@@ -90,7 +90,7 @@ def fileserver(request, *path_list):
         files = []
         for entry in sorted(os.listdir(path)):
             if os.path.isdir(os.path.join(path, entry)):
-                listing.append({'li': 
+                listing.append({'li':
                     {'a': entry + "/", 'a/href': entry + "/"}})
             else:
                 files.append({'li': {'a': entry, 'a/href': entry}})

@@ -71,7 +71,7 @@ class ResponseCookieHandler(object):
             self.cookie_headers.append(
                 ('Set-Cookie', '%s=%s; expires=%s' % (key, value, exp)))
             self.cookie_headers.append(
-                ('Set-Cookie', '%s_hash=%s; expires=%s' 
+                ('Set-Cookie', '%s_hash=%s; expires=%s'
                     % (key, cookie_hash, exp)))
         else:
             self.cookie_headers.append(('Set-Cookie', '%s=%s' % (key, value)))
