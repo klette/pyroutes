@@ -11,7 +11,7 @@ from pyroutes.http.response import Response
 
 class TestRoute(unittest.TestCase):
     def setUp(self):
-        pyroutes.__request__handlers__ = {}
+        pyroutes.__routes__ = {}
         pyroutes.settings.DEBUG = True
         pyroutes.settings.SITE_ROOT = "/myapp"
 
@@ -31,13 +31,13 @@ class TestRoute(unittest.TestCase):
 
     def testBasicRoute(self):
         self.createAnonRoute('/')
-        self.assertTrue('/' in pyroutes.__request__handlers__)
-        self.assertTrue(len(pyroutes.__request__handlers__) == 1)
+        self.assertTrue('/' in pyroutes.__routes__)
+        self.assertTrue(len(pyroutes.__routes__) == 1)
 
     def testDoubleRouteException(self):
         self.createAnonRoute('/')
         self.assertRaises(ValueError, self.createAnonRoute, '/')
-        self.assertTrue(len(pyroutes.__request__handlers__) == 1)
+        self.assertTrue(len(pyroutes.__routes__) == 1)
 
 
     def testReverseUrl(self):

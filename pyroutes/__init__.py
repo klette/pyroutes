@@ -10,7 +10,7 @@ This module handles all the dispatching services for pyroutes.
 from pyroutes.route import Route
 from pyroutes.dispatcher import Dispatcher
 
-__request__handlers__ = {}
+__routes__ = {}
 dispatcher = Dispatcher()
 
 def route(path):
@@ -44,28 +44,28 @@ def route(path):
         """
         See the pyroutes.route docstring
         """
-        if path in __request__handlers__:
+        if path in __routes__:
             raise ValueError("Tried to redefine handler for %s with %s" % \
                     (path, func))
         route_instance = Route(func, path)
-        __request__handlers__[path] = route_instance
+        __routes__[path] = route_instance
         return route_instance
     return decorator
 
 def reverse_url(handler_name, absolute_path=False):
     """
-    Returns the path for a handler.
+    Returns the path for a route.
     Example usage:
     >>> reverse_url('login')
     /account/login
     """
-    for path, handler in __request__handlers__.items():
-        if handler.__name__ == handler_name:
+    for path, route in __routes__.items():
+        if route.handler.__name__ == handler_name:
             if absolute_path:
                 return path
             else:
                 return '/'.join([settings.SITE_ROOT, path.strip('/')])
-    raise ValueError('No handler named %s' % handler_name)
+    raise ValueError('No handler function named %s' % handler_name)
 
 def application(environ, start_response):
     """

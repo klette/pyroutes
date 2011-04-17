@@ -7,8 +7,8 @@ import pyroutes.settings as settings
 
 class Dispatcher(object):
 
-    def create_middleware_chain(self, handler, request):
-        chain = handler
+    def create_middleware_chain(self, route, request):
+        chain = route
         for full_path in settings.MIDDLEWARE:
             module_name, class_name = full_path.rsplit('.', 1)
 
@@ -27,8 +27,8 @@ class Dispatcher(object):
             settings.SITE_ROOT = environ.get('SCRIPT_NAME', '').rstrip('/')
 
         request = Request(environ)
-        handler = self.find_request_handler(environ['PATH_INFO'], request)
-        response = self.create_middleware_chain(handler, request)
+        route = self.find_route(environ['PATH_INFO'], request)
+        response = self.create_middleware_chain(route, request)
         headers = self._combine_headers(response)
         start_response(response.status_code, headers)
 
@@ -37,12 +37,12 @@ class Dispatcher(object):
         else:
             return response.content
 
-    def find_request_handler(self, current_path, request=None):
+    def find_route(self, current_path, request=None):
         """
-        Locates the handler for the specified path. Return None if not found.
+        Locates the route for the specified path. Return None if not found.
         """
 
-        # If we don't have a current path, look for the root handler.
+        # If we don't have a current path, look for the root route.
         # See issue #2 <http://github.com/pyroutes/pyroutes/issues/2>
         if current_path == '':
             current_path = '/'
@@ -53,13 +53,13 @@ class Dispatcher(object):
 
         while True:
             current_path = current_path[:current_path.rfind('/')] or '/'
-            if current_path in pyroutes.__request__handlers__:
-                handler = pyroutes.__request__handlers__[current_path]
+            if current_path in pyroutes.__routes__:
+                route = pyroutes.__routes__[current_path]
                 argument_count = self._get_argument_count(complete_path, current_path)
-                if self._match_with_arguments(handler, argument_count):
+                if self._match_with_arguments(route, argument_count):
                     if request is not None:
                         request.matched_path = current_path
-                    return handler
+                    return route
             if current_path == '/':
                 return
 
@@ -72,14 +72,13 @@ class Dispatcher(object):
         current_path_comps = current_path.rstrip('/').split('/')
         return len(complete_path_comps) - len(current_path_comps)
 
-    def _match_with_arguments(self, handler, arg_count):
+    def _match_with_arguments(self, route, arg_count):
         """
-        Returns True if the number of remaining URL elements for
-        the tested handler matches the number of arguments for the
-        handler. It also tries to match against handlers with defaults
-        on their arguments.
+        Returns True if the number of remaining URL elements for the tested
+        route matches the number of arguments for the route handler. It takes
+        optional arguments and *args into account.
         """
-        args, varargs, varkw, defaults = inspect.getargspec(handler.handler)
+        args, varargs, varkw, defaults = inspect.getargspec(route.handler)
 
         if varargs is not None:
             return True
