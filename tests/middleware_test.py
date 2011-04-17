@@ -47,3 +47,15 @@ class TestErrorHandlerMiddleware(unittest.TestCase):
             self.assertTrue('ValueError' in sys.stderr.read())
         finally:
             sys.stderr = old_sys
+
+    def test_return_403(self):
+        def errorous(req):
+            raise Http403
+        ehm = ErrorHandlerMiddleware(errorous)
+        self.assertEquals(ehm(self.request).status_code, '403 Forbidden')
+
+    def test_return_404(self):
+        def errorous(req):
+            raise Http404
+        ehm = ErrorHandlerMiddleware(errorous)
+        self.assertEquals(ehm(self.request).status_code, '404 Not Found')
