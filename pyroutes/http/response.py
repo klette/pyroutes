@@ -66,6 +66,9 @@ class Response(object):
     """
     def __init__(self, content=None, headers=None, status_code='200 OK',
             default_content_header=True):
+        # TODO: Should status_code include text? Isn't it better to just pass
+        # the code and look up the name in the dict above, responses?
+        # Update: oh, we actually allow both. Maybe document that? =)
         if content is None:
             self.content = []
         else:
@@ -79,6 +82,8 @@ class Response(object):
         if default_content_header and 'Content-Type' not in header_names:
             # Whether or not this is a safe operation may be python/wsgiref
             # version dependent. TODO: Should be tested and documented.
+            # ... Well, nothing has failed as a cause of this for anyone in all
+            # the time after we did the change. Remove the TODO?
             self.headers.append(('Content-Type', settings.DEFAULT_CONTENT_TYPE))
         if not headers is None:
             self.headers += headers
