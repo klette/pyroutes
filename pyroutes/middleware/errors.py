@@ -46,6 +46,3 @@ class ErrorHandlerMiddleware(object):
                 self.response = error.get_response(request.ENV['PATH_INFO'])
 
         return self.response
-
-class HandlerDidNotReturnReponseObjectException(Exception):
-    pass
