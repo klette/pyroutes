@@ -74,6 +74,15 @@ class TestDispatcher(unittest.TestCase):
         self.assertEqual(dispatcher.find_request_handler('/baz/param/two'), None)
 
 
+    def testRouteWithDefaultValueNone(self):
+      @pyroutes.route('/somepath')
+      def foo(req, param=None):
+        self.assertEquals(None, param)
+        return Response('response')
+
+      self.ENV['PATH_INFO'] = '/somepath'
+      self.dispatcher.dispatch(self.ENV, self.start_response)
+
     def testUpdateApplicationRootValue(self):
       try:
           self.dispatcher.dispatch(self.ENV, self.start_response)
