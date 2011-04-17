@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import unittest
 import wsgiref.util
@@ -30,12 +30,21 @@ class TestFileServer(unittest.TestCase):
     def test_if_modified_since(self):
         modified = datetime.fromtimestamp(os.path.getmtime('pyroutes'))
         modified = datetime.strftime(modified, "%a, %d %b %Y %H:%M:%S")
+
         self.request.ENV['PATH_INFO'] = '/pyroutes/'
         response = utils.fileserver(self.request, 'pyroutes')
         self.assertTrue(('Last-Modified', modified) in response.headers)
+
         self.request.ENV['HTTP_IF_MODIFIED_SINCE'] = modified
         response = utils.fileserver(self.request, 'pyroutes')
         self.assertEqual(response.status_code, '304 Not Modified')
+
+        modified = datetime.fromtimestamp(os.path.getmtime('pyroutes'))
+        modified -= timedelta(days=1)
+        modified = datetime.strftime(modified, "%a, %d %b %Y %H:%M:%S")
+        self.request.ENV['HTTP_IF_MODIFIED_SINCE'] = modified
+        response = utils.fileserver(self.request, 'pyroutes')
+        self.assertEqual(response.status_code, '200 OK')
 
     def test_no_upperlevel(self):
         self.request.ENV['PATH_INFO'] = '/../'
