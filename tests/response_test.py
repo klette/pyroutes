@@ -89,3 +89,7 @@ class TestRedirectResponse(unittest.TestCase):
     def test_redirect_with_absolute_path(self):
         redirect = Redirect("/other/path")
         self.assertEqual(redirect.headers, [('Location', '/app/other/path')])
+
+    def test_redirect_completely_relative(self):
+        redirect = Redirect("other/path")
+        self.assertEqual(redirect.headers, [('Location', 'other/path')])
