@@ -36,8 +36,8 @@ def route(path):
 
     One property of the routes are that matches are done on an best effort
     basis, starting from the top of the tree and going down. This results in
-    handler being delt request for their defined path and every path over it.
-    This is true for all paths except the root-handler ('/').
+    route being delt request for their defined path and any path under it
+    matching the argument count of the function.
     """
 
     def decorator(func):
