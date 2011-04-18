@@ -20,11 +20,10 @@ class NotFoundMiddleware(object):
 class ErrorHandlerMiddleware(object):
     def __init__(self, passthrough):
         self.passthrough = passthrough
-        self.response = None
 
     def __call__(self, request):
         try:
-            self.response = self.passthrough(request)
+            response = self.passthrough(request)
         except HttpException, exception:
             return exception.get_response(request.ENV['PATH_INFO'])
         except Exception, exception:
@@ -37,12 +36,12 @@ class ErrorHandlerMiddleware(object):
             sys.stderr.write(trace)
 
             if settings.DEBUG:
-                self.response = error.get_response(
+                response = error.get_response(
                         request.ENV['PATH_INFO'],
                         description="%s: %s" % (exception.__class__.__name__,
                                             exception),
                         traceback=trace)
             else:
-                self.response = error.get_response(request.ENV['PATH_INFO'])
+                response = error.get_response(request.ENV['PATH_INFO'])
 
-        return self.response
+        return response
