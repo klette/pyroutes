@@ -3,6 +3,8 @@ from pyroutes.middleware.errors import *
 from pyroutes.http.response import *
 from pyroutes.http.request import Request
 import wsgiref.util
+import stderr_helper
+
 def passtrough(req):
     return True
 
@@ -37,16 +39,12 @@ class TestErrorHandlerMiddleware(unittest.TestCase):
         def errorous(req):
             raise ValueError("foobar")
         try:
-            import sys
-            import cStringIO
-            old_sys = sys.stderr
-            sys.stderr = cStringIO.StringIO()
+            stderr_helper.redirect_stderr()
             ehm = ErrorHandlerMiddleware(errorous)
             self.assertEquals(ehm(self.request).status_code, '500 Internal Server Error')
-            sys.stderr.seek(0)
-            self.assertTrue('ValueError' in sys.stderr.read())
+            self.assertTrue('ValueError' in stderr_helper.get_stderr_data())
         finally:
-            sys.stderr = old_sys
+            stderr_helper.revert_stderr()
 
     def test_return_403(self):
         def errorous(req):

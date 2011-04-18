@@ -9,6 +9,8 @@ import pyroutes
 from pyroutes.http.request import Request
 from pyroutes.http.response import Response
 
+import stderr_helper
+
 class TestRoute(unittest.TestCase):
     def setUp(self):
         pyroutes.__routes__ = {}
@@ -36,9 +38,13 @@ class TestRoute(unittest.TestCase):
 
     def testDoubleRouteException(self):
         self.createAnonRoute('/')
-        self.assertRaises(ValueError, self.createAnonRoute, '/')
-        self.assertTrue(len(pyroutes.__routes__) == 1)
-
+        try:
+            stderr_helper.redirect_stderr()
+            self.createAnonRoute('/')
+            self.assertTrue(len(pyroutes.__routes__) == 1)
+            self.assertTrue('Redefining' in stderr_helper.get_stderr_data())
+        finally:
+            stderr_helper.revert_stderr()
 
     def testReverseUrl(self):
         self.createAnonRoute('/')
