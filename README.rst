@@ -12,18 +12,21 @@ work a bit.
 
 How it works
 -------------
-The core of the system is WSGI, and a decorator called @route.
-You simple create add a route decorator in front of the function
-you want to handle requests to a certain path. pyroutes always
-tries to use the most specified path-handler available for the request.
-That means ``@route('/foo/bar')`` will always be used over ``@route('/foo')``
-given that request path is ``/foo/bar`` or longer that is :-)
 
 Example::
 
     @route('/')
-    def index(request):
-        return Response('Hello world!')
+    def index(request, name='world'):
+        return Response('Hello %s!' % name)
+
+    GET /
+    Hello world!
+
+    GET /foo
+    Hello foo
+
+
+See http://www.pyroutes.com for more information.
 
 
 Templating
