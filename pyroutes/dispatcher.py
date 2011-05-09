@@ -6,8 +6,16 @@ from pyroutes.http.request import Request
 import pyroutes.settings as settings
 
 class Dispatcher(object):
+    """
+    The pyroutes dispatcher object. An instance of this object is kept directly
+    on the pyroutes module for all dispatching purposes.
+    """
 
     def create_middleware_chain(self, route, request):
+        """
+        Builds the middleware chain. I.e. wrap the route in all the middlewares
+        indicated in settings.MIDDLEWARE.
+        """
         chain = route
         for full_path in settings.MIDDLEWARE:
             module_name, class_name = full_path.rsplit('.', 1)
@@ -20,6 +28,10 @@ class Dispatcher(object):
         return chain(request)
 
     def dispatch(self, environ, start_response):
+        """
+        Dispathes a request. The call signature is that of a standard WSGI
+        application.
+        """
         # Update site root value so pyroutes can make root-relative path redirects
         if not hasattr(settings, 'SITE_ROOT'):
             settings.SITE_ROOT = environ.get('SCRIPT_NAME', '').rstrip('/')

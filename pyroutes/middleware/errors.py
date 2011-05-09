@@ -5,6 +5,10 @@ from pyroutes import settings, logger
 from pyroutes.http.response import HttpException, Http404, Http500
 
 class NotFoundMiddleware(object):
+    """
+    Returns a HTTP 404 when the middleware chain is passed None (i.e. if no
+    handler is found for the path).
+    """
     def __init__(self, passthrough):
         self.passthrough = passthrough
 

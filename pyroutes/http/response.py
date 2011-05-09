@@ -112,6 +112,11 @@ class Redirect(Response):
         self.cookies = ResponseCookieHandler()
 
 class HttpException(Exception):
+    """
+    HttpException objects are to be used by end users to facilitate returning
+    HTTP 403, 404 and 500 pages with standard documents.
+    Use e.g. settings.TEMPLATE_403 to override the document for HTTP 403.
+    """
     def __init__(self):
         if not hasattr(self, 'code'):
             raise TypeError('You tried to instanciate HttpException. ' \

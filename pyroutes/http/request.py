@@ -11,6 +11,10 @@ except ImportError:
     import StringIO
 
 class Request(object):
+    """
+    The pyroutes Request object. Contains all information about a request, like
+    GET/POST and environment data.
+    """
 
     def __init__(self, environment):
         self.GET = {}
