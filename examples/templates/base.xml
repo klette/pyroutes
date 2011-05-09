@@ -3,13 +3,13 @@
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:t="http://template.sesse.net/" xml:lang="en">
-<head>
-  <title>pyroutes wiki demo</title>
-  <link href="/media/style.css" rel="stylesheet" type="text/css" />
-</head>
+  <head>
+    <title>pyroutes wiki demo</title>
+    <link href="/media/style.css" rel="stylesheet" type="text/css" />
+  </head>
 
-<body>
+  <body>
     <h1>pyroutes demo wiki</h1>
-<t:contents />
-</body>
+    <t:contents />
+  </body>
 </html>

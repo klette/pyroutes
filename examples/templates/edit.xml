@@ -1,7 +1,6 @@
 <t:dummy xmlns:t="http://template.sesse.net/">
-	<form t:id="edit_form" action="foobar" method="post">
-        	<textarea name="new_node_data" t:id="edit_contents" cols="80" rows="10"/>
-            	<input type="submit" />
-        </form>
+  <form t:id="edit_form" action="foobar" method="post">
+    <textarea name="new_node_data" t:id="edit_contents" cols="80" rows="10"/>
+    <input type="submit" />
+  </form>
 </t:dummy>
-
