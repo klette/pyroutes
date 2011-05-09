@@ -12,10 +12,10 @@ class TestResponse(unittest.TestCase):
         self.assertEqual(response.status_code, '200 OK')
 
     def test_init(self):
-        response = Response("Hello", [('Content-Length', 1000)], '500 Error')
+        response = Response("Hello", [('Content-Length', 1000)], 500)
         self.assertEqual(response.content, "Hello")
         self.assertEqual(response.headers, [('Content-Type', settings.DEFAULT_CONTENT_TYPE), ('Content-Length', 1000)])
-        self.assertEqual(response.status_code, '500 Error')
+        self.assertEqual(response.status_code, '500 Internal Server Error')
 
     def test_duplicated_content_type_header(self):
         content_header = [("Content-Type", "application/pdf")]
