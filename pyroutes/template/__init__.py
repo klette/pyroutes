@@ -29,7 +29,7 @@ class TemplateRenderer(object):
         """
         self.base_template = base_template
         self.inclusion_param = inclusion_param
-        if template_dir != None:
+        if template_dir is not None:
             self.template_dir = template_dir
         elif settings.TEMPLATE_DIR:
             self.template_dir = settings.TEMPLATE_DIR
