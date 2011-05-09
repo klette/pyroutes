@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 import cgi
-import os
 
 from pyroutes.http.cookies import RequestCookieHandler
 
