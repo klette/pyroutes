@@ -17,7 +17,7 @@ class RequestCookieHandler(object):
     def __init__(self, environ=None):
         if environ and 'HTTP_COOKIE' in environ:
             self._raw_cookies = dict(
-                    map(str.strip, c.split('=', 1))
+                    [part.strip() for part in c.split('=', 1)]
                     for c in environ['HTTP_COOKIE'].split(';'))
         else:
             self._raw_cookies = {}
