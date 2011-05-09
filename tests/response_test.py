@@ -45,7 +45,7 @@ class TestExceptions(unittest.TestCase):
             # Then, with a template without inheritence
             self._test_http_exception(exception, code, code_status)
             setattr(settings, 'TEMPLATE_%s' % code, path.join(base, '%d.xml' % code))
-            settings.CUSTOM_BASE_TEMPLATE = path.join(base, 'base.xml')
+            settings.CUSTOM_BASE_TEMPLATE = path.join(base, settings.BUILTIN_BASE_TEMPLATE)
             # Finally, with templates with inheritance
             self._test_http_exception(exception, code, code_status)
         finally:
