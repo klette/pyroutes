@@ -51,16 +51,6 @@ class TestExceptions(unittest.TestCase):
         finally:
             delattr(settings, 'TEMPLATE_%s' % code)
 
-    def test_rendering_with_template_dir_defined(self):
-        old_template_dir = settings.TEMPLATE_DIR
-        try:
-            settings.TEMPLATE_DIR='no_such_folder'
-            exception = Http500
-            content = '500 Internal Server Error'
-            self._test_http_exception(exception, 500, content)
-        finally:
-            settings.TEMPLATE_DIR = old_template_dir
-
     def test_403_exception(self):
         exception = Http403
         content = '403 Forbidden'
