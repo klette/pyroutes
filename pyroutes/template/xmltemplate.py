@@ -35,13 +35,14 @@ def process(node, obj, clean = True):
                 if not attrs is None:
                     for i in range(attrs.length):
                         attr = attrs.item(i)
-                        if attr.namespaceURI == "http://template.sesse.net/" \
-                            and attr.localName == "id":
+                        if (attr.namespaceURI == "http://template.sesse.net/"
+                                and attr.localName == "id"):
                             tag_id = attr.value
                             if clean:
                                 attrs_to_remove.append(attr.name)
-                        if attr.name.startswith("xmlns:") and \
-                           attr.value == "http://template.sesse.net/" and clean:
+                        if (attr.name.startswith("xmlns:") and
+                                attr.value == "http://template.sesse.net/" and
+                                clean):
                             attrs_to_remove.append(attr.name)
 
                     for attr in attrs_to_remove:
@@ -54,13 +55,13 @@ def process(node, obj, clean = True):
                 for key in obj.keys():
                     if key.startswith(child.tagName + "/"):
                         child.setAttribute(key.split("/")[1], obj[key])
-                    elif (not tag_id is None) and \
-                      key.startswith("#" + tag_id + "/"):
+                    elif ((not tag_id is None) and
+                            key.startswith("#" + tag_id + "/")):
                         child.setAttribute(key.split("/")[1], obj[key])
 
                     if not processed:
-                        if key == child.localName or ((not tag_id is None) and \
-                           key == "#" + tag_id):
+                        if (key == child.localName or ((not tag_id is None) and
+                                key == "#" + tag_id)):
                             process(child, obj[key], clean)
                             processed = True
 
@@ -87,8 +88,8 @@ def process(node, obj, clean = True):
 
         children_to_remove = []
         for child in node.childNodes:
-            if isinstance(child, xml.dom.minidom.Element) and \
-               child.tagName == 'temporary-fragment':
+            if (isinstance(child, xml.dom.minidom.Element) and
+                    child.tagName == 'temporary-fragment'):
                 while not child.firstChild is None:
                     child2 = child.firstChild
                     child.removeChild(child2)
@@ -111,8 +112,8 @@ def alternate(tag, array, *elems):
     return array
 
 def _clean(node):
-    if node.nodeType == xml.dom.Node.ELEMENT_NODE and \
-       node.namespaceURI == "http://template.sesse.net/":
+    if (node.nodeType == xml.dom.Node.ELEMENT_NODE and
+            node.namespaceURI == "http://template.sesse.net/"):
         # as this is a dummy node, we want to remove it and move everything
         # further up after we've done any required replacements
         parent = node.parentNode
