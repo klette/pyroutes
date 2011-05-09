@@ -49,7 +49,7 @@ class TemplateRenderer(object):
                 os.path.join(self.template_dir, template), data, False)
             data[self.inclusion_param] = doc
             master = xmltemplate.process_file(
-                os.path.join(self.template_dir, self.base_template), data);
+                os.path.join(self.template_dir, self.base_template), data)
         else:
             master = xmltemplate.process_file(
                 os.path.join(self.template_dir, template), data)
