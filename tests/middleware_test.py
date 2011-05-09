@@ -2,6 +2,7 @@ import unittest
 from pyroutes.middleware.errors import *
 from pyroutes.http.response import *
 from pyroutes.http.request import Request
+import pyroutes.settings
 import wsgiref.util
 import stderr_helper
 
@@ -45,6 +46,17 @@ class TestErrorHandlerMiddleware(unittest.TestCase):
             self.assertTrue('ValueError' in stderr_helper.get_stderr_data())
         finally:
             stderr_helper.revert_stderr()
+
+    def test_debug_honored(self):
+        old_debug = pyroutes.settings.DEBUG
+        pyroutes.settings.DEBUG = True
+        def errorous(req):
+            raise ValueError("foobar")
+        ehm = ErrorHandlerMiddleware(errorous)
+        response = ehm(self.request)
+        self.assertEquals(response.status_code, '500 Internal Server Error')
+        self.assertTrue('ValueError' in response.content)
+        pyroutes.settings.DEBUG = old_debug
 
     def test_return_403(self):
         def errorous(req):
