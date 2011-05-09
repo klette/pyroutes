@@ -89,5 +89,5 @@ class TestResponseCookieHandler(unittest.TestCase):
         key = settings.SECRET_KEY
         handler = ResponseCookieHandler()
         settings.SECRET_KEY = None
-        self.assertRaises(AttributeError, handler.add_cookie, 'foo', 'bar')
+        self.assertRaises(CookieKeyMissing, handler.add_cookie, 'foo', 'bar')
         settings.SECRET_KEY = key

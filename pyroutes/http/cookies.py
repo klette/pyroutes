@@ -63,7 +63,7 @@ class ResponseCookieHandler(object):
 
     def add_cookie(self, key, value, expires=None):
         if settings.SECRET_KEY is None:
-            raise AttributeError('Set SECRET_KEY in settings to use cookies')
+            raise CookieKeyMissing('Set SECRET_KEY in settings to use cookies')
         cookie_hash = hmac.HMAC(settings.SECRET_KEY, key + value, sha1)\
           .hexdigest()
         if expires:
