@@ -21,5 +21,5 @@ class Route(object):
         subpath = environ.get('PATH_INFO','')[len(self.path):]
         args = subpath.strip('/').split('/')
         if args[-1] == '':
-            return args.pop()
+            args.pop()
         return args
