@@ -118,20 +118,22 @@ class Request(object):
                     storage[key] = value
 
     def _parse_field(self, field, key, data):
-        value = None
+        value = data.getvalue(key)
+
         if isinstance(field, list):
             value = [self._parse_field(f, key, data) for f in field]
-        if hasattr(field, 'filename') and field.filename:
+
+        elif hasattr(field, 'filename') and field.filename:
             if field.file:
                 value = (field.filename, field.file)
             else:
                 value = (field.filename, StringIO.StringIO(data.getvalue(key)))
-        else:
-            if isinstance(data.getvalue(key), basestring):
-                try:
-                    value = unicode(data.getvalue(key), 'utf-8')
-                except UnicodeDecodeError:
-                    # If we can't understand the data as utf, try latin1
-                    value = unicode(data.getvalue(key), 'iso-8859-1')
+
+        elif isinstance(value, basestring):
+            try:
+                value = unicode(value, 'utf-8')
+            except UnicodeDecodeError:
+                # If we can't understand the data as utf, try latin1
+                value = unicode(value, 'iso-8859-1')
 
         return value
