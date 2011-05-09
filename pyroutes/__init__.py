@@ -7,6 +7,7 @@ Main pyroutes module
 This module handles all the dispatching services for pyroutes.
 """
 
+from pyroutes import settings
 from pyroutes.route import Route
 from pyroutes.dispatcher import Dispatcher
 
