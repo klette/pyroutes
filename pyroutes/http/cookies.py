@@ -15,12 +15,12 @@ class RequestCookieHandler(object):
     """
 
     def __init__(self, environ=None):
-        self._raw_cookies = {}
-
         if environ and 'HTTP_COOKIE' in environ:
-            for (key, value) in [(c[:c.find('=')].strip(), c[c.find('=')+1:]\
-              .strip()) for c in environ.get('HTTP_COOKIE', '').split(';')]:
-                self._raw_cookies[key] = value
+            self._raw_cookies = dict(
+                    map(str.strip, c.split('=', 1))
+                    for c in environ['HTTP_COOKIE'].split(';'))
+        else:
+            self._raw_cookies = {}
 
     def get_cookie(self, key):
         """
