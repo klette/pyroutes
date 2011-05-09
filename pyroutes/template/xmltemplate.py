@@ -1,5 +1,4 @@
 #! /usr/bin/python
-import re
 import xml.dom.minidom
 
 def process_file(filename, obj, clean = True):
@@ -8,12 +7,12 @@ def process_file(filename, obj, clean = True):
     return doc
 
 def process(node, obj, clean = True):
-    if isinstance(obj, basestring):         # overwrite
+    if isinstance(obj, basestring):            # overwrite
         while not node.firstChild is None:
             node.removeChild(node.firstChild)
         doc = _get_document_element(node)
         node.appendChild(doc.createTextNode(obj))
-    elif isinstance(obj, xml.dom.Node):     # overwrite
+    elif isinstance(obj, xml.dom.Node):    # overwrite
         while not node.firstChild is None:
             node.removeChild(node.firstChild)
 
@@ -29,23 +28,25 @@ def process(node, obj, clean = True):
             processed = False
 
             if child.nodeType == xml.dom.Node.ELEMENT_NODE:
-                id = None
+                tag_id = None
 
                 attrs = child.attributes
                 attrs_to_remove = []
                 if not attrs is None:
                     for i in range(attrs.length):
                         attr = attrs.item(i)
-                        if attr.namespaceURI == "http://template.sesse.net/" and attr.localName == "id":
-                            id = attr.value
+                        if attr.namespaceURI == "http://template.sesse.net/" \
+                            and attr.localName == "id":
+                            tag_id = attr.value
                             if clean:
                                 attrs_to_remove.append(attr.name)
-                        if attr.name.startswith("xmlns:") and attr.value == "http://template.sesse.net/" and clean:
+                        if attr.name.startswith("xmlns:") and \
+                           attr.value == "http://template.sesse.net/" and clean:
                             attrs_to_remove.append(attr.name)
 
-                    for a in attrs_to_remove:
-                        if child.hasAttribute(a):
-                            child.removeAttribute(a)
+                    for attr in attrs_to_remove:
+                        if child.hasAttribute(attr):
+                            child.removeAttribute(attr)
 
 
                 # check all substitutions to see if we found anything
@@ -53,19 +54,21 @@ def process(node, obj, clean = True):
                 for key in obj.keys():
                     if key.startswith(child.tagName + "/"):
                         child.setAttribute(key.split("/")[1], obj[key])
-                    elif (not id is None) and key.startswith("#" + id + "/"):
+                    elif (not tag_id is None) and \
+                      key.startswith("#" + tag_id + "/"):
                         child.setAttribute(key.split("/")[1], obj[key])
 
                     if not processed:
-                        if key == child.localName or ((not id is None) and key == "#" + id):
+                        if key == child.localName or ((not tag_id is None) and \
+                           key == "#" + tag_id):
                             process(child, obj[key], clean)
                             processed = True
 
             if not processed:
                 process(child, obj, clean)
-    elif hasattr(obj, '__iter__'):          # repeat
+    elif isinstance(obj, list):         # repeat
         doc = _get_document_element(node)
-        frag = doc.createElement("temporary-fragment")     # ugh
+        frag = doc.createElement("temporary-fragment")    # ugh
 
         while not node.firstChild is None:
             child = node.firstChild
@@ -84,7 +87,8 @@ def process(node, obj, clean = True):
 
         children_to_remove = []
         for child in node.childNodes:
-            if isinstance(child, xml.dom.minidom.Element) and child.tagName == 'temporary-fragment':
+            if isinstance(child, xml.dom.minidom.Element) and \
+               child.tagName == 'temporary-fragment':
                 while not child.firstChild is None:
                     child2 = child.firstChild
                     child.removeChild(child2)
@@ -103,14 +107,14 @@ def alternate(tag, array, *elems):
         if ref is not None:
             ref[tag] = elems[i % len(elems)]
             i = i + 1
-        
+
     return array
 
 def _clean(node):
-    if node.nodeType == xml.dom.Node.ELEMENT_NODE and node.namespaceURI == "http://template.sesse.net/":
-        # as this is a dummy node, we want to remove it and move everything further up
-        # after we've done any required replacements
-        doc = _get_document_element(node)
+    if node.nodeType == xml.dom.Node.ELEMENT_NODE and \
+       node.namespaceURI == "http://template.sesse.net/":
+        # as this is a dummy node, we want to remove it and move everything
+        # further up after we've done any required replacements
         parent = node.parentNode
 
         while not node.firstChild is None:
