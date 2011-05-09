@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
-"""
-"""
+
 import os
 from pyroutes.template import xmltemplate
 from pyroutes import settings
