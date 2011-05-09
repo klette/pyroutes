@@ -1,6 +1,6 @@
 import unittest
 
-from pyroutes import template
+from pyroutes import template, settings
 
 class TestXMLTemplates(unittest.TestCase):
 
@@ -39,3 +39,12 @@ class TestsWithoutBaseTemplate(TestXMLTemplates):
     def test_render_simple_template(self):
         self._render_template(self.base_template,
                 {'contents': self.test_string})
+
+class TestsWithBaseAndDirFromSettings(TestsWithBaseTemplate):
+
+    def setUp(self):
+        settings.TEMPLATE_DIR = self.template_dir
+        self.renderer = template.TemplateRenderer(self.base_template)
+
+    def tearDown(self):
+        settings.TEMPLATE_DIR = None
