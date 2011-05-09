@@ -1,5 +1,3 @@
-from pyroutes.http.request import Request
-
 class Route(object):
     """
     The Route object. Noramlly created using the route function, not through
