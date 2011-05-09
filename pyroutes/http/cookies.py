@@ -29,7 +29,8 @@ class RequestCookieHandler(object):
         if key in self._raw_cookies:
             if '%s_hash' % key in self._raw_cookies:
                 if settings.SECRET_KEY is None:
-                    raise CookieKeyMissing('Set SECRET_KEY in settings to use cookies')
+                    raise CookieKeyMissing(
+                            'Set SECRET_KEY in settings to use cookies')
                 cookie_hash = self._raw_cookies['%s_hash' % key]
                 value_hash = \
                     hmac.HMAC(settings.SECRET_KEY, key + self._raw_cookies[key],

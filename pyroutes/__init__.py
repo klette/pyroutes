@@ -20,10 +20,11 @@ logger = logging.getLogger('pyroutes')
 
 def route(path):
     """
-    Routes define which methods handles requests to certain paths, and are defined
-    using the `@route`-decorator. The decorator takes one argument that defines which
-    path the method is used for. The decorated function recieves one argument from pyroutes
-    containing a `Request`-instance with all the information for that particular request.
+    Routes define which methods handles requests to certain paths, and are
+    defined using the `@route`-decorator. The decorator takes one argument that
+    defines which path the method is used for. The decorated function recieves
+    one argument from pyroutes containing a `Request`-instance with all the
+    information for that particular request.
 
     **Defining routes**
 

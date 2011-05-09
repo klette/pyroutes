@@ -32,7 +32,8 @@ class Dispatcher(object):
         Dispathes a request. The call signature is that of a standard WSGI
         application.
         """
-        # Update site root value so pyroutes can make root-relative path redirects
+        # Update site root value so pyroutes can make root-relative path
+        # redirects
         if not hasattr(settings, 'SITE_ROOT'):
             settings.SITE_ROOT = environ.get('SCRIPT_NAME', '').rstrip('/')
 
@@ -65,7 +66,8 @@ class Dispatcher(object):
             current_path = current_path[:current_path.rfind('/')] or '/'
             if current_path in pyroutes.__routes__:
                 route = pyroutes.__routes__[current_path]
-                argument_count = self._get_argument_count(complete_path, current_path)
+                argument_count = self._get_argument_count(
+                        complete_path, current_path)
                 if self._match_with_arguments(route, argument_count):
                     if request is not None:
                         request.matched_path = current_path

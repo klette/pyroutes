@@ -26,10 +26,10 @@ class TimingMiddleware(object):
                   value.startswith('application/xhtml+xml'):
                     elapsed = (end_time - start_time) * 1000
                     if response.content.endswith('</html>'):
-                        response.content = response.content[:-len('</html>')] + \
-                                '<pre id="pyroutes_timing">Page took %0.3f' + \
+                        response.content = response.content[:-len('</html>')] +\
+                                '<pre id="pyroutes_timing">Page took %0.3f' +\
                                 ' ms to generate</pre></html>' % elapsed
                     else:
-                        response.content += '\n<pre id="pyroutes_timing">' + \
+                        response.content += '\n<pre id="pyroutes_timing">' +\
                                 'Page took %0.3f ms to generate</pre>' % elapsed
         return response
