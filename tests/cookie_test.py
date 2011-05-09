@@ -85,3 +85,9 @@ class TestResponseCookieHandler(unittest.TestCase):
         self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=null; expires=Thu, 01-Jan-1970 00:00:01 GMT'))
         self.assertEqual(self.cookies.cookie_headers[1], ('Set-Cookie', 'foo_hash=null; expires=Thu, 01-Jan-1970 00:00:01 GMT'))
 
+    def test_no_SECRET_KEY(self):
+        key = settings.SECRET_KEY
+        handler = ResponseCookieHandler()
+        settings.SECRET_KEY = None
+        self.assertRaises(AttributeError, handler.add_cookie, 'foo', 'bar')
+        settings.SECRET_KEY = key
