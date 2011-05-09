@@ -10,8 +10,13 @@ This module handles all the dispatching services for pyroutes.
 from pyroutes.route import Route
 from pyroutes.dispatcher import Dispatcher
 
+import logging
+
 __routes__ = {}
 dispatcher = Dispatcher()
+
+logging.basicConfig()
+logger = logging.getLogger('pyroutes')
 
 def route(path):
     """
@@ -45,7 +50,7 @@ def route(path):
         See the pyroutes.route docstring
         """
         if path in __routes__:
-            raise ValueError("Tried to redefine handler for %s with %s" % \
+            logger.warn("Redefining handler for %s with %s" % \
                     (path, func))
         route_instance = Route(func, path)
         __routes__[path] = route_instance
