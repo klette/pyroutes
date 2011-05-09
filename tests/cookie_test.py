@@ -15,8 +15,10 @@ class TestRequestCookieHandler(unittest.TestCase):
 
     def setUp(self):
         settings.SECRET_KEY = 'asdfnaj2308sydfahli37flas36al9gaiufw'
-        self.env = {'HTTP_COOKIE': 'foo=bar;foo_hash=%s;bar=foo;baz=b;baz_hash=b' % \
-            hmac.HMAC(settings.SECRET_KEY, 'foobar', sha1).hexdigest()}
+        self.env = {'HTTP_COOKIE': (
+                'foo=bar;foo_hash=%s;bar=foo;baz=b;baz_hash=b' %
+                hmac.HMAC(settings.SECRET_KEY, 'foobar', sha1).hexdigest()
+                )}
         self.cookie_request_handler = RequestCookieHandler(self.env)
 
     def test_init(self):

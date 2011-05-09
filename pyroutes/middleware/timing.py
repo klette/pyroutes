@@ -22,14 +22,14 @@ class TimingMiddleware(object):
         end_time = time.time()
         for (header, value) in response.headers:
             if header == 'Content-Type':
-                if value.startswith('text/html') or \
-                  value.startswith('application/xhtml+xml'):
+                if (value.startswith('text/html') or
+                        value.startswith('application/xhtml+xml')):
                     elapsed = (end_time - start_time) * 1000
                     if response.content.endswith('</html>'):
-                        response.content = response.content[:-len('</html>')] +\
-                                '<pre id="pyroutes_timing">Page took %0.3f' +\
-                                ' ms to generate</pre></html>' % elapsed
+                        response.content = (response.content[:-len('</html>')] +
+                                '<pre id="pyroutes_timing">Page took %0.3f' +
+                                ' ms to generate</pre></html>' % elapsed)
                     else:
-                        response.content += '\n<pre id="pyroutes_timing">' +\
-                                'Page took %0.3f ms to generate</pre>' % elapsed
+                        response.content += ('\n<pre id="pyroutes_timing">' +
+                               'Page took %0.3f ms to generate</pre>' % elapsed)
         return response

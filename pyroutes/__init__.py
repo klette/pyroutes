@@ -52,7 +52,7 @@ def route(path):
         See the pyroutes.route docstring
         """
         if path in __routes__:
-            logger.warn("Redefining handler for %s with %s" % \
+            logger.warn("Redefining handler for %s with %s" %
                     (path, func))
         route_instance = Route(func, path)
         __routes__[path] = route_instance

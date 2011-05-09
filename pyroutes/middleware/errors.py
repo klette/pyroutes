@@ -37,8 +37,8 @@ class ErrorHandlerMiddleware(object):
                                                 exception_value,
                                                 exception_trace)).strip()
 
-            logger.error('Encountered an error in the code. Stacktrace ' \
-                    + 'below. HTTP 500 will be returned.\n' + trace)
+            logger.error('Encountered an error in the code. Stacktrace ' +
+                    'below. HTTP 500 will be returned.\n' + trace)
 
             if settings.DEBUG:
                 response = error.get_response(

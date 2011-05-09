@@ -94,8 +94,8 @@ class Request(object):
             for val in value:
                 self._assign_field_to_section(key, val, storage)
         else:
-            if isinstance(value, tuple) and value[1] and \
-              (isinstance(value[1], file) or  hasattr(value[1], 'read')):
+            if (isinstance(value, tuple) and value[1] and
+              (isinstance(value[1], file) or hasattr(value[1], 'read'))):
 
                 # If an existing value exists for this key, convert to
                 # list-result
