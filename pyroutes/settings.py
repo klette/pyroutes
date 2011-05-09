@@ -1,5 +1,3 @@
-import os
-
 """
 Module pyroutes.settings
 Used for importing settings, and defining default settings
@@ -7,6 +5,8 @@ Used for importing settings, and defining default settings
 Override per project settings in pyroutes_settings.py in
 your project folder
 """
+
+import os
 
 # Default template dir, relative to this imported __file__
 BUILTIN_TEMPLATES_DIR = os.path.join(
