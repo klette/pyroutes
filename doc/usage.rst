@@ -122,11 +122,11 @@ And let's try it::
     $ echo `wget -q -O - http://localhost:8001/archive`
     (This returns Http404 because year is an obligatory parameter)
     $ echo `wget -q -O - http://localhost:8001/archive/2010`
-    Year: 2010 Month: Day:
+    Year: 2010  Month: None  Day: None
     $ echo `wget -q -O - http://localhost:8001/archive/2010/02`
-    Year: 2010 Month: 02 Day:
+    Year: 2010  Month: 02  Day: None
     $ echo `wget -q -O - http://localhost:8001/archive/2010/02/03`
-    Year: 2010 Month: 02 Day: 03
+    Year: 2010  Month: 02  Day: 03
     $ echo `wget -q -O - http://localhost:8001/archive/2010/02/03/foobar`
     (This returns a Http404 because archive only accepts four parameters)
 
