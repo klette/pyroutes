@@ -152,15 +152,14 @@ request handler.
     @route('/newpost')
     def new_post(request):
         if 'image' in request.FILES:
-        # Do stuff with image
-        filename = request.FILES['image'][0]
-        data = request.FILES['image'][1].read()
-        pass
-    category = request.GET.get('category','default')
-    title = request.POST.get('title', 'None')
-    if not title:
-        return Response('no title!')
-    return Response('OK')
+            # Do stuff with image
+            filename, data = request.FILES['image']
+            data = data.read()
+        category = request.GET.get('category','default')
+        title = request.POST.get('title', None)
+        if not title:
+            return Response('No title!')
+        return Response('OK')
 
 .. note:: If multiple fields have the same name, the value in the respective
           dicts are a list of the given values.
