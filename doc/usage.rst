@@ -136,9 +136,9 @@ subpath of its route address.
 
 An example::
 
-    @route('/archive')
+    @route('/pathprint')
     def archive(request, *args):
-        return Response('User requested /%s under archive' % '/'.join(args))
+        return Response('User requested /%s under /pathprint' % '/'.join(args))
 
 Accessing request data
 ----------------------
