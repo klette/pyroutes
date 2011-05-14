@@ -210,11 +210,11 @@ the actual cookie.
 Settings cookies::
 
     @route('/cookie-set')
-    def set_cookies(request):
-        response = Response()
+    def set_cookies(request, message='Hi!'):
+        response = Response('Cookies set!')
         response.cookies.add_cookie('logged_in', 'true')
         # Insecure cookie setting
-        response.cookies.add_unsigned_cookie('blapp', 'foo')
+        response.cookies.add_unsigned_cookie('message', message)
         return response
 
 Retrieving cookies::
@@ -222,11 +222,19 @@ Retrieving cookies::
     @route('/cookie-get')
     def get_cookies(request):
         logged_in = request.COOKIES.get_cookie('logged_in')
-        blapp = request.COOKIES.get_unsigned_cookie('blapp')
+        message = request.COOKIES.get_unsigned_cookie('message')
         if logged_in:
-            return Response('Hi!')
-        return Response('Go away!')
+            return Response(message)
+        raise Http403({'#details': 'Go away!'})
 
+Deleting cookies::
+
+    @route('/cookie-del')
+    def get_cookies(request):
+        response = Response('Cookies deleted!')
+        response.cookies.del_cookie('logged_in')
+        response.cookies.del_cookie('message')
+        return response
 
 
 Let's go templates!
