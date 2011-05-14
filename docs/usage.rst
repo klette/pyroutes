@@ -122,11 +122,11 @@ And let's try it::
     $ echo `wget -q -O - http://localhost:8001/archive`
     (This returns Http404 because year is an obligatory parameter)
     $ echo `wget -q -O - http://localhost:8001/archive/2010`
-    Year: 2010 Month: Day:
+    Year: 2010  Month: None  Day: None
     $ echo `wget -q -O - http://localhost:8001/archive/2010/02`
-    Year: 2010 Month: 02 Day:
+    Year: 2010  Month: 02  Day: None
     $ echo `wget -q -O - http://localhost:8001/archive/2010/02/03`
-    Year: 2010 Month: 02 Day: 03
+    Year: 2010  Month: 02  Day: 03
     $ echo `wget -q -O - http://localhost:8001/archive/2010/02/03/foobar`
     (This returns a Http404 because archive only accepts four parameters)
 
@@ -136,9 +136,9 @@ subpath of its route address.
 
 An example::
 
-    @route('/archive')
+    @route('/pathprint')
     def archive(request, *args):
-        return Response('User requested /%s under archive' % '/'.join(args))
+        return Response('User requested /%s under /pathprint' % '/'.join(args))
 
 Accessing request data
 ----------------------
@@ -152,15 +152,14 @@ request handler.
     @route('/newpost')
     def new_post(request):
         if 'image' in request.FILES:
-        # Do stuff with image
-        filename = request.FILES['image'][0]
-        data = request.FILES['image'][1].read()
-        pass
-    category = request.GET.get('category','default')
-    title = request.POST.get('title', 'None')
-    if not title:
-        return Response('no title!')
-    return Response('OK')
+            # Do stuff with image
+            filename, data = request.FILES['image']
+            data = data.read()
+        category = request.GET.get('category','default')
+        title = request.POST.get('title', None)
+        if not title:
+            return Response('No title!')
+        return Response('OK')
 
 .. note:: If multiple fields have the same name, the value in the respective
           dicts are a list of the given values.
@@ -183,7 +182,7 @@ content may be any string or iterable. This means you can do something like this
 
     @route('/pdf')
     def pdf(request):
-        return Response(open("mypdf.pdf"), [('Content-Type', 'application/pdf')])
+        return Response(open('mypdf.pdf'), [('Content-Type', 'application/pdf')])
 
 Also available for convenience is the HttpException subclasses, also found
 under ``pyroutes.http.response``. An example (assuming a method ``decrypt``
@@ -191,13 +190,13 @@ that can decrypt files by some algorithm)::
 
     @route('/decrypt_file')
     def decrypt(request, filename, key):
-        full_filename = os.path.join(secrets_folder, filename)
-        if not os.path.exits(full_filename):
-            raise Http404
+        full_filename = os.path.join('secrets_folder', filename)
+        if not os.path.exists(full_filename):
+            raise Http404({'#details': 'No such file "%s"' % filename})
         try:
             return Response(decrypt(full_filename, key))
         except KeyError:
-            raise Http403
+            raise Http403({'#details': 'Key did not match file'})
 
 C is for cookie..
 -----------------
@@ -211,11 +210,11 @@ the actual cookie.
 Settings cookies::
 
     @route('/cookie-set')
-    def set_cookies(request):
-        response = Response()
+    def set_cookies(request, message='Hi!'):
+        response = Response('Cookies set!')
         response.cookies.add_cookie('logged_in', 'true')
         # Insecure cookie setting
-        response.cookies.add_unsigned_cookie('blapp', 'foo')
+        response.cookies.add_unsigned_cookie('message', message)
         return response
 
 Retrieving cookies::
@@ -223,11 +222,19 @@ Retrieving cookies::
     @route('/cookie-get')
     def get_cookies(request):
         logged_in = request.COOKIES.get_cookie('logged_in')
-        blapp = request.COOKIES.get_unsigned_cookie('blapp')
+        message = request.COOKIES.get_unsigned_cookie('message')
         if logged_in:
-            return Response('Hi!')
-        return Response('Go away!')
+            return Response(message)
+        raise Http403({'#details': 'Go away!'})
 
+Deleting cookies::
+
+    @route('/cookie-del')
+    def get_cookies(request):
+        response = Response('Cookies deleted!')
+        response.cookies.del_cookie('logged_in')
+        response.cookies.del_cookie('message')
+        return response
 
 
 Let's go templates!
