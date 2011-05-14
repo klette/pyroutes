@@ -61,30 +61,37 @@ class ResponseCookieHandler(object):
     def __init__(self):
         self.cookie_headers = []
 
-    def add_cookie(self, key, value, expires=None):
-        if settings.SECRET_KEY is None:
-            raise CookieKeyMissing('Set SECRET_KEY in settings to use cookies')
-        cookie_hash = hmac.HMAC(settings.SECRET_KEY,
-                                key + value, sha1).hexdigest()
-        if expires:
-            exp = expires.strftime("%a, %d-%b-%Y %H:%M:%S GMT")
-            self.cookie_headers.append(
-                ('Set-Cookie', '%s=%s; expires=%s' % (key, value, exp)))
-            self.cookie_headers.append(
-                ('Set-Cookie', '%s_hash=%s; expires=%s'
-                    % (key, cookie_hash, exp)))
-        else:
-            self.cookie_headers.append(('Set-Cookie', '%s=%s' % (key, value)))
-            self.cookie_headers.append(
-                ('Set-Cookie', '%s_hash=%s' % (key, cookie_hash)))
+    def add_cookie(self, key, value, expires=None, path='/', sign=True):
+        cookie = '%s=%s' % (key, value)
 
-    def add_unsigned_cookie(self, key, value, expires=None):
         if expires:
-            exp = expires.strftime("%a, %d-%b-%Y %H:%M:%S GMT")
-            self.cookie_headers.append(
-                ('Set-Cookie', "%s=%s; expires=%s" % (key, value, exp)))
-        else:
-            self.cookie_headers.append(('Set-Cookie', "%s=%s" % (key, value)))
+            expires = expires.strftime("%a, %d-%b-%Y %H:%M:%S GMT")
+            cookie += '; expires=%s' % expires
+
+        if path:
+            cookie += '; path=%s' % path
+
+        self.cookie_headers.append(('Set-Cookie', cookie))
+
+        if sign:
+            if settings.SECRET_KEY is None:
+                raise CookieKeyMissing(
+                        'Set SECRET_KEY in settings to use cookies')
+
+            cookie_hash = hmac.HMAC(settings.SECRET_KEY, key + value,
+                                    sha1).hexdigest()
+            cookie_hash = '%s_hash=%s' % (key, cookie_hash)
+
+            if expires:
+                cookie_hash += '; expires=%s' % expires
+
+            if path:
+                cookie_hash += '; path=' + path
+
+            self.cookie_headers.append(('Set-Cookie', cookie_hash))
+
+    def add_unsigned_cookie(self, *args, **kwargs):
+        self.add_cookie(sign=False, *args, **kwargs)
 
     def del_cookie(self, key):
         self.cookie_headers.append(
