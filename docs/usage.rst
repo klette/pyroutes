@@ -31,7 +31,9 @@ This is the most basic example::
 Here we define that our index method should handle all requests to ``/``, and
 return the world famous «Hello world!» to the user.
 
-We can add more routes::
+We can add more routes:
+
+.. code-block:: python
 
   @route('/sayhello')
   def sayhello(request, name='world'):
