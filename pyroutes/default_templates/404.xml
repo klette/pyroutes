@@ -1,10 +1,7 @@
 <t:dummy xmlns:t="http://template.sesse.net/">
   <p><t:request /> was not found.</p>
-  <p>
+  <p t:id="details">
     You can try looking for the page following links from
     <a href="/">the main page of the domain</a>.
-  </p>
-  <p>
-    <t:details />
   </p>
 </t:dummy>

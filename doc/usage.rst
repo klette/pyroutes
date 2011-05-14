@@ -190,13 +190,13 @@ that can decrypt files by some algorithm)::
 
     @route('/decrypt_file')
     def decrypt(request, filename, key):
-        full_filename = os.path.join(secrets_folder, filename)
-        if not os.path.exits(full_filename):
-            raise Http404
+        full_filename = os.path.join('secrets_folder', filename)
+        if not os.path.exists(full_filename):
+            raise Http404({'#details': 'No such file "%s"' % filename})
         try:
             return Response(decrypt(full_filename, key))
         except KeyError:
-            raise Http403
+            raise Http403({'#details': 'Key did not match file'})
 
 C is for cookie..
 -----------------

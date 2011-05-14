@@ -121,12 +121,13 @@ class HttpException(Exception):
     HTTP 403, 404 and 500 pages with standard documents.
     Use e.g. settings.TEMPLATE_403 to override the document for HTTP 403.
     """
-    def __init__(self):
+    def __init__(self, template_data=None):
         super(HttpException, self).__init__()
         if not hasattr(self, 'code'):
             raise TypeError('You tried to instanciate HttpException. ' +
                     'Please, only create instances of Http{403,404,500}.')
 
+        self.template_data = template_data
         self.template_variable = 'TEMPLATE_%d' % self.code
         self.template_filename = '%d.xml' % self.code
         self.status_code = "%d %s" % (self.code, responses[self.code])
@@ -151,6 +152,7 @@ class HttpException(Exception):
             'request': path,
             'title': self.status_code
         }
+        template_data.update(self.template_data or {})
         template_data.update(kwargs)
         document = self.templaterenderer.render(self.template, template_data)
         return Response(document, status_code=self.status_code)

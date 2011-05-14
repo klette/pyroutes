@@ -1,6 +1,6 @@
 <t:dummy xmlns:t="http://template.sesse.net/">
   <p>You do not have permission to access <t:request />.</p>
-  <p>
+  <p t:id="details">
     Please return to the
     <a href="javascript:history.back()">previous page in your history</a>,<br />
     or navigate to the
