@@ -9,19 +9,20 @@ class NotFoundMiddleware(object):
     Returns a HTTP 404 when the middleware chain is passed None (i.e. if no
     handler is found for the path).
     """
-    def __init__(self, passthrough):
+    def __init__(self, passthrough, route):
         self.passthrough = passthrough
+        self.route = route
 
     def __call__(self, request):
         # If we got a handler, run it.
-        if self.passthrough:
+        if self.route:
             return self.passthrough(request)
 
         error = Http404()
         return error.get_response(request.ENV['PATH_INFO'])
 
 class ErrorHandlerMiddleware(object):
-    def __init__(self, passthrough):
+    def __init__(self, passthrough, route):
         self.passthrough = passthrough
 
     def __call__(self, request):

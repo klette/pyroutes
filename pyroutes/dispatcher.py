@@ -17,13 +17,13 @@ class Dispatcher(object):
         indicated in settings.MIDDLEWARE.
         """
         chain = route
-        for full_path in settings.MIDDLEWARE:
+        for full_path in reversed(settings.MIDDLEWARE):
             module_name, class_name = full_path.rsplit('.', 1)
 
             module = __import__(module_name, fromlist=[class_name])
             middleware = getattr(module, class_name)
 
-            chain = middleware(chain)
+            chain = middleware(chain, route)
 
         return chain(request)
 

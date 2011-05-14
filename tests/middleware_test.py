@@ -9,6 +9,9 @@ import stderr_helper
 def passtrough(req):
     return True
 
+def route(req):
+    return True
+
 class TestNotFoundMiddleware(unittest.TestCase):
 
     def setUp(self):
@@ -17,11 +20,11 @@ class TestNotFoundMiddleware(unittest.TestCase):
         self.request = Request(self.request_env)
 
     def test_should_call_handler_if_found(self):
-        nfm = NotFoundMiddleware(passtrough)
+        nfm = NotFoundMiddleware(passtrough, route)
         self.assertTrue(nfm(self.request))
 
     def test_should_return_404_if_no_handler(self):
-        nfm = NotFoundMiddleware(None)
+        nfm = NotFoundMiddleware(passtrough, None)
         self.assertEquals(nfm(self.request).status_code, '404 Not Found')
 
 
@@ -33,7 +36,7 @@ class TestErrorHandlerMiddleware(unittest.TestCase):
         self.request = Request(self.request_env)
 
     def test_should_return_handler_result_if_no_exception(self):
-        ehm = ErrorHandlerMiddleware(passtrough)
+        ehm = ErrorHandlerMiddleware(passtrough, route)
         self.assertTrue(isinstance(ehm(self.request), bool))
 
     def test_should_return_500_and_print_to_stderr_if_exception(self):
@@ -41,7 +44,7 @@ class TestErrorHandlerMiddleware(unittest.TestCase):
             raise ValueError("foobar")
         try:
             stderr_helper.redirect_stderr()
-            ehm = ErrorHandlerMiddleware(errorous)
+            ehm = ErrorHandlerMiddleware(errorous, route)
             self.assertEquals(ehm(self.request).status_code, '500 Internal Server Error')
             self.assertTrue('ValueError' in stderr_helper.get_stderr_data())
         finally:
@@ -52,7 +55,7 @@ class TestErrorHandlerMiddleware(unittest.TestCase):
         pyroutes.settings.DEBUG = True
         def errorous(req):
             raise ValueError("foobar")
-        ehm = ErrorHandlerMiddleware(errorous)
+        ehm = ErrorHandlerMiddleware(errorous, route)
         response = ehm(self.request)
         self.assertEquals(response.status_code, '500 Internal Server Error')
         self.assertTrue('ValueError' in response.content)
@@ -61,11 +64,11 @@ class TestErrorHandlerMiddleware(unittest.TestCase):
     def test_return_403(self):
         def errorous(req):
             raise Http403
-        ehm = ErrorHandlerMiddleware(errorous)
+        ehm = ErrorHandlerMiddleware(errorous, route)
         self.assertEquals(ehm(self.request).status_code, '403 Forbidden')
 
     def test_return_404(self):
         def errorous(req):
             raise Http404
-        ehm = ErrorHandlerMiddleware(errorous)
+        ehm = ErrorHandlerMiddleware(errorous, route)
         self.assertEquals(ehm(self.request).status_code, '404 Not Found')

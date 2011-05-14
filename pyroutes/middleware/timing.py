@@ -10,7 +10,7 @@ class TimingMiddleware(object):
 
     Primitive profiling, but quite useful.
     """
-    def __init__(self, passthrough):
+    def __init__(self, passthrough, route):
         self.passthrough = passthrough
 
     def __call__(self, request):
