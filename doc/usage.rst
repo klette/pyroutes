@@ -182,7 +182,7 @@ content may be any string or iterable. This means you can do something like this
 
     @route('/pdf')
     def pdf(request):
-        return Response(open("mypdf.pdf"), [('Content-Type', 'application/pdf')])
+        return Response(open('mypdf.pdf'), [('Content-Type', 'application/pdf')])
 
 Also available for convenience is the HttpException subclasses, also found
 under ``pyroutes.http.response``. An example (assuming a method ``decrypt``
