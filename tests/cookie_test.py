@@ -29,13 +29,13 @@ class TestRequestCookieHandler(unittest.TestCase):
 
     def test_get_cookie(self):
         self.assertEqual(self.cookie_request_handler.get_cookie('foo'), 'bar')
-   
+
     def test_get_cookie_without_hash(self):
         self.assertRaises(CookieHashMissing, self.cookie_request_handler.get_cookie, 'bar')
 
     def test_get_cookie_with_invalid_hash(self):
         self.assertRaises(CookieHashInvalid, self.cookie_request_handler.get_cookie, 'baz')
-    
+
     def test_get_not_existing_cookie(self):
         self.assertEqual(self.cookie_request_handler.get_cookie('test'), None)
 
@@ -51,7 +51,7 @@ class TestRequestCookieHandler(unittest.TestCase):
         settings.SECRET_KEY = 'asdfnaj2308sydfahli37flas36al9gaiufw'
 
 class TestResponseCookieHandler(unittest.TestCase):
-   
+
     def setUp(self):
         settings.SECRET_KEY = 'asdfnaj2308sydfahli37flas36al9gaiufw'
         self.cookies = ResponseCookieHandler()
@@ -59,29 +59,36 @@ class TestResponseCookieHandler(unittest.TestCase):
     def test_add_cookie(self):
         self.cookies.add_cookie('foo', 'bar')
         cookie_hash = hmac.HMAC(settings.SECRET_KEY, 'foobar', sha1).hexdigest()
-        self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar'))
-        self.assertEqual(self.cookies.cookie_headers[1], ('Set-Cookie', 'foo_hash=%s' % cookie_hash))
-    
+        self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar; path=/'))
+        self.assertEqual(self.cookies.cookie_headers[1], ('Set-Cookie', 'foo_hash=%s; path=/' % cookie_hash))
+
     def test_add_unsigned_cookie(self):
         self.cookies.add_unsigned_cookie('foo', 'bar')
+        self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar; path=/'))
+
+    def test_add_cookie_without_path(self):
+        self.cookies.add_unsigned_cookie('foo', 'bar', path=None)
         self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar'))
+
+    def test_add_cookie_without_nondefault_path(self):
+        self.cookies.add_unsigned_cookie('foo', 'bar', path='/foo')
+        self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar; path=/foo'))
 
     def test_add_cookie_with_expires(self):
         import datetime
         exp = datetime.datetime(2000,1,1,1,1,1)
-        exp_string = exp.strftime("%a, %d-%b-%Y %H:%M:%S GMT") 
+        exp_string = exp.strftime("%a, %d-%b-%Y %H:%M:%S GMT")
         self.cookies.add_cookie('foo', 'bar', exp)
         cookie_hash = hmac.HMAC(settings.SECRET_KEY, 'foobar', sha1).hexdigest()
-        self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar; expires=%s' % exp_string))
-        self.assertEqual(self.cookies.cookie_headers[1], ('Set-Cookie', 'foo_hash=%s; expires=%s' % (cookie_hash, exp_string)))
-    
+        self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar; expires=%s; path=/' % exp_string))
+        self.assertEqual(self.cookies.cookie_headers[1], ('Set-Cookie', 'foo_hash=%s; expires=%s; path=/' % (cookie_hash, exp_string)))
+
     def test_add_unsigned_cookie_with_expires(self):
         import datetime
         exp = datetime.datetime(2000,1,1,1,1,1)
-        exp_string = exp.strftime("%a, %d-%b-%Y %H:%M:%S GMT") 
+        exp_string = exp.strftime("%a, %d-%b-%Y %H:%M:%S GMT")
         self.cookies.add_unsigned_cookie('foo', 'bar', exp)
-        self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar; expires=%s' % exp_string))
-    
+        self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar; expires=%s; path=/' % exp_string))
     def test_del_cookie(self):
         self.cookies.del_cookie('foo')
         self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=null; expires=Thu, 01-Jan-1970 00:00:01 GMT'))
