@@ -1,5 +1,9 @@
 #encoding: utf-8
 
+"""
+Cookie handling classese
+"""
+
 import hmac
 try:
     from hashlib import sha1
@@ -62,6 +66,19 @@ class ResponseCookieHandler(object):
         self.cookie_headers = []
 
     def add_cookie(self, key, value, expires=None, path='/', sign=True):
+        """
+        Add a cookie to the response.
+        Takes six arguments:
+         - key: The keyword for the cookie
+         - value: The value of the cookie
+         - expires: A datetime-object representing the timeout of the cookie.
+                    Defaults to never if None.
+         - path: The path which the cookie is valid for. Defaults to the
+                 root if None.
+         - sign: If true, pyroutes adds an addition cookie with a signature
+                 of the cookie. Thus preventing the user from tampering
+                 with the cookie.
+        """
         cookie = '%s=%s' % (key, value)
 
         if expires:
@@ -91,9 +108,12 @@ class ResponseCookieHandler(object):
             self.cookie_headers.append(('Set-Cookie', cookie_hash))
 
     def add_unsigned_cookie(self, *args, **kwargs):
+        "Helper functions for fast-pathing adding an unsigned cookie"
         self.add_cookie(sign=False, *args, **kwargs)
 
     def del_cookie(self, key):
+        "Remove a previously added cookie"
+
         self.cookie_headers.append(
          ('Set-Cookie', "%s=null; expires=Thu, 01-Jan-1970 00:00:01 GMT" % key))
         self.cookie_headers.append(
@@ -101,9 +121,12 @@ class ResponseCookieHandler(object):
             % key))
 
 class CookieHashMissing(LookupError):
+    "Exception raised if a signed cookie is missing it signature pair."
     pass
 
 class CookieHashInvalid(ValueError):
+    """Exception raised if a signature is invalid. Can be caused by either
+    corrupt cookie, or the user tampering."""
     pass
 
 class CookieKeyMissing(AttributeError):
