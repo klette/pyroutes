@@ -94,13 +94,12 @@ class Dispatcher(object):
         route matches the number of arguments for the route handler. It takes
         optional arguments and *args into account.
         """
-        args, varargs, varkw, defaults = inspect.getargspec(route.handler)
 
-        if varargs is not None:
+        if route.variable_arguments is not None:
             return True
 
-        required_args = len(args) - 1
-        defaults = len(defaults or '')
+        required_args = route.required_argument_length
+        defaults = len(route.variable_defaults or '')
         if arg_count <= required_args <= (defaults + arg_count):
             return True
         return False
