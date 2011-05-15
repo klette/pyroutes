@@ -17,7 +17,7 @@ __routes__ = {}
 __dispatcher__ = Dispatcher()
 
 logging.basicConfig()
-logger = logging.getLogger('pyroutes')
+LOGGER = logging.getLogger('pyroutes')
 
 def route(path):
     """
@@ -52,7 +52,7 @@ def route(path):
         See the pyroutes.route docstring
         """
         if path in __routes__:
-            logger.warn("Redefining handler for %s with %s" %
+            LOGGER.warn("Redefining handler for %s with %s" %
                     (path, func))
         route_instance = Route(func, path)
         __routes__[path] = route_instance
