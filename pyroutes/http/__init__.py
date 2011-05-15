@@ -1,1 +1,1 @@
-""" Module containing classes handling HTTP communication"
+""" Module containing classes handling HTTP communication"""
