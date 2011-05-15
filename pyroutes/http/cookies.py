@@ -72,7 +72,7 @@ class ResponseCookieHandler(object):
           the data in the cookie server side.
         """
         if path is None:
-            path = settings.SITE_ROOT
+            path = settings.SITE_ROOT or '/'
 
         cookie = '%s=%s' % (key, value)
 
