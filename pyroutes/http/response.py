@@ -105,15 +105,16 @@ class Redirect(Response):
     """
 
     def __init__(self, location, absolute_path=False):
-        self.content = "redirect"
 
         if location.startswith('/') and not absolute_path:
             location = '/'.join([settings.SITE_ROOT.rstrip('/'),
                 location.lstrip('/')])
 
-        self.headers = [('Location', location)]
-        self.status_code = '302 %s' % responses[302]
-        self.cookies = ResponseCookieHandler()
+        super(Redirect,self).__init__(
+            content="redirect",
+            headers=[('Location', location)],
+            status_code='302 %s' % responses[302],
+            default_content_header=False)
 
 class HttpException(Exception):
     """
