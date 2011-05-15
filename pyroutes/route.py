@@ -1,3 +1,5 @@
+import inspect
+
 class Route(object):
     """
     The Route object. Noramlly created using the route function, not through
@@ -10,6 +12,12 @@ class Route(object):
         self.handler = handler
         self.path = path
         self.maps = None
+
+        args, varargs, varkw, defaults = inspect.getargspec(handler)
+        self.arguments = args
+        self.required_argument_length = len(args) - 1
+        self.variable_arguments = varargs
+        self.variable_defaults = defaults
 
     def __repr__(self):
         return u'Route(%s, %s)' % (self.handler.__name__, self.path)

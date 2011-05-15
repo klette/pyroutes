@@ -14,10 +14,10 @@ from pyroutes.dispatcher import Dispatcher
 import logging
 
 __routes__ = {}
-dispatcher = Dispatcher()
+__dispatcher__ = Dispatcher()
 
 logging.basicConfig()
-logger = logging.getLogger('pyroutes')
+LOGGER = logging.getLogger('pyroutes')
 
 def route(path):
     """
@@ -52,7 +52,7 @@ def route(path):
         See the pyroutes.route docstring
         """
         if path in __routes__:
-            logger.warn("Redefining handler for %s with %s" %
+            LOGGER.warn("Redefining handler for %s with %s" %
                     (path, func))
         route_instance = Route(func, path)
         __routes__[path] = route_instance
@@ -66,8 +66,8 @@ def reverse_url(handler_name, absolute_path=False):
     >>> reverse_url('login')
     /account/login
     """
-    for path, route in __routes__.iteritems():
-        if route.handler.__name__ == handler_name:
+    for path, route_instance in __routes__.iteritems():
+        if route_instance.handler.__name__ == handler_name:
             if absolute_path:
                 return path
             else:
@@ -83,4 +83,4 @@ def application(environ, start_response):
 
     See the documentation for more details.
     """
-    return dispatcher.dispatch(environ, start_response)
+    return __dispatcher__.dispatch(environ, start_response)

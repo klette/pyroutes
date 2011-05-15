@@ -145,7 +145,7 @@ class TestDispatcher(unittest.TestCase):
         def do_test(handler, path, result):
             environment = {'PATH_INFO': path}
             handler = pyroutes.route(path)(handler)
-            response = pyroutes.dispatcher.dispatch(environment, ArgKeep)
+            response = pyroutes.__dispatcher__.dispatch(environment, ArgKeep)
             self.assertTrue(isinstance(handler, Route))
             self.assertEquals(response, [result])
             self.assertEquals(args_given, [('200 OK', [('Content-Type', 'text/html; charset=utf-8')]), {}])
@@ -162,6 +162,6 @@ class TestDispatcher(unittest.TestCase):
                 'pyroutes.middleware.errors.ErrorHandlerMiddleware'))
 
         handler = pyroutes.route('/path')(handler)
-        result = pyroutes.dispatcher.create_middleware_chain(handler, request)
+        result = pyroutes.__dispatcher__.create_middleware_chain(handler, request)
         self.assertTrue(isinstance(handler, Route))
         self.assertEquals(result, 'result')

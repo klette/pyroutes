@@ -1,7 +1,7 @@
 import sys
 import traceback
 
-from pyroutes import settings, logger
+from pyroutes import settings, LOGGER
 from pyroutes.http.response import HttpException, Http404, Http500
 
 class NotFoundMiddleware(object):
@@ -38,7 +38,7 @@ class ErrorHandlerMiddleware(object):
                                                 exception_value,
                                                 exception_trace)).strip()
 
-            logger.error('Encountered an error in the code. Stacktrace ' +
+            LOGGER.error('Encountered an error in the code. Stacktrace ' +
                     'below. HTTP 500 will be returned.\n' + trace)
 
             if settings.DEBUG:
