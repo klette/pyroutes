@@ -3,6 +3,10 @@
 # DEBUG shows more debug info for HTTP 500
 DEBUG = True
 
+# SECRET_KEY is used for encrypting cookie hashes. Should be set to something
+# secret :)
+SECRET_KEY = 'cKXOat[84t-VE5+e5ioRb]B4Q6*ve:aH'
+
 # This setting is always detected by the dispatcher. Override it to make all
 # relative redirects relative to this path. e.g. SITE_ROOT = '' makes all
 # redirects «absolute». It also makes cookies set for the entire site.
