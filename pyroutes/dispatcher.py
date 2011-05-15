@@ -98,9 +98,9 @@ class Dispatcher(object):
         if route.variable_arguments is not None:
             return True
 
-        required_args = route.required_argument_length
         defaults = len(route.variable_defaults or '')
-        if arg_count <= required_args <= (defaults + arg_count):
+        if arg_count <= route.required_argument_length and \
+           route.required_argument_length <= (defaults + arg_count):
             return True
         return False
 
