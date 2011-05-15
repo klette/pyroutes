@@ -149,6 +149,9 @@ class HttpException(Exception):
             self.template = self.template_filename
 
     def get_response(self, path, **kwargs):
+        """
+        Returns a formatted page displaying the error to user
+        """
         template_data = {
             'request': path,
             'title': self.status_code
@@ -159,10 +162,13 @@ class HttpException(Exception):
         return Response(document, status_code=self.status_code)
 
 class Http403(HttpException):
+    "403 Forbidden exception"
     code = 403
 
 class Http404(HttpException):
+    "404 Not Found exception"
     code = 404
 
 class Http500(HttpException):
+    "500 Server Error exception"
     code = 500
