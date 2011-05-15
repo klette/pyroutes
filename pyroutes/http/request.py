@@ -35,7 +35,8 @@ class Request(object):
                   self.FILES.keys())
         return "GET: %s\nPOST: %s\nPUT: %s\nCOOKIES: %s\nFILES: %s" % values
 
-    def extract_put_data(self, environment):
+    @staticmethod
+    def extract_put_data(environment):
         '''Extracts the file pointer from a PUT request.
 
         The PUT method allows you to write the contents of the file to the
