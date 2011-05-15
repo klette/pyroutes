@@ -11,21 +11,6 @@ class Dispatcher(object):
     on the pyroutes module for all dispatching purposes.
     """
 
-    def create_middleware_chain(self, route, request):
-        """
-        Builds the middleware chain. I.e. wrap the route in all the middlewares
-        indicated in settings.MIDDLEWARE.
-        """
-        chain = route
-        for full_path in settings.MIDDLEWARE:
-            module_name, class_name = full_path.rsplit('.', 1)
-
-            module = __import__(module_name, fromlist=[class_name])
-            middleware = getattr(module, class_name)
-
-            chain = middleware(chain)
-
-        return chain(request)
 
     def dispatch(self, environ, start_response):
         """
@@ -75,7 +60,25 @@ class Dispatcher(object):
             if current_path == '/':
                 return
 
-    def _get_argument_count(self, complete_path, current_path):
+    @staticmethod
+    def create_middleware_chain(route, request):
+        """
+        Builds the middleware chain. I.e. wrap the route in all the middlewares
+        indicated in settings.MIDDLEWARE.
+        """
+        chain = route
+        for full_path in settings.MIDDLEWARE:
+            module_name, class_name = full_path.rsplit('.', 1)
+
+            module = __import__(module_name, fromlist=[class_name])
+            middleware = getattr(module, class_name)
+
+            chain = middleware(chain)
+
+        return chain(request)
+
+    @staticmethod
+    def _get_argument_count(complete_path, current_path):
         """
         Returns the number of URL elements left over for between
         the current path and the complete path.
@@ -84,7 +87,8 @@ class Dispatcher(object):
         current_path_comps = current_path.rstrip('/').split('/')
         return len(complete_path_comps) - len(current_path_comps)
 
-    def _match_with_arguments(self, route, arg_count):
+    @staticmethod
+    def _match_with_arguments(route, arg_count):
         """
         Returns True if the number of remaining URL elements for the tested
         route matches the number of arguments for the route handler. It takes
@@ -101,7 +105,8 @@ class Dispatcher(object):
             return True
         return False
 
-    def _combine_headers(self, response):
+    @staticmethod
+    def _combine_headers(response):
         """
         Combine "normal" http headers with the cookie headers into single list
         """
