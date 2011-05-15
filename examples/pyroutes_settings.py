@@ -1,10 +1,11 @@
 # encoding: utf-8
+
 # DEBUG shows more debug info for HTTP 500
 DEBUG = True
 
 # This setting is always detected by the dispatcher. Override it to make all
 # relative redirects relative to this path. e.g. SITE_ROOT = '' makes all
-# redirects «absolute».
+# redirects «absolute». It also makes cookies set for the entire site.
 #SITE_ROOT = '/projects/wiki'
 
 # Path to media files. Used by development media server in contrib.
