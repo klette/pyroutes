@@ -14,7 +14,7 @@ from pyroutes.dispatcher import Dispatcher
 import logging
 
 __routes__ = {}
-dispatcher = Dispatcher()
+__dispatcher__ = Dispatcher()
 
 logging.basicConfig()
 logger = logging.getLogger('pyroutes')
@@ -83,4 +83,4 @@ def application(environ, start_response):
 
     See the documentation for more details.
     """
-    return dispatcher.dispatch(environ, start_response)
+    return __dispatcher__.dispatch(environ, start_response)
