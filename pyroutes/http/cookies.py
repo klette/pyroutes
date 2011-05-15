@@ -26,6 +26,9 @@ class RequestCookieHandler(object):
         else:
             self._raw_cookies = {}
 
+    def __repr__(self):
+        return u'%s' % self._raw_cookies
+
     def get_cookie(self, key):
         """
         Return a signed cookie value if it exists.

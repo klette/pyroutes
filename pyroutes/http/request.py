@@ -31,7 +31,7 @@ class Request(object):
         self.params = {}
 
     def __repr__(self):
-        values = (self.GET, self.POST, self.PUT, self.COOKIES._raw_cookies,
+        values = (self.GET, self.POST, self.PUT, self.COOKIES,
                   self.FILES.keys())
         return "GET: %s\nPOST: %s\nPUT: %s\nCOOKIES: %s\nFILES: %s" % values
 
