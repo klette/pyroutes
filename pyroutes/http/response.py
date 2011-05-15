@@ -110,7 +110,7 @@ class Redirect(Response):
             location = '/'.join([settings.SITE_ROOT.rstrip('/'),
                 location.lstrip('/')])
 
-        super(Redirect,self).__init__(
+        super(Redirect, self).__init__(
             content="redirect",
             headers=[('Location', location)],
             status_code='302 %s' % responses[302],
