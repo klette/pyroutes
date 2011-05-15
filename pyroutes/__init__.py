@@ -66,8 +66,8 @@ def reverse_url(handler_name, absolute_path=False):
     >>> reverse_url('login')
     /account/login
     """
-    for path, route in __routes__.iteritems():
-        if route.handler.__name__ == handler_name:
+    for path, route_instance in __routes__.iteritems():
+        if route_instance.handler.__name__ == handler_name:
             if absolute_path:
                 return path
             else:
