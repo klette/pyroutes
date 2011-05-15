@@ -61,7 +61,19 @@ class ResponseCookieHandler(object):
     def __init__(self):
         self.cookie_headers = []
 
-    def add_cookie(self, key, value, expires=None, path='/', sign=True):
+    def add_cookie(self, key, value, expires=None, path=None, sign=True):
+        """
+        Asks the client to set a cookie.
+        * expires expects a datetime.datetime object.
+        * path=None gives cookies relative to the site root.
+        * path=False leaves the path unset, which the client will interpret as
+          a cookie for the current URL.
+        * The sign parameter adds a hash cookie for ensuring the integrity of
+          the data in the cookie server side.
+        """
+        if path is None:
+            path = settings.SITE_ROOT
+
         cookie = '%s=%s' % (key, value)
 
         if expires:
