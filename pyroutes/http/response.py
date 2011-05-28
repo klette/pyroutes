@@ -113,7 +113,7 @@ class Redirect(Response):
         super(Redirect, self).__init__(
             content="redirect",
             headers=[('Location', location)],
-            status_code='302 %s' % responses[302],
+            status_code=302,
             default_content_header=False)
 
 class HttpException(Exception):
