@@ -36,7 +36,7 @@ class Request(object):
         return "GET: %s\nPOST: %s\nPUT: %s\nCOOKIES: %s\nFILES: %s" % values
 
     def extract_put_data(self):
-        '''Extracts the file pointer from a PUT request.
+        """Extracts the file pointer from a PUT request.
 
         The PUT method allows you to write the contents of the file to the
         socket connection that is established with the server directly.
