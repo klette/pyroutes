@@ -1,5 +1,10 @@
 # encoding: utf-8
 
+"""
+This module contains only the Request class, a key class in pyroutes. Request
+objects hold all meta about incoming requests.
+"""
+
 from cgi import parse_qsl, FieldStorage
 
 from pyroutes.http.cookies import RequestCookieHandler
@@ -52,12 +57,13 @@ class Request(object):
 
         [0]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
 
-        '''
+        """
         if self.ENV.get('REQUEST_METHOD', 'GET') == 'PUT':
             if hasattr(self.ENV['wsgi.input'], 'read'):
                 self.PUT = self.ENV['wsgi.input']
 
     def extract_post_data(self):
+        "Populates the POST variable"
         data = {}
 
         # Copy enviroment so we dont get GET-variables in the result.
@@ -78,6 +84,7 @@ class Request(object):
         self.POST = data
 
     def extract_get_data(self):
+        "Populates the GET variable from environment"
         ret_dict = {}
         for (key, value) in parse_qsl(self.ENV.get('QUERY_STRING', '')):
             if key in ret_dict:
