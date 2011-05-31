@@ -1,5 +1,6 @@
 import unittest
 from pyroutes.middleware.errors import *
+from pyroutes.middleware.appendslash import AppendSlashes
 from pyroutes.http.response import *
 from pyroutes.http.request import Request
 import pyroutes.settings
@@ -7,10 +8,10 @@ import wsgiref.util
 import stderr_helper
 
 def passtrough(req):
-    return True
+    return 'PASSTHROUGH'
 
 def route(req):
-    return True
+    return 'ROUTE'
 
 class TestNotFoundMiddleware(unittest.TestCase):
 
@@ -72,3 +73,19 @@ class TestErrorHandlerMiddleware(unittest.TestCase):
             raise Http404
         ehm = ErrorHandlerMiddleware(errorous, route)
         self.assertEquals(ehm(self.request).status_code, '404 Not Found')
+
+class TestAppendSlashMiddleware(unittest.TestCase):
+
+    def setUp(self):
+        self.asm = AppendSlashes(passtrough, route)
+        pyroutes.settings.SITE_ROOT = ''
+
+    def test_should_return_redirect_on_missing_slash(self):
+        request = Request({'PATH_INFO': '/foo'})
+        response = self.asm(request)
+        self.assertEquals(response.__class__, Redirect)
+
+    def test_should_return_passthrough_on_slash(self):
+        request = Request({'PATH_INFO': '/foo/'})
+        response = self.asm(request)
+        self.assertEquals(response, 'PASSTHROUGH')
