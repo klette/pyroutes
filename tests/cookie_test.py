@@ -54,6 +54,7 @@ class TestResponseCookieHandler(unittest.TestCase):
 
     def setUp(self):
         settings.SECRET_KEY = 'asdfnaj2308sydfahli37flas36al9gaiufw'
+        settings.SITE_ROOT = ''
         self.cookies = ResponseCookieHandler()
 
     def test_add_cookie(self):
@@ -67,8 +68,14 @@ class TestResponseCookieHandler(unittest.TestCase):
         self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar; path=/'))
 
     def test_add_cookie_without_path(self):
-        self.cookies.add_unsigned_cookie('foo', 'bar', path=None)
+        self.cookies.add_unsigned_cookie('foo', 'bar', path=False)
         self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar'))
+
+    def test_add_cookie_default_path(self):
+        settings.SITE_ROOT = '/baz/'
+        self.cookies.add_unsigned_cookie('foo', 'bar')
+        self.assertEqual(self.cookies.cookie_headers[0], ('Set-Cookie', 'foo=bar; path=/baz/'))
+        settings.SITE_ROOT = ''
 
     def test_add_cookie_without_nondefault_path(self):
         self.cookies.add_unsigned_cookie('foo', 'bar', path='/foo')

@@ -1,18 +1,24 @@
 # encoding: utf-8
 
-import cgi
+"""
+This module contains only the Request class, a key class in pyroutes. Request
+objects hold all meta about incoming requests.
+"""
+
+from cgi import parse_qsl, FieldStorage
 
 from pyroutes.http.cookies import RequestCookieHandler
 
 try:
-    import cStringIO as StringIO
+    from cStringIO import StringIO
 except ImportError:
-    import StringIO
+    from StringIO import StringIO
 
 class Request(object):
     """
-    The pyroutes Request object. Contains all information about a request, like
-    GET/POST and environment data.
+    The pyroutes Request object.
+    Contains all information about a request,
+    like GET/POST and environment data.
     """
 
     def __init__(self, environment):
@@ -22,52 +28,51 @@ class Request(object):
         self.FILES = {}
         self.ENV = environment
 
-        self.GET = self.extract_get_data(environment)
-        self.POST = self.extract_post_data(environment)
-        self.PUT = self.extract_put_data(environment)
+        self.extract_get_data()
+        self.extract_post_data()
+        self.extract_put_data()
 
         self.COOKIES = RequestCookieHandler(environment)
         self.params = {}
 
     def __repr__(self):
-        values = (self.GET, self.POST, self.PUT, self.COOKIES._raw_cookies,
+        values = (self.GET, self.POST, self.PUT, self.COOKIES,
                   self.FILES.keys())
         return "GET: %s\nPOST: %s\nPUT: %s\nCOOKIES: %s\nFILES: %s" % values
 
-    def extract_put_data(self, environment):
-        '''Extracts the file pointer from a PUT request.
+    def extract_put_data(self):
+        """Extracts the file pointer from a PUT request.
 
         The PUT method allows you to write the contents of the file to the
         socket connection that is established with the server directly.
 
-        According to the [HTTP/1.1 specification (RFC2616)][0], the server must
-        return a status code of 201 (Created) if the file in question is newly
-        created, and 200 (OK) or 204 (No Content) if the request results in a
-        successful update.
+        According to the [HTTP/1.1 specification (RFC2616)][0], the server
+        must return a status code of 201 (Created) if the file in question
+        is newly created, and 200 (OK) or 204 (No Content) if the request
+        results in a successful update.
 
-        When using the POST method, all the fields and files are combined into a
-        single multipart/form-data type object, and this has to be decoded by
-        the server side handler.
+        When using the POST method, all the fields and files are combined
+        into a single multipart/form-data type object, and this has to be
+        decoded by the server side handler.
 
         [0]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
 
-        '''
-        if environment.get('REQUEST_METHOD', 'GET') == 'PUT':
-            if hasattr(environment['wsgi.input'], 'read'):
-                return environment['wsgi.input']
+        """
+        if self.ENV.get('REQUEST_METHOD', 'GET') == 'PUT':
+            if hasattr(self.ENV['wsgi.input'], 'read'):
+                self.PUT = self.ENV['wsgi.input']
 
-        return None
-
-    def extract_post_data(self, environment):
+    def extract_post_data(self):
+        "Populates the POST variable"
         data = {}
 
         # Copy enviroment so we dont get GET-variables in the result.
-        env = environment.copy()
+        env = self.ENV.copy()
         env['QUERY_STRING'] = ''
 
         if env.get('REQUEST_METHOD', 'GET') == 'POST':
-            _data = cgi.FieldStorage(
-                fp=environment['wsgi.input'],
+            _data = FieldStorage(
+                fp=self.ENV['wsgi.input'],
                 environ=env,
                 keep_blank_values=False
             )
@@ -76,18 +81,19 @@ class Request(object):
                 if value is not None:
                     self._assign_field_to_section(key, value, data)
 
-        return data
+        self.POST = data
 
-    def extract_get_data(self, environment):
+    def extract_get_data(self):
+        "Populates the GET variable from environment"
         ret_dict = {}
-        for (key, value) in cgi.parse_qsl(environment.get('QUERY_STRING', '')):
+        for (key, value) in parse_qsl(self.ENV.get('QUERY_STRING', '')):
             if key in ret_dict:
                 if not isinstance(ret_dict[key], list):
                     ret_dict[key] = [ret_dict[key]]
                 ret_dict[key].append(value)
             else:
                 ret_dict[key] = value
-        return ret_dict
+        self.GET = ret_dict
 
     def _assign_field_to_section(self, key, value, storage):
         if isinstance(value, list):
@@ -99,7 +105,8 @@ class Request(object):
 
                 # If an existing value exists for this key, convert to
                 # list-result
-                if key in self.FILES and not isinstance(self.FILES[key], list):
+                if key in self.FILES and \
+                  not isinstance(self.FILES[key], list):
                     self.FILES[key] = [self.FILES[key]]
 
                 if key in self.FILES and isinstance(self.FILES[key], list):
@@ -107,8 +114,8 @@ class Request(object):
                 else:
                     self.FILES[key] = value
             elif isinstance(value, basestring):
-                # If an existing value exists for this key, convert to
-                # list-result
+                # If an existing value exists for this key,
+                # convert to list-result
                 if key in storage and not isinstance(storage[key], list):
                     storage[key] = [storage[key]]
 
@@ -127,7 +134,7 @@ class Request(object):
             if field.file:
                 value = (field.filename, field.file)
             else:
-                value = (field.filename, StringIO.StringIO(data.getvalue(key)))
+                value = (field.filename, StringIO(data.getvalue(key)))
 
         elif isinstance(value, basestring):
             try:

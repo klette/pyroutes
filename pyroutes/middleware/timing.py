@@ -1,3 +1,7 @@
+"""
+A module containing a primitive timing middleware.
+"""
+
 import time
 
 from pyroutes import settings

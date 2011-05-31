@@ -1,13 +1,19 @@
+"""
+The errors middleware module. It contains middleware classes for handling any
+kind of python error/exception that may occur in pyroutes. This includes
+handling the case that there was no handler registered for the request path.
+"""
+
 import sys
 import traceback
 
-from pyroutes import settings, logger
+from pyroutes import settings, LOGGER
 from pyroutes.http.response import HttpException, Http404, Http500
 
 class NotFoundMiddleware(object):
     """
-    Returns a HTTP 404 when the middleware chain is passed None (i.e. if no
-    handler is found for the path).
+    Returns a HTTP 404 when the middleware chain is passed the route None (i.e.
+    if no handler is found for the path).
     """
     def __init__(self, passthrough, route):
         self.passthrough = passthrough
@@ -22,6 +28,10 @@ class NotFoundMiddleware(object):
         return error.get_response(request.ENV['PATH_INFO'])
 
 class ErrorHandlerMiddleware(object):
+    """
+    If an error is raised by the passthrough, catch it and present the user
+    with a friendly message.
+    """
     def __init__(self, passthrough, route):
         self.passthrough = passthrough
 
@@ -38,7 +48,7 @@ class ErrorHandlerMiddleware(object):
                                                 exception_value,
                                                 exception_trace)).strip()
 
-            logger.error('Encountered an error in the code. Stacktrace ' +
+            LOGGER.error('Encountered an error in the code. Stacktrace ' +
                     'below. HTTP 500 will be returned.\n' + trace)
 
             if settings.DEBUG:

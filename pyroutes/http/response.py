@@ -105,15 +105,16 @@ class Redirect(Response):
     """
 
     def __init__(self, location, absolute_path=False):
-        self.content = "redirect"
 
         if location.startswith('/') and not absolute_path:
             location = '/'.join([settings.SITE_ROOT.rstrip('/'),
                 location.lstrip('/')])
 
-        self.headers = [('Location', location)]
-        self.status_code = '302 %s' % responses[302]
-        self.cookies = ResponseCookieHandler()
+        super(Redirect, self).__init__(
+            content="redirect",
+            headers=[('Location', location)],
+            status_code=302,
+            default_content_header=False)
 
 class HttpException(Exception):
     """
@@ -148,6 +149,9 @@ class HttpException(Exception):
             self.template = self.template_filename
 
     def get_response(self, path, **kwargs):
+        """
+        Returns a formatted page displaying the error to user
+        """
         template_data = {
             'request': path,
             'title': self.status_code
@@ -158,10 +162,13 @@ class HttpException(Exception):
         return Response(document, status_code=self.status_code)
 
 class Http403(HttpException):
+    "403 Forbidden exception"
     code = 403
 
 class Http404(HttpException):
+    "404 Not Found exception"
     code = 404
 
 class Http500(HttpException):
+    "500 Server Error exception"
     code = 500

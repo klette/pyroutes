@@ -27,7 +27,8 @@ def edit(request, node='index'):
         '#edit_contents': nodes.get(node, ''),
         '#edit_form/action': '/edit/%s' % node,
     }
-    return Response(renderer.render("templates/edit.xml", template_data), status_code="404 Not Found")
+    return Response(renderer.render("templates/edit.xml", template_data),
+            status_code=404)
 
 @route('/show')
 def show(request, node='index'):

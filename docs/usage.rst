@@ -1,6 +1,9 @@
 Let's do it! (aka Quickstart)
 =============================
 
+All the following examples are also available in the ``examples`` folder of
+pyroutes, as ``quickstart.py``.
+
 Application entry point
 -----------------------
 
