@@ -23,9 +23,9 @@ class Request(object):
         self.FILES = {}
         self.ENV = environment
 
-        self.GET = self.extract_get_data(environment)
-        self.POST = self.extract_post_data(environment)
-        self.PUT = self.extract_put_data(environment)
+        self.extract_get_data()
+        self.extract_post_data()
+        self.extract_put_data()
 
         self.COOKIES = RequestCookieHandler(environment)
         self.params = {}
@@ -35,8 +35,7 @@ class Request(object):
                   self.FILES.keys())
         return "GET: %s\nPOST: %s\nPUT: %s\nCOOKIES: %s\nFILES: %s" % values
 
-    @staticmethod
-    def extract_put_data(environment):
+    def extract_put_data(self):
         '''Extracts the file pointer from a PUT request.
 
         The PUT method allows you to write the contents of the file to the
@@ -54,17 +53,15 @@ class Request(object):
         [0]: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
 
         '''
-        if environment.get('REQUEST_METHOD', 'GET') == 'PUT':
-            if hasattr(environment['wsgi.input'], 'read'):
-                return environment['wsgi.input']
+        if self.ENV.get('REQUEST_METHOD', 'GET') == 'PUT':
+            if hasattr(self.ENV['wsgi.input'], 'read'):
+                self.PUT = self.ENV['wsgi.input']
 
-        return None
-
-    def extract_post_data(self, environment):
+    def extract_post_data(self):
         data = {}
 
         # Copy enviroment so we dont get GET-variables in the result.
-        env = environment.copy()
+        env = self.ENV.copy()
         env['QUERY_STRING'] = ''
 
         if env.get('REQUEST_METHOD', 'GET') == 'POST':
@@ -78,18 +75,18 @@ class Request(object):
                 if value is not None:
                     self._assign_field_to_section(key, value, data)
 
-        return data
+        self.POST = data
 
-    def extract_get_data(self, environment):
+    def extract_get_data(self):
         ret_dict = {}
-        for (key, value) in parse_qsl(environment.get('QUERY_STRING', '')):
+        for (key, value) in parse_qsl(self.ENV.get('QUERY_STRING', '')):
             if key in ret_dict:
                 if not isinstance(ret_dict[key], list):
                     ret_dict[key] = [ret_dict[key]]
                 ret_dict[key].append(value)
             else:
                 ret_dict[key] = value
-        return ret_dict
+        self.GET = ret_dict
 
     def _assign_field_to_section(self, key, value, storage):
         if isinstance(value, list):
