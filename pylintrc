@@ -4,8 +4,9 @@ ignore=autoreload.py
 [MESSAGES CONTROL]
 # Disabled messages
 # -----------------
-# R0903 - Too few public methods (%s/%s)
-disable = R0903
+# R0903: Too few public methods (%s/%s)
+# W0404: Reimport %r (imported line %s)
+disable = R0903,W0404
 
 [BASIC]
 no-docstring-rgx=_.*
