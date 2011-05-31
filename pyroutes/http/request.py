@@ -72,7 +72,7 @@ class Request(object):
 
         if env.get('REQUEST_METHOD', 'GET') == 'POST':
             _data = FieldStorage(
-                fp=environment['wsgi.input'],
+                fp=self.ENV['wsgi.input'],
                 environ=env,
                 keep_blank_values=False
             )
