@@ -143,7 +143,7 @@ class TestDispatcher(unittest.TestCase):
                 args_given[1] = kwargs
 
         def do_test(handler, path, result):
-            environment = {'PATH_INFO': path}
+            environment = {'PATH_INFO': path + '/'}
             handler = pyroutes.route(path)(handler)
             response = pyroutes.__dispatcher__.dispatch(environment, ArgKeep)
             self.assertTrue(isinstance(handler, Route))
@@ -155,10 +155,11 @@ class TestDispatcher(unittest.TestCase):
 
     def test_middleware_chainer(self):
         handler = lambda x: 'result'
-        request = Request({})
+        request = Request({'PATH_INFO': '/path/'})
 
         self.assertEquals(settings.MIDDLEWARE,
                 ('pyroutes.middleware.errors.NotFoundMiddleware',
+                'pyroutes.middleware.appendslash.AppendSlashes',
                 'pyroutes.middleware.errors.ErrorHandlerMiddleware'))
 
         handler = pyroutes.route('/path')(handler)
