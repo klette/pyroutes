@@ -38,7 +38,7 @@ class TestErrorHandlerMiddleware(unittest.TestCase):
 
     def test_should_return_handler_result_if_no_exception(self):
         ehm = ErrorHandlerMiddleware(passtrough, route)
-        self.assertTrue(isinstance(ehm(self.request), bool))
+        self.assertEquals(ehm(self.request), 'PASSTHROUGH')
 
     def test_should_return_500_and_print_to_stderr_if_exception(self):
         def errorous(req):
