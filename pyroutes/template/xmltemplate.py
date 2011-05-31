@@ -5,11 +5,13 @@ xmltemplate, from http://bzr.sesse.net/xml-template/
 import xml.dom.minidom
 
 def process_file(filename, obj, clean=True):
+    "Process xml reading it from a file"
     doc = xml.dom.minidom.parse(filename)
     process(doc, obj, clean)
     return doc
 
 def process(node, obj, clean=True):
+    "Process xml given a xml.dom.minidom node"
     if isinstance(obj, basestring):            # overwrite
         while not node.firstChild is None:
             node.removeChild(node.firstChild)
@@ -106,6 +108,11 @@ def process(node, obj, clean=True):
         _clean(node)
 
 def alternate(tag, array, *elems):
+    """
+    A handy method for making the attributes of a list of elements alternate.
+    E.g. you can have a ul with every second li given class="even".
+    Example: http://bzr.sesse.net/xml-template/python/attribute2.py
+    """
     i = 0
     for ref in array:
         if ref is not None:

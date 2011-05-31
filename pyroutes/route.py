@@ -1,3 +1,8 @@
+"""
+A module that holds the Route class. A Route is a mapping between a path (e.g.
+/foo/) and a callable that is to be run when this path is accessed.
+"""
+
 import inspect
 
 class Route(object):

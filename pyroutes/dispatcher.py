@@ -1,3 +1,7 @@
+"""
+The pyroutes Dispatcher class and supporting methods. Core handling code that
+is run for all incoming requests.
+"""
 
 import pyroutes
 
@@ -6,7 +10,7 @@ import pyroutes.settings as settings
 
 class Dispatcher(object):
     """
-    The pyroutes dispatcher object. An instance of this object is kept directly
+    The pyroutes Dispatcher object. An instance of this object is kept directly
     on the pyroutes module for all dispatching purposes.
     """
 

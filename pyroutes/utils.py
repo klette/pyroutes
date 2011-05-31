@@ -1,3 +1,9 @@
+"""
+This module holds handy utilities for development and debugging of pyroutes
+applications. The methods found here are _not_ meant for use in production
+environments, no guarantees are given for their stability or security.
+"""
+
 import datetime
 import mimetypes
 import posixpath
@@ -28,6 +34,7 @@ def devserver(application, port=8001, address='0.0.0.0', auto_reload=True):
     """
 
     def server_thread():
+        "A small wrapper method for wsgiref.make_server().serve_forever()"
         httpd = make_server(address, port, application)
         print "Starting server on %s port %d..." % (address, port)
         httpd.serve_forever()
