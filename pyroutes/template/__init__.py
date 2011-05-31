@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+"""
+This module holds wrappers for xmltemplate, and xmltemplate itself.
+"""
+
 import os
 from pyroutes.template import xmltemplate
 from pyroutes import settings

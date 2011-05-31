@@ -1,4 +1,7 @@
-#! /usr/bin/python
+"""
+xmltemplate, from http://bzr.sesse.net/xml-template/
+"""
+
 import xml.dom.minidom
 
 def process_file(filename, obj, clean = True):
