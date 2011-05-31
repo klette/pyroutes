@@ -4,12 +4,12 @@ xmltemplate, from http://bzr.sesse.net/xml-template/
 
 import xml.dom.minidom
 
-def process_file(filename, obj, clean = True):
+def process_file(filename, obj, clean=True):
     doc = xml.dom.minidom.parse(filename)
     process(doc, obj, clean)
     return doc
 
-def process(node, obj, clean = True):
+def process(node, obj, clean=True):
     if isinstance(obj, basestring):            # overwrite
         while not node.firstChild is None:
             node.removeChild(node.firstChild)
