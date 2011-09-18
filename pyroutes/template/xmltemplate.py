@@ -72,7 +72,7 @@ def process(node, obj, clean=True):
 
             if not processed:
                 process(child, obj, clean)
-    elif isinstance(obj, list):         # repeat
+    elif hasattr(obj, '__iter__'):         # repeat
         doc = _get_document_element(node)
         frag = doc.createElement("temporary-fragment")    # ugh
 
