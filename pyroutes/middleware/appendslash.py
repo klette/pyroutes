@@ -19,4 +19,6 @@ class AppendSlashes(object):
                 return self.passthrough(request)
             return Redirect(request.ENV['PATH_INFO'] + '/?' +
                     request.ENV['QUERY_STRING'])
+        if request.ENV['PATH_INFO'].endswith('/'):
+            return self.passthrough(request)
         return Redirect(request.ENV['PATH_INFO'] + '/')
