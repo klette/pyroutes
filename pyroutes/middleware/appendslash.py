@@ -1,10 +1,15 @@
+"""
+Contains the AppendSlashes middleware.
+"""
+
 from pyroutes.http.response import Redirect
 from pyroutes import LOGGER
 
 class AppendSlashes(object):
     """
-    Used for adding slashes at the end of all URLs. i.e. GET /foo/bar will
-    return a redirect to /foo/bar/
+    The Appendslashes middleware will redirect requests that are obviously
+    missing a slash. If you request the path /foo, and there exists a route for
+    /foo/, you are redirected to /foo/.
     """
     def __init__(self, passthrough, route):
         self.passthrough = passthrough
