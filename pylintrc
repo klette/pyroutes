@@ -7,7 +7,8 @@ ignore=autoreload.py
 # R0903: Too few public methods (%s/%s)
 # W0404: Reimport %r (imported line %s)
 # F0401: Unable to import %r (%s)
-disable = R0903,W0404,F0401
+# E0611: No name %r in module %r
+disable = R0903,W0404,F0401,E0611
 
 [BASIC]
 no-docstring-rgx=_.*
