@@ -18,7 +18,7 @@ class Route(object):
         self.path = path
         self.maps = None
 
-        args, varargs, varkw, defaults = inspect.getargspec(handler)
+        args, varargs, _, defaults = inspect.getargspec(handler)
         self.arguments = args
         self.required_argument_length = len(args) - 1
         self.variable_arguments = varargs
