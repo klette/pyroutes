@@ -67,10 +67,7 @@ def fileserver(request, *path_list):
     if '..' in path_list:
         raise Http404
 
-    if hasattr(settings, 'DEV_MEDIA_BASE'):
-        path = os.path.join(settings.DEV_MEDIA_BASE, *path_list)
-    else:
-        path = os.path.join('.', *path_list)
+    path = os.path.join(getattr(settings, 'DEV_MEDIA_BASE', '.'), *path_list)
 
     if not os.path.exists(path):
         raise Http404

@@ -131,12 +131,9 @@ class HttpException(Exception):
         self.status_code = "%d %s" % (self.code, responses[self.code])
 
         if hasattr(settings, self.template_variable):
-            if hasattr(settings, 'CUSTOM_BASE_TEMPLATE'):
-                self.templaterenderer = TemplateRenderer(
-                    settings.CUSTOM_BASE_TEMPLATE
-                )
-            else:
-                self.templaterenderer = TemplateRenderer()
+            self.templaterenderer = TemplateRenderer(
+                getattr(settings, 'CUSTOM_BASE_TEMPLATE', None)
+            )
             self.template = getattr(settings, self.template_variable)
         else:
             self.templaterenderer = TemplateRenderer(
