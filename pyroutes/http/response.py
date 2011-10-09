@@ -10,7 +10,7 @@ from pyroutes.template import TemplateRenderer
 from pyroutes.http.cookies import ResponseCookieHandler
 from pyroutes import settings
 
-responses = {
+_RESPONSES = {
     100: 'Continue',
     101: 'Switching Protocols',
     200: 'OK',
@@ -79,8 +79,8 @@ class Response(object):
         if not headers is None:
             self.headers += headers
 
-        if status_code in responses:
-            self.status_code = "%s %s" % (status_code, responses[status_code])
+        if status_code in _RESPONSES:
+            self.status_code = "%s %s" % (status_code, _RESPONSES[status_code])
         else:
             self.status_code = status_code
 
@@ -128,7 +128,7 @@ class HttpException(Exception):
         self.template_data = template_data
         self.template_variable = 'TEMPLATE_%d' % self.code
         self.template_filename = '%d.xml' % self.code
-        self.status_code = "%d %s" % (self.code, responses[self.code])
+        self.status_code = "%d %s" % (self.code, _RESPONSES[self.code])
 
         if hasattr(settings, self.template_variable):
             self.templaterenderer = TemplateRenderer(
