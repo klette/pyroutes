@@ -81,7 +81,8 @@ class TestAppendSlashMiddleware(unittest.TestCase):
         pyroutes.settings.SITE_ROOT = ''
 
     def test_should_return_redirect_on_missing_slash(self):
-        request = Request({'PATH_INFO': '/foo'})
+        request = Request({'PATH_INFO': '/foo', 'QUERY_STRING': ''})
+        request.matched_path = '/foo'
         response = self.asm(request)
         self.assertEquals(response.__class__, Redirect)
 

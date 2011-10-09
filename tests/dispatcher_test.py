@@ -159,7 +159,6 @@ class TestDispatcher(unittest.TestCase):
 
         self.assertEquals(settings.MIDDLEWARE,
                 ('pyroutes.middleware.errors.NotFoundMiddleware',
-                'pyroutes.middleware.appendslash.AppendSlashes',
                 'pyroutes.middleware.errors.ErrorHandlerMiddleware'))
 
         handler = pyroutes.route('/path')(handler)
