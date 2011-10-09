@@ -35,6 +35,8 @@ class Request(object):
         self.COOKIES = RequestCookieHandler(environment)
         self.params = {}
 
+        self.matched_path = None
+
     def __repr__(self):
         values = (self.GET, self.POST, self.PUT, self.COOKIES,
                   self.FILES.keys())
