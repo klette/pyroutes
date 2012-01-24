@@ -159,9 +159,10 @@ class TestDispatcher(unittest.TestCase):
 
         self.assertEquals(settings.MIDDLEWARE,
                 ('pyroutes.middleware.errors.NotFoundMiddleware',
+                'pyroutes.middleware.responsify.Responsify',
                 'pyroutes.middleware.errors.ErrorHandlerMiddleware'))
 
         handler = pyroutes.route('/path')(handler)
         result = pyroutes.__dispatcher__.create_middleware_chain(handler, request)
         self.assertTrue(isinstance(handler, Route))
-        self.assertEquals(result, 'result')
+        self.assertTrue(isinstance(result, Response))

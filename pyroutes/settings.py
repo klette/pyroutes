@@ -31,6 +31,7 @@ TEMPLATE_DIR = None # /foo/bar/templates/
 MIDDLEWARE = (
     'pyroutes.middleware.errors.NotFoundMiddleware',
     #'pyroutes.middleware.appendslash.AppendSlashes',
+    'pyroutes.middleware.responsify.Responsify',
     'pyroutes.middleware.errors.ErrorHandlerMiddleware',
 )
 
