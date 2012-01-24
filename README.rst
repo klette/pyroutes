@@ -23,10 +23,10 @@ Example::
     Hello world!
 
     GET /foo
-    Hello foo
+    Hello foo!
 
 
-See http://www.pyroutes.com for more information.
+See http://readthedocs.org/docs/pyroutes/ for more information.
 
 
 Templating
