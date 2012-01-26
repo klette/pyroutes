@@ -5,7 +5,7 @@ web applications
 
 Why?
 -----
-I got tired of dealing with the same boring WSGI-stuff everytime
+I got tired of dealing with the same boring WSGI stuff every time
 I wanted to make a small web-utility in django, but I didn't want
 to go to far away from it, so I made this little thing to ease the
 work a bit.
@@ -15,9 +15,14 @@ How it works
 
 Example::
 
+    from pyroutes import application, route
+
     @route('/')
     def index(request, name='world'):
-        return Response('Hello %s!' % name)
+        return 'Hello %s!' % name
+
+
+The above creates a complete WSGI compliant application. Result::
 
     GET /
     Hello world!
@@ -33,7 +38,7 @@ Templating
 ----------
 
 pyroutes includes a small xml-based templating system called xml-template.
-For more information about xml-template, check out its bzr-repo from 
+For more information about xml-template, check out its bzr repo from 
 http://bzr.sesse.net/xml-template
 XML-Template is released under the GPLv2 license.
 
