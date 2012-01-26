@@ -1,6 +1,7 @@
 import unittest
 from pyroutes.middleware.errors import *
 from pyroutes.middleware.appendslash import AppendSlashes
+from pyroutes.middleware.responsify import Responsify
 from pyroutes.http.response import *
 from pyroutes.http.request import Request
 import pyroutes.settings
@@ -12,6 +13,9 @@ def passtrough(req):
 
 def route(req):
     return 'ROUTE'
+
+def redirect(req):
+    return Redirect('/')
 
 class TestNotFoundMiddleware(unittest.TestCase):
 
@@ -73,6 +77,21 @@ class TestErrorHandlerMiddleware(unittest.TestCase):
             raise Http404
         ehm = ErrorHandlerMiddleware(errorous, route)
         self.assertEquals(ehm(self.request).status_code, '404 Not Found')
+
+class TestResponsifyMiddleware(unittest.TestCase):
+
+    def test_should_return_response_subclass(self):
+        respmw = Responsify(redirect, route)
+        request = Request({})
+        response = respmw(request)
+        self.assertEquals(response.__class__, Redirect)
+
+    def test_should_return_response(self):
+        respmw = Responsify(passtrough, route)
+        request = Request({})
+        response = respmw(request)
+        self.assertEquals(response.__class__, Response)
+        self.assertEquals(response.content, 'PASSTHROUGH')
 
 class TestAppendSlashMiddleware(unittest.TestCase):
 
