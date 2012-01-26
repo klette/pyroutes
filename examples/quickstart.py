@@ -14,19 +14,19 @@ from pyroutes.http.response import Response, Http403, Http404
 
 @route('/')
 def index(request):
-    return Response('Hello world!')
+    return 'Hello world!'
 
 @route('/sayhello')
 def sayhello(request, name='world'):
-    return Response('Hello %s!' % name)
+    return 'Hello %s!' % name
 
 @route('/archive')
 def archive(request, year, month=None, day=None):
-    return Response('Year: %s  Month: %s  Day: %s' % (year, month, day))
+    return 'Year: %s  Month: %s  Day: %s' % (year, month, day)
 
 @route('/pathprint')
 def archive(request, *args):
-    return Response('User requested /%s under /pathprint' % '/'.join(args))
+    return 'User requested /%s under /pathprint' % '/'.join(args)
 
 @route('/newpost')
 def new_post(request):
@@ -37,12 +37,12 @@ def new_post(request):
     category = request.GET.get('category','default')
     title = request.POST.get('title', None)
     if not title:
-        return Response('No title!')
-    return Response('OK')
+        return 'No title!'
+    return 'OK'
 
 @route('/pdf')
 def pdf(request):
-    return Response(open('mypdf.pdf'), [('Content-Type', 'application/pdf')])
+    return Response(open('mypdf.pdf', [('Content-Type', 'application/pdf')]))
 
 @route('/decrypt_file')
 def decrypt(request, filename, key):
@@ -50,7 +50,7 @@ def decrypt(request, filename, key):
     if not os.path.exists(full_filename):
         raise Http404({'#details': 'No such file "%s"' % filename})
     try:
-        return Response(decrypt(full_filename, key))
+        return decrypt(full_filename, key)
     except KeyError:
         raise Http403({'#details': 'Key did not match file'})
 
@@ -67,7 +67,7 @@ def get_cookies(request):
     logged_in = request.COOKIES.get_cookie('logged_in')
     message = request.COOKIES.get_unsigned_cookie('message')
     if logged_in:
-        return Response(message)
+        return message
     raise Http403({'#details': 'Go away!'})
 
 @route('/cookie-del')

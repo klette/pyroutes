@@ -41,7 +41,7 @@ def show(request, node='index'):
         '#view_contents': node_contents,
         '#edit_link/href': '/edit/%s' % node
     }
-    return Response(renderer.render("templates/show.xml", template_data))
+    return renderer.render("templates/show.xml", template_data)
 
 if __name__ == '__main__':
     route('/media')(utils.fileserver)
