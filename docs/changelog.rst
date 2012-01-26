@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Master
+-------------
+
+- Created ``Responsify`` middleware, and included it as default. This allows
+  you to return from a route withoute wrapping your response in a Response
+  object.
+
 Release 0.4.1
 -------------
 

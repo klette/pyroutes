@@ -9,9 +9,10 @@ In Python we can display this as::
 
     Outer(Middle(Inner(final_method)))(my param)
 
-Each layer calls the next with the the same parameters as it
-was called with, and returns the same. This allows us
-to edit requests and responses globally with ease.
+Each layer calls the next with the the same parameters as it was called with,
+and returns the same. This allows us to edit requests and responses globally
+with ease. Each layer of middleware can return e.g an error page without
+calling the next layer, so ``final_method`` is not guaranteed to be called.
 
 
 Adding middleware

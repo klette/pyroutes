@@ -24,7 +24,7 @@ Route handling
 
        @pyroutes.route('/foo/bar')
        def foo_method(request):
-           return Response("foo")
+           return "foo"
 
        pyroutes.reverse_url('foo_method')
        '/foo/bar'

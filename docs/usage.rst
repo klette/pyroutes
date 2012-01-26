@@ -25,14 +25,13 @@ Routes are the way for defining which methods should handle requests to which pa
 This is the most basic example::
 
   from pyroutes import route
-  from pyroutes.http.response import Response
 
   @route('/')
   def index(request):
-      return Response('Hello world!')
+      return 'Hello world!'
 
 Here we define that our index method should handle all requests to ``/``, and
-return the world famous «Hello world!» to the user.
+return the famous «Hello world!» to the user.
 
 We can add more routes:
 
@@ -40,12 +39,12 @@ We can add more routes:
 
   @route('/sayhello')
   def sayhello(request, name='world'):
-      return Response('Hello %s!' % name))
+      return 'Hello %s!' % name
 
 ... Easy as pie! Save these at the end of our ``handler.py`` file.
 
-Route handling gotcha's
-^^^^^^^^^^^^^^^^^^^^^^^
+Route handling gotchas
+^^^^^^^^^^^^^^^^^^^^^^
 
 After adding the two example routes, we have a handler for ``/`` and
 ``/sayhello``. If you try to access ``/foo`` you will get an 404 exception.
@@ -120,7 +119,7 @@ Let's create an ``archive`` route as an example::
 
     @route('/archive')
     def archive(request, year, month=None, day=None):
-        return Response('Year: %s  Month: %s  Day: %s' % (year, month, day))
+        return 'Year: %s  Month: %s  Day: %s' % (year, month, day)
 
 And let's try it::
 
@@ -133,7 +132,7 @@ And let's try it::
     $ echo `wget -q -O - http://localhost:8001/archive/2010/02/03`
     Year: 2010  Month: 02  Day: 03
     $ echo `wget -q -O - http://localhost:8001/archive/2010/02/03/foobar`
-    (This returns a Http404 because archive only accepts four parameters)
+    (This returns HTTP 404 because archive only accepts four parameters)
 
 This example should make the URL matching logic clear. Note: If a method
 accepts a referenced argument list in the from \*args, it will match any
@@ -143,7 +142,7 @@ An example::
 
     @route('/pathprint')
     def archive(request, *args):
-        return Response('User requested /%s under /pathprint' % '/'.join(args))
+        return 'User requested /%s under /pathprint' % '/'.join(args)
 
 Accessing request data
 ----------------------
@@ -163,8 +162,8 @@ request handler.
         category = request.GET.get('category','default')
         title = request.POST.get('title', None)
         if not title:
-            return Response('No title!')
-        return Response('OK')
+            return 'No title!'
+        return 'OK'
 
 .. note:: If multiple fields have the same name, the value in the respective
           dicts are a list of the given values.
@@ -173,8 +172,10 @@ Sending responses to the user
 -----------------------------
 
 Every route must return an instance of ``pyroutes.http.response.Response``, or
-one of it's subclasses. The former defaults to sending a
-``text/html``-response with status code ``200 OK``.
+one of it's subclasses. The former defaults to sending a ``text/html`` response
+with status code ``200 OK``. Any data returned that wasn't wrapped in a
+Response object will also have these defaults applied (by the Responsify
+middleware)
 
 We have the follow built-in responses::
 
@@ -199,7 +200,7 @@ that can decrypt files by some algorithm)::
         if not os.path.exists(full_filename):
             raise Http404({'#details': 'No such file "%s"' % filename})
         try:
-            return Response(decrypt(full_filename, key))
+            return decrypt(full_filename, key)
         except KeyError:
             raise Http403({'#details': 'Key did not match file'})
 
@@ -229,7 +230,7 @@ Retrieving cookies::
         logged_in = request.COOKIES.get_cookie('logged_in')
         message = request.COOKIES.get_unsigned_cookie('message')
         if logged_in:
-            return Response(message)
+            return message
         raise Http403({'#details': 'Go away!'})
 
 Deleting cookies::
@@ -261,6 +262,6 @@ current task.::
 
     @route('/')
     def index(request):
-        return Response(tmpl.render('index.xml', {}))
+        return tmpl.render('index.xml', {})
 
 For more information about XML-Template, see :ref:`xml_template_intro`.
