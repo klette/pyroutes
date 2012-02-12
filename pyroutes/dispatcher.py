@@ -45,7 +45,7 @@ class Dispatcher(object):
         if current_path == '':
             current_path = '/'
 
-        complete_path = current_path.rstrip('/')
+        complete_path = '/' + current_path.strip('/')
         if not current_path.endswith('/'):
             current_path += '/'
 
