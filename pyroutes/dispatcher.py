@@ -42,12 +42,8 @@ class Dispatcher(object):
 
         # If we don't have a current path, look for the root route.
         # See issue #2 <http://github.com/pyroutes/pyroutes/issues/2>
-        if current_path == '':
-            current_path = '/'
-
         complete_path = '/' + current_path.strip('/')
-        if not current_path.endswith('/'):
-            current_path += '/'
+        current_path = '/%s/' % current_path.strip('/')
 
         while True:
             current_path = current_path[:current_path.rfind('/')] or '/'
