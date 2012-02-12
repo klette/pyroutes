@@ -73,6 +73,14 @@ class TestDispatcher(unittest.TestCase):
         self.assertEqual(dispatcher.find_route('/baz/param'), baz)
         self.assertEqual(dispatcher.find_route('/baz/param/two'), None)
 
+    def testRequestNotLeadingSlash(self):
+        # Most software would consider these requests invalid. A browser will
+        # never say "GET foo", but "GET /foo". We are interpreting it as /foo.
+        dispatcher = Dispatcher()
+        foo = self.createAnonRouteZero('/invalid')
+        self.assertEqual(dispatcher.find_route('invalid'), foo)
+        self.assertEqual(dispatcher.find_route('invalid/'), foo)
+        self.assertEqual(dispatcher.find_route('invalid/param'), None)
 
     def testRouteWithDefaultValueNone(self):
       @pyroutes.route('/somepath')
