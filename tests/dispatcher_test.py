@@ -12,43 +12,43 @@ class TestDispatcher(unittest.TestCase):
     SITE_ROOT_ATTR_NAME = 'SITE_ROOT'
 
     def start_response(self, status_code, headers):
-      pass
+        pass
 
     def setUp(self):
-      self.ENV = {
-           'SCRIPT_NAME': self.SCRIPT_NAME,
-           'PATH_INFO': '/path'
-           }
-      self.dispatcher = Dispatcher()
-      if hasattr(settings, self.SITE_ROOT_ATTR_NAME):
-        delattr(settings, self.SITE_ROOT_ATTR_NAME)
+        self.ENV = {
+            'SCRIPT_NAME': self.SCRIPT_NAME,
+            'PATH_INFO': '/path'
+        }
+        self.dispatcher = Dispatcher()
+        if hasattr(settings, self.SITE_ROOT_ATTR_NAME):
+            delattr(settings, self.SITE_ROOT_ATTR_NAME)
 
     def createAnonRouteZero(self, path):
         @pyroutes.route(path)
-        def foo(req):
+        def zero(req):
             pass
-        return foo
+        return zero
 
     def createAnonRouteOne(self, path):
         @pyroutes.route(path)
-        def foo(req, bar):
+        def one(req, bar):
             pass
-        return foo
+        return one
 
     def createAnonRouteInf(self, path):
         @pyroutes.route(path)
-        def foo(req, *args):
+        def infinite(req, *args):
             pass
-        return foo
+        return infinite
 
     def createAnonRouteOnePlus(self, path):
         @pyroutes.route(path)
-        def foo(req, bar, baz='foo'):
+        def one_plus(req, bar, baz='foo'):
             pass
-        return foo
+        return one_plus
 
     def testFindRequestHandler(self):
-        dispatcher = Dispatcher()
+        dispatcher = self.dispatcher
         root = self.createAnonRouteOnePlus('/')
         self.assertEqual(dispatcher.find_route(''), None)
         self.assertEqual(dispatcher.find_route('/'), None)
@@ -76,72 +76,68 @@ class TestDispatcher(unittest.TestCase):
     def testRequestNotLeadingSlash(self):
         # Most software would consider these requests invalid. A browser will
         # never say "GET foo", but "GET /foo". We are interpreting it as /foo.
-        dispatcher = Dispatcher()
+        dispatcher = self.dispatcher
         foo = self.createAnonRouteZero('/invalid')
         self.assertEqual(dispatcher.find_route('invalid'), foo)
         self.assertEqual(dispatcher.find_route('invalid/'), foo)
         self.assertEqual(dispatcher.find_route('invalid/param'), None)
 
     def testRouteWithDefaultValueNone(self):
-      @pyroutes.route('/somepath')
-      def foo(req, param=None):
-        self.assertEquals(None, param)
+        @pyroutes.route('/somepath')
+        def foo(req, param=None):
+            self.assertEquals(None, param)
         return Response('response')
 
-      self.ENV['PATH_INFO'] = '/somepath'
-      self.dispatcher.dispatch(self.ENV, self.start_response)
+        self.ENV['PATH_INFO'] = '/somepath'
+        self.dispatcher.dispatch(self.ENV, self.start_response)
 
     def testUpdateApplicationRootValue(self):
-      try:
-          self.dispatcher.dispatch(self.ENV, self.start_response)
-      except AttributeError:
-          pass
-      self._check_settings_attribute('SITE_ROOT', self.SCRIPT_NAME)
+        try:
+            self.dispatcher.dispatch(self.ENV, self.start_response)
+        except AttributeError:
+            pass
+        self._check_settings_attribute('SITE_ROOT', self.SCRIPT_NAME)
 
-    '''
-       Remove the trailing slash so we can use "/".join() when
-       building the full application path
-    '''
     def testUpdateApplicationRootValueNoTrailingSlash(self):
-      self.ENV['SCRIPT_NAME'] = '/some/path/with/trailing/slash/'
-      try:
-          self.dispatcher.dispatch(self.ENV, self.start_response)
-      except AttributeError:
-          pass
-      self._check_settings_attribute(self.SITE_ROOT_ATTR_NAME, '/some/path/with/trailing/slash')
+        '''
+        Remove the trailing slash so we can use "/".join() when building the
+        full application path
+        '''
+        self.ENV['SCRIPT_NAME'] = '/some/path/with/trailing/slash/'
+        try:
+            self.dispatcher.dispatch(self.ENV, self.start_response)
+        except AttributeError:
+            pass
+        self._check_settings_attribute(self.SITE_ROOT_ATTR_NAME, '/some/path/with/trailing/slash')
 
 
-    '''
-      Ensure that an empty value is used when SCRIPT_NAME is absent
-    '''
     def testUpdateApplicationRootEmptyValue(self):
-      self.ENV['SCRIPT_NAME'] = ''
-      try:
-          self.dispatcher.dispatch(self.ENV, self.start_response)
-      except AttributeError:
-          pass
-      self._check_settings_attribute(self.SITE_ROOT_ATTR_NAME, '')
+        'Ensure that an empty value is used when SCRIPT_NAME is absent'
+        self.ENV['SCRIPT_NAME'] = ''
+        try:
+            self.dispatcher.dispatch(self.ENV, self.start_response)
+        except AttributeError:
+            pass
+        self._check_settings_attribute(self.SITE_ROOT_ATTR_NAME, '')
 
     def testDoNotUpdateApplicatinRootIfAlreadyExist(self):
-      settings.SITE_ROOT = '/some/path'
-      self.dispatcher.dispatch(self.ENV, self.start_response)
-      self.assertEquals(settings.SITE_ROOT, '/some/path')
-
-    '''
-      Don't panic if we don't have a SCRIPT_NAME value.
-    '''
-    def testUpdateApplicationRootAbsentValue(self):
-      del self.ENV['SCRIPT_NAME']
-      try:
+        settings.SITE_ROOT = '/some/path'
         self.dispatcher.dispatch(self.ENV, self.start_response)
-      except AttributeError:
-          pass
-      self._check_settings_attribute(self.SITE_ROOT_ATTR_NAME, '')
+        self.assertEquals(settings.SITE_ROOT, '/some/path')
+
+    def testUpdateApplicationRootAbsentValue(self):
+        '''Don't panic if we don't have a SCRIPT_NAME value.'''
+        del self.ENV['SCRIPT_NAME']
+        try:
+            self.dispatcher.dispatch(self.ENV, self.start_response)
+        except AttributeError:
+            pass
+        self._check_settings_attribute(self.SITE_ROOT_ATTR_NAME, '')
 
 
     def _check_settings_attribute(self, attr_name, attr_value):
-      self.assertTrue('pyroutes.settings does no have attribute %s' % attr_name, hasattr(settings, attr_name))
-      self.assertEquals(attr_value, getattr(settings, attr_name))
+        self.assertTrue('pyroutes.settings does no have attribute %s' % attr_name, hasattr(settings, attr_name))
+        self.assertEquals(attr_value, getattr(settings, attr_name))
 
     def test_dispatch(self):
         args_given = [None, None]

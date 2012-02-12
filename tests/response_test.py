@@ -68,7 +68,7 @@ class TestExceptions(unittest.TestCase):
 
 class TestRedirectResponse(unittest.TestCase):
     def setUp(self):
-      settings.SITE_ROOT = "/app"
+        settings.SITE_ROOT = "/app"
 
     def test_init(self):
         redirect = Redirect('http://google.com', absolute_path=True)
