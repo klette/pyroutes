@@ -20,6 +20,7 @@ class TestDispatcher(unittest.TestCase):
             'PATH_INFO': '/path'
         }
         self.dispatcher = Dispatcher()
+        pyroutes.__routes__ = {}
         if hasattr(settings, self.SITE_ROOT_ATTR_NAME):
             delattr(settings, self.SITE_ROOT_ATTR_NAME)
 
