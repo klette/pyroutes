@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 import cgi
-import simplejson
 import unittest
 import wsgiref.util
 
